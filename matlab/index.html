@@ -1,0 +1,40 @@
+---
+layout: v4_lesson
+title: MATLAB
+children : [
+    {"path" : "intro.html", "title" : "Introduction"},
+    {"path" : "linalg.html", "title" : "Linear Algebra"},
+    {"path" : "basics.html", "title" : "Basics"},
+    {"path" : "indexing.html", "title" : "Indexing"},
+    {"path" : "flowbasic.html", "title" : "Basic Flow Control"},
+    {"path" : "flowmore.html", "title" : "More Flow Control"},
+    {"path" : "iobasic.html", "title" : "Basic I/O"},
+    {"path" : "iomore.html", "title" : "More I/O"},
+    {"path" : "plots.html", "title" : "Visualization"},
+    {"path" : "cellarrays.html", "title" : "Cell Arrays"}
+]
+prev : v4/matrix/index.html
+next : v4/media/index.html
+uplink : v4/index.html
+---
+<div class="overview">
+  <p>
+    Linear algebra lies at the heart of most scientific computations,
+    so developers have been building and tuning libraries to do vector and matrix operations for sixty years.
+    These libraries are frequently also used to work on other block data,
+    such as images and grids;
+    as a result,
+    they have a bewildering variety of features,
+    but repay close study with concise, high-performance code.
+  </p>
+</div>
+
+<div class="well well-small">
+  <ul class="keypoints">
+    <li>Array libraries like those in MATLAB store data in rectangular blocks of uniform data type.</li>
+    <li>These libraries use a data-parallel programming model to apply one operation to many data elements.</li>
+    <li>You should (almost) never loop over the elements of a vector or matrix: let the library do it instead.</li>
+    <li>Use slicing to select and combine subsets of data.</li>
+    <li>And use library functions to do higher-level linear algebra operations rather than writing them yourself.</li>
+  </ul>
+</div>

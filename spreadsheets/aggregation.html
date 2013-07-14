@@ -1,0 +1,24 @@
+---
+layout: v4_topic
+title: Aggregation
+lesson_title: Spreadsheets
+prev: v4/spreadsheets/intro.html
+next: v4/spreadsheets/display.html
+uplink: v4/spreadsheets/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "ykrd9pS5xXE", "time": "00:02:34.50"}
+---
+<div>
+  <p>Hello, and welcome to the second episode of the Software Carpentry lecture on spreadsheets.  In this episode, we will introduce you to aggregation.</p>
+  <p>To aggregate means to combine several values into a single result.  Computing the sum, average, or standard deviation of a set of values are examples of aggregation.</p>
+  <p>Suppose we wanted to compute totals for all of Canada's provinces and territories.  We start by labeling a row "Total", and then to find the total area, we want to sum up the cells B2 to B14.</p>
+  <p>The formula we write is almost exactly what we'd say: equals sum, B2, colon, B14.  Sum is a function that will add up the values of the cells you provide it; the colon specifies a rectangular range, with column B row 2 as the top left corner, and column B row 14 as the bottom right corner.</p>
+  <p>If we copy this formula to other columns, Excel computes their sums, because it updates the cell references inside the formula.</p>
+  <p>Let's make this row bold and italic so that it's easier to see, and then underneath it, calculate the minimum, average, and maximum values for each column.</p>
+  <p>Notice that when we paste a column of cells into a rectangular region, Excel does the sensible thing.</p>
+  <p>Now, some of our data is actually missing: Nunavut was part of the Northwest Territories before 1999.  Real-world data always has gaps like this: sometimes it's physically impossible, too expensive, or too dangerous to collect values, and sometimes, as in this case, those values simply don't make sense.</p>
+  <p>It's very important to understand that Excel treats gaps and zeroes differently.  For example, when we compute an average, we add up all our data, and divide by the number of values.  Zeroes count as values, but gaps do not.</p>
+  <p>So if we put in zero for Nunavut's CO2 emissions in 1990, the average emissions for that year change: Excel is now adding up 14 values and dividing by 14, rather than adding up 13 values and dividing by 13.</p>
+  <p>If we delete the value, the average goes back to what it was, and if we put a non-numeric value in the cell, such as the string "no data", Excel treats it as if it were empty.</p>
+</div>

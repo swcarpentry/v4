@@ -1,0 +1,309 @@
+---
+layout: v4_topic
+title: Basics
+lesson_title: Object-Oriented Programming
+prev: v4/oop/intro.html
+next: v4/oop/interface.html
+uplink: v4/oop/index.html
+pdf: basics.pdf
+ppt: basics.ppt
+youtube: {"slug": "ZsvdoDUq2R0", "time": "00:12:22.90"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="basics/001.png" />
+    <p class="media-body">Hello, and welcome to the second episode of the Software Carpentry lecture on object-oriented programming. In this episode, we'll see how to create classes and objects in Python, and what happens inside our program when we do this.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/002.png" />
+    <p class="media-body">The two basic concepts in object-oriented programming are the class and the object.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/003.png" />
+    <p class="media-body">A class defines a new kind of thing: more specifically, how those things can behave.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/004.png" />
+    <p class="media-body">An object is then a particular thing with a particular set of properties that behaves the way its class tells it to.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/005.png" />
+    <p class="media-body">This probably seems hopelessly vague, so let's look at an analogy with biology.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/006.png" />
+    <p class="media-body">There, the general category is the species, such as Canis lupus, and the specific 'thing' is a particular wolf, like Waya.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/007.png" />
+    <p class="media-body">In a program, the general class is something like 'Vector', and the object is a specific vector with particular XYZ values representing the velocity of some object in space.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/008.png" />
+    <p class="media-body">Let's start by defining the simple possible class, which has no behavior at all.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/009.png" />
+    <p class="media-body">We use the keyword 'class', followed by the new class's name, just as we would use the keyword 'def' and a name to create a function. We'll come back later and explain why we have put the word 'object' in parentheses after the class's name&mdash;for now, you'll just have to trust us. The body of this class is just the keyword 'pass', meaning "do nothing", because we're not actually defining any behavior for things of this type.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/010.png" />
+    <p class="media-body">Now that we have a class, let's create two objects of that kind.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/011.png" />
+    <p class="media-body">We do this by "calling" the class's name as if it was a function. Each time we do this, Python goes and creates a new object of that class. We can assign those objects to variables to keep track of them, just as we've been assigning things to variables all along.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/012.png" />
+    <p class="media-body">To make sure there's something there, we can use the built-in function 'id' to print out the unique IDs of the objects. Every object in Python has such an ID; we normally don't care about it, but it's a handy way to see if two objects are actually the same thing in memory or not.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/013.png" />
+    <p class="media-body">This diagram shows what has happened in our program so far. The boxed names on the left are our variables. The rectangles on the right are objects; the octagons with rounded-in corners are classes. As you can see, the variables 'first' and 'second' refer to objects, and each of those objects has a reference back to the class it belongs to, 'Empty'. This reference is hidden inside the object automatically when it is created; it's how the object knows where to look when it's asked to do something.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/014.png" />
+    <p class="media-body">It turns out that classes have these hidden references too. Here, the class 'Empty' has a reference to another class called 'object', which is built into the language. Python knew to add this reference to 'Empty' because we put the name 'object' in parentheses after Empty's name when we defined it. We'll see how Python uses this reference later on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/015.png" />
+    <p class="media-body">First, though, let's see how we teach classes to do things. To do this, we define one or more methods inside the class.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/016.png" />
+    <p class="media-body">A method is just a function that's defined inside a class&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/017.png" />
+    <p class="media-body">&hellip;that can then be called to get an object of that class to do something.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/018.png" />
+    <p class="media-body">For example, here's a simple class called 'Greeter' that has one method called 'greet'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/019.png" />
+    <p class="media-body">The first parameter to that method, 'self', has a special purpose which we'll explain in a moment.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/020.png" />
+    <p class="media-body">The second, 'name', acts like any other parameter to any other function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/021.png" />
+    <p class="media-body">To use this method, we create an object of the class 'Greeter', and then call the method, passing in some value for the argument 'name'. This syntax ought to look familiar:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/022.png" />
+    <p class="media-body">the object is on the left of the dot</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/023.png" />
+    <p class="media-body">and the method and its arguments (if any) are on the right. This is exactly how we call 'list.append', 'string.lowercase', and all of the other methods we've been using since our first lectures on Python.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/024.png" />
+    <p class="media-body">So what is that funny first argument 'self' for? Inside the method, it's the particular object the method is being called for. Remember, methods are defined for classes, but called for objects, so when the method is called, Python has to somehow know which particular object it's supposed to use. In this case, when we call 'g.greet', Python passes in the Greeter object that 'g' refers to as 'self', followed by the string 'Waya' for 'name'. This is why we define the method with two parameters, but only pass in one between parentheses when we call it: the other parameter is the thing on the left of the dot.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/025.png" />
+    <p class="media-body">This picture may or may not help make sense of that. At the top level of our program, the variable 'Greeter' refers to the class we created, which has a reference to the method 'greet'. The variable 'g' refers to one specific object of that class, and as before, that object has a hidden reference back to its class.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/026.png" />
+    <p class="media-body">When we call the method, Python creates a new stack frame, just as it does for a function call. Inside that stack frame, the variable 'self' refers to the same object as 'g', because we called the method as 'g.greet'. The method's other parameter, 'name', refers to the string 'Waya', which is the value that we passed in.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/027.png" />
+    <p class="media-body">We said in the introduction to this episode that classes and objects were used to combine functions with data. The way this works is that each object has its own variables, just like each stack frame does when we call a function. Unlike the data in a stack frame, though, those variables can last as long as the whole program: they are owned by the object, and only disappear when no object is referring to them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/028.png" />
+    <p class="media-body">The variables that belong to an object are often called member variables, or just members, though this terminology is used inconsistently.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/029.png" />
+    <p class="media-body">Just like variables in the top level of a program, we can create new members by assigning values to them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/030.png" />
+    <p class="media-body">As a trivial example, let's go back to our 'Empty' class, create an object of that class, and then add a member to that object by assigning something to 'e.value'. The variable name on the left of the dot tells Python which object we're creating the value for; the name on the right tells Python what the new member is called.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/031.png" />
+    <p class="media-body">Creating a member for one object has no effect on other objects. For example, if we create another object of the class 'Empty' and try to print its member 'value', Python tells us that the object doesn't have one.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/032.png" />
+    <p class="media-body">As you can see, giving different values to different objects is a way to customize them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/033.png" />
+    <p class="media-body">Because the methods in each object's class can rely on those values.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/034.png" />
+    <p class="media-body">Here's an example. This 'Greeter' class has a 'greet' method that looks very much like the one we wrote before&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/035.png" />
+    <p class="media-body">except it relies on a member variable called 'self.hello'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/036.png" />
+    <p class="media-body">If we create an object of this class&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/037.png" />
+    <p class="media-body">&hellip;and then create that member variable&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/038.png" />
+    <p class="media-body">&hellip;the call to the method prints out the whole message.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/039.png" />
+    <p class="media-body">If we create another object and give its member variable a different value, we get a different message.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/040.png" />
+    <p class="media-body">Here's what memory looks like after we create the first object. Again, the variable 'Greeter' refers to a class, which has a method called 'greet'. The variable 'g' refers to an object of that class, but this time, that object has a member variable called 'hello'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/041.png" />
+    <p class="media-body">When we call the method, 'self' refers to the object as before, and 'name' refers to the string 'Waya'. Inside the method, therefore, 'self.hello' follows the reference from 'self' to the object, looks for the member variable 'hello', and gets its value&mdash;in this case, the string 'Bonjour'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/042.png" />
+    <p class="media-body">It's important to understand that every object carries around its own variables, just as every variable inside a function call stack frame is distinct from every other.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/043.png" />
+    <p class="media-body">This example shows why that matters. As before, it creates a class and an object of that class. This time, though, we also create a variable 'hello' in our main program. When the method is called, we print 'Bonjour' instead of 'Hello' because the object uses its 'hello', not the one defined in the top level of the program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/044.png" />
+    <p class="media-body">Creating objects and then giving them the member variables that their methods depend on is a very error-prone way to program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/045.png" />
+    <p class="media-body">For one thing, it's all too easy to forget to create the required member variables, or to give them the wrong names.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/046.png" />
+    <p class="media-body">Especially if we're creating those objects in many different places.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/047.png" />
+    <p class="media-body">Object-oriented languages solve this problem by allowing us to define something called a constructor for the class.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/048.png" />
+    <p class="media-body">Constructors are automatically called as new objects are being created.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/049.png" />
+    <p class="media-body">Which makes them a natural place to customize individual objects by creating member variables.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/050.png" />
+    <p class="media-body">Every language has its own syntax for defining constructors. In Python, we signal that a method is a constructor by giving it a special name __init__. As with other methods, the first argument is 'self', which will refer to the object that's being created. Any other parameters can then be passed in after it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/051.png" />
+    <p class="media-body">Here's a better 'Greeter' class' that uses a constructor.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/052.png" />
+    <p class="media-body">And here's why it's better. When we create the first object, we pass the string 'Hello' to the constructor, which stores that value in the object's 'hello' member variable. We can then call the object's 'greet' method right away&mdash;we don't have to remember to assign anything after creating the object.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/053.png" />
+    <p class="media-body">And of course, if we want to create a second object, we can do so, and customize it as it's being created as well. Everything happens in one line, which is easier to read and much less error-prone.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/054.png" />
+    <p class="media-body">Just as a reminder, here's what memory looks like after both objects have been created. The two objects refer to the same class, so they have the same behavior. However, each one's 'hello' member refers to a different value, so when the method 'greet' is called, it does something different for each object.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/055.png" />
+    <p class="media-body">Python's "define 'em as you need 'em" approach makes creating classes and objects easy, but it also lets people make a kind of mistake that stricter languages like C++ and Java prevent. This version of 'Greeter' looks almost the same as our previous one, except the constructor stores what to say in 'hello' rather than 'self.hello'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/056.png" />
+    <p class="media-body">If we make this mistake, we can create the object without any problem&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/057.png" />
+    <p class="media-body">But when we try to call the 'greet' method some time later, it fails, because the object doesn't have a member variable called 'self.hello'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/058.png" />
+    <p class="media-body">The reason is that while 'self.something-or-other' stores the value in the object&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/059.png" />
+    <p class="media-body">Using a variable name just creates a local variable inside the method, just as it does in a function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/060.png" />
+    <p class="media-body">So if we assign 'what_to_say' to 'hello' instead of 'self.hello', we're creating a local variable called 'hello' inside the constructor whose value is lost as soon as the constructor is finished, not a member variable that will last as long as the object itself.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/061.png" />
+    <p class="media-body">Another difference between languages like Python and Java or C++ is that an object's data isn't protected or hidden in Python&mdash;it's always possible to get at it from outside the object.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/062.png" />
+    <p class="media-body">This means that even if we construct an object the "right" way, we can change its member variables later on to change its behavior.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/063.png" />
+    <p class="media-body">Some languages prevent this, so that the only way to change an object is through its methods.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/064.png" />
+    <p class="media-body">All languages discourage it, because it can make programs harder to understand (and introduce a lot of hard-to-find bugs). Unless you're sure you know what you're doing&mdash;and even then&mdash;you should treat objects as collections of behaviors, not as bags full of data. If you want to modify an object's variables, you should ask it to do so by calling one of its methods&mdash;you shouldn't just reach in and push things around yourself.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/065.png" />
+    <p class="media-body">To close off this episode, here's a more useful class that we might actually use in a program like the photographic application from the testing lecture. The class is called 'Rectangle', and as its name suggests, it represents a rectangle in two dimensions. Its constructor, shown here, stores the coordinates of its lower-left and upper-right corners in the object.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/066.png" />
+    <p class="media-body">Note how the constructor uses 'assert' statements to check those coordinates values. This has two benefits.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/067.png" />
+    <p class="media-body">The first is that if we ever try to create an invalid rectangle, our program will fail right away&mdash;we won't have to wait hundreds of lines or millions of microseconds before we realize there's a problem.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/068.png" />
+    <p class="media-body">This is why even simple objects like rectangles should be stored in classes. After all, if we're using lists of lists, or some other "naked" representation, it's easy for a programmer to mistakenly think that the coordinates are x0, x1 and y0, y1.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/069.png" />
+    <p class="media-body">When we use a class, though, the checking code in the constructor catches this right away.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/070.png" />
+    <p class="media-body">The second advantage of classes over raw data structures is readability. If our program works with rectangles' areas, and checks to see if one rectangle contains another, we can add those methods to our class.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/071.png" />
+    <p class="media-body">If you compare the list-of-lists approach on the left with the object-oriented approach on the right, I think you'll agree that the second is a lot easier to understand.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/072.png" />
+    <p class="media-body">We can make things even better by defining a Point2D class to represent an (x,y) coordinate&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/073.png" />
+    <p class="media-body">&hellip;then redefining 'Rectangle' to use two of those instead of four naked numbers.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/074.png" />
+    <p class="media-body">Before we look at how classes cooperate, though, we'll have a look at a few more things they can do on their own.</p>
+  </div>
+</div>

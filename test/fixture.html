@@ -1,0 +1,313 @@
+---
+layout: v4_topic
+title: Fixtures
+lesson_title: Testing
+prev: v4/test/float.html
+next: null
+uplink: v4/test/index.html
+pdf: v4/test/fixture.pdf
+ppt: v4/test/fixture.ppt
+youtube: {"slug": "ttvEjqi8tW0", "time": "00:08:06.73"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/001.png" />
+    <p class="media-body">Hello, and welcome to the sixth episode of the Software Carpentry lecture on testing.  In this episode, we'll have a closer look at how to set up fixtures to run tests on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/002.png" />
+    <p class="media-body">Let's go back to the fields of Saskatchewan.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/003.png" />
+    <p class="media-body">We're trying to find places where photographs of those fields overlap.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/004.png" />
+    <p class="media-body">Each photograph contains one or more rectangles.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/005.png" />
+    <p class="media-body">In programming terms, this means that a photo is a collection of rectangles, such as a set or a list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/006.png" />
+    <p class="media-body">What we really want to do is find <em>all</em> the overlaps between the rectangles in two collections.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/007.png" />
+    <p class="media-body">For example, if the first photo contains the three fields shown in yellow, and the second contains the two fields shown in green, our output should be the five rectangles shown in blue.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/008.png" />
+    <p class="media-body">We've already tested a function called <code>overlap_rect</code> that finds the overlap between two rectangles.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/009.png" />
+    <p class="media-body">We're confident it works, so we now want to test <code>overlap_photo</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/010.png" />
+    <p class="media-body">We don't actually need to know how it works, but we imagine that its implementation looks something like this:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/011.png" />
+    <p class="media-body">The two loops get rectangles from the first and second photo respectively, so that we're comparing all against all.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/012.png" />
+    <p class="media-body">Inside the loop, we compare those rectangles and save their overlap if it's non-empty.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/013.png" />
+    <p class="media-body">Here's our first test: a photo containing only the unit square compared with itself.  The output should be just the unit square.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/014.png" />
+    <p class="media-body">And here's how we turn that test into code.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/015.png" />
+    <p class="media-body">Six lines of code: that's not too bad.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/016.png" />
+    <p class="media-body">OK, let's write a second test: the unit square against a checkerboard pattern containing four squares.  Again, the output should contain only the unit square.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/017.png" />
+    <p class="media-body">Again, it's only six lines of code&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/018.png" />
+    <p class="media-body">&hellip;but those six lines are harder to read.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/019.png" />
+    <p class="media-body">We could introduce a variable called <code>unit</code> so that we don't write down the unit square's coordinates twice, but it doesn't really help much.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/020.png" />
+    <p class="media-body">Here's our third test: a short and wide rectangle against the checkerboard, with two squares as output.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/021.png" />
+    <p class="media-body">Again, it's only six lines of code&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/022.png" />
+    <p class="media-body">&hellip;but it isn't particularly easy to read&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/023.png" />
+    <p class="media-body">&hellip;and we can now see a new problem: there's too much duplicated code.  We've now defined the unit square four or five times, and the checkerboard twice.  Duplication is almost always a sign that a program could be simplified; the only question is how.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/024.png" />
+    <p class="media-body">In the case of testing, the answer is simple: let's create our fixtures outside the tests, so that we only have to define them once, and many different tests can share them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/025.png" />
+    <p class="media-body">(Remember, a fixture is something that we run a test on&mdash;in this case, our photos.)</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/026.png" />
+    <p class="media-body">This is a common need, so like other testing libraries, Nose can help us out.  If a file contains a function called <code>setup</code>, Nose will automatically run that function before it runs any of the tests in the file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/027.png" />
+    <p class="media-body">Here's an example showing how it works.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/028.png" />
+    <p class="media-body">If we were actually testing, <code>setup</code> would define the fixtures our tests used, but we'll have it print to standard error so that we can see when it runs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/029.png" />
+    <p class="media-body">Similarly, <code>test_1</code> and <code>test_2</code> would use those fixtures to do some testing, but we'll have them print as well.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/030.png" />
+    <p class="media-body">When we run this file with the <code>nosetests</code> command, it produces this output.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/031.png" />
+    <p class="media-body">The stuff shown in blue is Nose's regular output; our <code>print</code> statements are interleaved with it, which makes things a bit hard to read.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/032.png" />
+    <p class="media-body">This is what Nose's regular output would look like without our <code>print</code> statements.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/033.png" />
+    <p class="media-body">As you can see, Nose ran <code>setup</code> once at the start&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/034.png" />
+    <p class="media-body">&hellip;and then ran our two tests (in some arbitrary order&mdash;remember, Nose gets to choose).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/035.png" />
+    <p class="media-body">All right, let's write a <code>setup</code> function to create some fixtures for testing photo overlap.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/036.png" />
+    <p class="media-body">Here's the code.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/037.png" />
+    <p class="media-body">We start by creating a global variable called <code>Photos</code> to hold our fixtures.  We use a global variable, outside any particular function, so that both <code>setup</code> and our individual tests can see it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/038.png" />
+    <p class="media-body">Inside <code>setup</code>, we create sets of rectangles and store them in <code>Photos</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/039.png" />
+    <p class="media-body">Now let's use those fixtures in some tests.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/040.png" />
+    <p class="media-body">Here's the overlap of the unit square with itself.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/041.png" />
+    <p class="media-body">And here's the overlap of our short and wide rectangle with the checkerboard.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/042.png" />
+    <p class="media-body">We don't have to put all our fixtures in one variable, of course&mdash;we could create a bunch of global variables, and store one fixture in each.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/043.png" />
+    <p class="media-body">Here's the code to do that.  Notice that we have to assign each global variables <em>some</em> value just to create it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/044.png" />
+    <p class="media-body">Which you use is a matter of personal taste and project style.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/045.png" />
+    <p class="media-body">Of course, in this particular case you don't actually need a <code>setup</code> function at all&mdash;you can assign fixtures to <code>Unit</code> and <code>Short_And_Wide</code> when they're first defined.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/046.png" />
+    <p class="media-body">However, when you're working with more complicated programs, creating fixtures can require many lines of code, and calls to helper functions, and bundling all of that into a setup function is tidier.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/047.png" />
+    <p class="media-body">And even when you can do everything in one go, there's still another good reason to use a setup function.  What happens if some or all of your tests modify the fixtures they run on?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/048.png" />
+    <p class="media-body">For example, suppose we're testing a function called <code>photo_crop</code> that removes rectangles lying completely outside some cropping window.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/049.png" />
+    <p class="media-body">Since our tests modify our fixtures, we can't use the same fixtures over and over in separate tests&mdash;if we did, a bug in one place would contaminate the results of tests that were run later.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/050.png" />
+    <p class="media-body">The solution is to re-create the fixtures for each test, i.e., to run <code>setup</code> over again just before each test function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/051.png" />
+    <p class="media-body">There are several ways to do this in Nose (and in other libraries), but the simplest to type is to use a <em>decorator</em>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/052.png" />
+    <p class="media-body">Here's what the code looks like.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/053.png" />
+    <p class="media-body">We import the decorator, called <code>with_setup</code>, from the Nose library, just as if it were a function&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/054.png" />
+    <p class="media-body">&hellip;because it actually <em>is</em> a function, just one that behaves in a special way.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/055.png" />
+    <p class="media-body">We then put <code>@decorator</code>&mdash;in this case, <code>@with_setup</code>&mdash;right before the definition of each function that we want to apply it to.  This decorator takes an argument&mdash;the name of the setup function to run before the test&mdash;so we pass that to the decorator just like an argument to a function call.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/056.png" />
+    <p class="media-body">Thanks to a bit of magic that we won't go into here, doing this tells Nose to run the <code>setup_each</code> function right before <code>test_1</code>, and again before <code>test_2</code>.  If we wanted to run different setup functions before the two tests, we would simply pass different function names to <code>with_setup</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/057.png" />
+    <p class="media-body">Here's the output when we run this program with <code>nosetests</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/058.png" />
+    <p class="media-body">Once again, the standard Nose output in blue shows that two tests were run successfully.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/059.png" />
+    <p class="media-body">If we look at the output from our own <code>print</code> statements, we can see that Nose ran <code>setup_each</code> right before it ran <code>test_1</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/060.png" />
+    <p class="media-body">&hellip;and ran it again before <code>test_2</code>, just as we wanted.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/061.png" />
+    <p class="media-body">Here's an example showing setup per test that actually does some testing.  (We've left out the definition of <code>create_fixtures</code> because you've probably seen enough rectangles by now.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/062.png" />
+    <p class="media-body">When we run this program, Nose calls <code>create_fixtures</code> to create the first copy of the checkerboard fixture&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/063.png" />
+    <p class="media-body">&hellip;then runs <code>test_crop_unit</code>, which modifies that checkerboard.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/064.png" />
+    <p class="media-body">Nose then runs <code>create_fixtures</code> again, assigning a fresh photo to <code>checkerboard</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/065.png" />
+    <p class="media-body">&hellip;and then runs <code>test_crop_keep_everything</code>, which modifies that copy in turn, and so on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/066.png" />
+    <p class="media-body">Re-running our setup function over and over again does waste a few microseconds of the computer's time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/067.png" />
+    <p class="media-body">But that's much less valuable than any of yours.  And if you ever decide that creating a thousand fixtures, but only using one or two, really is too expensive, you can always break fixture creation up into several functions, and use the decorator to call only the ones you need for a particular test.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/068.png" />
+    <p class="media-body">Decorators might seem like magic, but they aren't.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/069.png" />
+    <p class="media-body">They do, however, use some ideas that are outside the scope of this course.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/070.png" />
+    <p class="media-body">You don't have to understand how they work in order to use them&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/071.png" />
+    <p class="media-body">&hellip;just as you don't have to understand how Nose finds tests in files, or files that contain tests.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/072.png" />
+    <p class="media-body">All you really have to understand is:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/073.png" />
+    <p class="media-body">&hellip;what the <code>@with_setup</code> decorator does, and&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/074.png" />
+    <p class="media-body">&hellip;when and why to use it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="fixture/075.png" />
+    <p class="media-body">Thank you for listening.</p>
+  </div>
+</div>

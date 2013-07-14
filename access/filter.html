@@ -1,0 +1,22 @@
+---
+layout: v4_topic
+title: Filtering
+lesson_title: Using Access
+prev: v4/access/select.html
+next: v4/access/sort.html
+uplink: v4/access/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "11111111", "time": "00:03:49.36"}
+---
+<div>
+  <p>Welcome to the Software Carpentry screencast on Databases using Microsoft Access.  This screencast is on filtering results from a databse.</p>
+  <p>As we've seen in a previous screencast, we can use the simple queries to pull out columns from a table, and add computed values to results. One of the most powerful features of a database is the ability to filter through your data to find the records that match certain criteria.</p>
+  <p>Let's say we wanted to see all of the Experiments before the year 1990. To do this we'd write a query with all of the columns from the Experiments table, and use the <em>criteria</em> row to specify our filter conditions. To do this, we add the criteria "&lt; 01/01/1990" to the ExperimentDate column. This specifies that we want only experiment info with an experiment date before January 1st, 1990.</p>
+  <p>We can think about how this query works as the database inspecting each row from the Experiments table, and checking it against the condition in the criteria.  If the condition holds true, then that row is included in the results, otherwise it is filtered out.</p>
+  <p>We can use other comparison operators in our filtering conditions.  For example, we could ask for all of the Experiments in table that took 3 or more hours.  To do this we remove the criteria from ExperimentDate and add the criteria "&gt;= 3" to the Hours column. We can use most of the familiar comparision operators: equal to, not equal to, greater than, less than, and so on.</p>
+  <p>We can make our filters even more sophisticated by combining criteria from multiple columns.For instance, if we want to find all of the experiments run by <em>mlom</em> that took more than three hours, we can modify our query. It already filters for experiments that take more than 3 hours.  So, we can add the additional criteria that needs to be met, that the loginID is mlom. Including criteria in the same row is like saying, <code>AND</code>. Each record returned now must satisfy two conditions: in this case, the Hours spent has to be greater than 3, and the loginID must be "mlom".</p>
+  <p>If we wanted experiments either by <em>mlom</em> or by <em>best</em>, we could write this into the criteria row by using the keyword <code>OR</code>. We could also do this by listing the criteria for each column, one per row. But this can be confusing because the database checks the criteria for each row all on its own, so if we don't copy all of the criteria we want on to each row we may get unexpected results.</p>
+  <p>Another way to write this <code>OR</code>-clause is to use the <code>IN</code> operator. With this operator, we can write a condition that is true if a field -- the loginID in this case -- contains anything from a list of values. So we'd write the <code>IN</code> and then provide the list of values "mlom", and "best" in parentheses: <code>IN ("mlom", "best")</code>.  This is exactly the same as writing out the OR clause, but it's shorter to write, and easier to read.</p>
+  <p>In this screencast we've shown that you can select data from a table and then filter those rows based on TRUE and FALSE conditions using the criteria row.</p>
+</div>

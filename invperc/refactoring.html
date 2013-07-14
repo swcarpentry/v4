@@ -1,0 +1,273 @@
+---
+layout: v4_topic
+title: Refactoring
+lesson_title: Program Design
+prev: v4/invperc/bugs.html
+next: v4/invperc/test.html
+uplink: v4/invperc/index.html
+pdf: v4/invperc/refactoring.pdf
+ppt: v4/invperc/refactoring.ppt
+youtube: {"slug": "CIpRlWwkwDw", "time": "00:06:22.82"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/001.png" />
+    <p class="media-body">Good morning, and welcome to the next episode of the Software Carpentry lecture on program design using invasion percolation as an example. In this episode, we're supposed to talk about testing&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/002.png" />
+    <p class="media-body">&hellip;but there's something else that we have to do first.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/003.png" />
+    <p class="media-body">In our previous episode, we found and fixed one bug in our program&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/004.png" />
+    <p class="media-body">&hellip;but how many others <em>haven't</em> we found?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/005.png" />
+    <p class="media-body">More generally, how do we validate and verify a program like this? Those two terms sound similar, but mean different things.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/006.png" />
+    <p class="media-body">Verification means, is our program free of bugs? I.e., did we build the thing right?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/007.png" />
+    <p class="media-body">Validation means, are we implementing the right model? I.e., did we build the right thing?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/008.png" />
+    <p class="media-body">The second question is one for scientists to answer&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/009.png" />
+    <p class="media-body">&hellip;so we'll concentrate in this lecture on testing our program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/010.png" />
+    <p class="media-body">Except, as we said earlier, there's something we have to do first. We're actually going to look at how we make our program more testable. Testing anything that involves randomness is difficult, so in order to convince ourselves that our program is working, we need to come up with examples that <em>aren't</em> random.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/011.png" />
+    <p class="media-body">Here's one: this grid has the value 2 everywhere&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/012.png" />
+    <p class="media-body">&hellip;except in three cells that we have filled with 1's.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/013.png" />
+    <p class="media-body">If our program is working correctly, it should fill exactly those three cells and nothing else.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/014.png" />
+    <p class="media-body">If it doesn't, it should be pretty easy for us to figure out what's gone wrong.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/015.png" />
+    <p class="media-body">Here's the overall structure of our program as it currently stands.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/016.png" />
+    <p class="media-body">This function, <code>fill_grid</code>, is the one we want to test&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/017.png" />
+    <p class="media-body">&hellip;so let's reorganize our code to make it easier to create specific grids.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/018.png" />
+    <p class="media-body">Grids are created by the function <code>create_random_grid</code>, which takes the grid size and random value range as arguments.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/019.png" />
+    <p class="media-body">Let's split that into two pieces.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/020.png" />
+    <p class="media-body">The first creates an N&times;N grid containing the value 0.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/021.png" />
+    <p class="media-body">The second overwrites those values with random values in the range 1 to Z.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/022.png" />
+    <p class="media-body">We can then call something else to fill the grid with non-random values when we're testing. This change is pretty simple, and is left as an exercise for the viewer.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/023.png" />
+    <p class="media-body">Here's another part of the old program that we need to change. It takes command-line arguments and converts them into integers in order to determine the grid size, the range of random values, and the random number seed.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/024.png" />
+    <p class="media-body">Our new structure is going to use a function called <code>parse_arguments</code> to do the same job.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/025.png" />
+    <p class="media-body">We're also going to introduce a new argument in the first position called scenario. It doesn't need to be converted to an integer: it's just a string value specifying what we want to do. If the user gives us the word "random", we'll do exactly what we've been doing all along.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/026.png" />
+    <p class="media-body">If the user gives us anything else, for the moment we will fail, but later on, we'll use <code>scenario</code> to determine which of our test cases we want to run.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/027.png" />
+    <p class="media-body">We're not going to need random numbers when we fill the grid manually for testing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/028.png" />
+    <p class="media-body">We're also not going to need the value range&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/029.png" />
+    <p class="media-body">&hellip;or the grid size.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/030.png" />
+    <p class="media-body">Let's move argument handling and random number generation seeding into the <code>if</code> branch that handles the random scenario.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/031.png" />
+    <p class="media-body">Once we make this change&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/032.png" />
+    <p class="media-body">&hellip;we determine the scenario by looking at the first command-line argument&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/033.png" />
+    <p class="media-body">&hellip;and then if that value is the word "random"&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/034.png" />
+    <p class="media-body">&hellip;we look at the remaining arguments to determine the grid size, the value range, and the random seed.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/035.png" />
+    <p class="media-body">If the first argument <em>isn't</em> the word "random", then we fail.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/036.png" />
+    <p class="media-body">Here's a closer look at what's inside that first <code>if</code> case.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/037.png" />
+    <p class="media-body">We parse arguments&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/038.png" />
+    <p class="media-body">&hellip;seed the random number generator&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/039.png" />
+    <p class="media-body">&hellip;create a grid&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/040.png" />
+    <p class="media-body">&hellip;fill it with random values&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/041.png" />
+    <p class="media-body">&hellip;mark the center cell as filled&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/042.png" />
+    <p class="media-body">&hellip;fill the rest of the grid&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/043.png" />
+    <p class="media-body">&hellip;and then print out how many cells were filled.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/044.png" />
+    <p class="media-body">The names of the functions <code>fill_grid_random</code> and <code>fill_grid</code> are very similar&mdash;it would be very easy for people to confuse them if the code was being read aloud.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/045.png" />
+    <p class="media-body">Let's rename the first one to <code>init_grid_random</code>. The functions that initialize the grid for specific test cases will then be called <code>init_grid_name_of_test_case</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/046.png" />
+    <p class="media-body">And while we're here, let's clean up something that we first pointed out a couple of episodes ago. We are manually filling the center cell, and then calling <code>fill_grid</code> to fill the remainder. That means we have to add 1 to the result returned by <code>fill_grid</code>. Since we do that in all of our scenarios&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/047.png" />
+    <p class="media-body">&hellip;let's just move that code into <code>fill_grid</code>, so the <code>fill_grid</code> function now marks the center cell, and fills until it reaches the boundary, and returns the total number of cells filled. This is less of a burden on the people using our code, because they don't have to remember to mark the center cell themselves, or to add 1 to the result of <code>fill_grid</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/048.png" />
+    <p class="media-body">Here's the structure of our revised program. We have the documentation string&mdash;which, by the way, we've updated to remind people that the first argument is the name of the scenario. Our <code>fail</code> function hasn't changed.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/049.png" />
+    <p class="media-body">We've split grid creation into two functions.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/050.png" />
+    <p class="media-body">Our <code>fill_grid</code> function now fills the middle cell and returns the count of <em>all</em> filled cells.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/051.png" />
+    <p class="media-body">And we have a function to parse command-line arguments.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/052.png" />
+    <p class="media-body">This argument-parsing function is actually specific to the random case.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/053.png" />
+    <p class="media-body">We should probably rename it&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/054.png" />
+    <p class="media-body">&hellip;to make that clear.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/055.png" />
+    <p class="media-body">Now let's step back. We were supposed to be testing our program, but in order to make it more testable&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/056.png" />
+    <p class="media-body">&hellip;we had to reorganize it first, and the jargon word for this is&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/057.png" />
+    <p class="media-body">&hellip;"refactoring".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/058.png" />
+    <p class="media-body">This means "changing a program's structure without modifying its behavior or functionality in order to improve its quality."</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/059.png" />
+    <p class="media-body">Entire books have been written about how to refactor programs systematically.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/060.png" />
+    <p class="media-body">The first, and most influential, was by Martin Fowler.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/061.png" />
+    <p class="media-body">It's mostly a catalog of refactoring techniques for object-oriented programs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/062.png" />
+    <p class="media-body">Another is by Michael Feathers. He discusses how to refactor legacy programs&mdash;i.e., programs that you've inherited that may be very tangled, poorly documented, or (in most cases) both&mdash;in order to make them easier to test.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/063.png" />
+    <p class="media-body">The examples in this book are drawn from many different languages.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/064.png" />
+    <p class="media-body">And now that we've done this refactoring, we can start to test our program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="refactoring/065.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+ </div>

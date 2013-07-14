@@ -1,0 +1,761 @@
+---
+layout: v4_topic
+title: Saving and Loading Data
+lesson_title: Essays
+prev: v4/essays/counting.html
+next: null
+uplink: v4/essays/index.html
+pdf: null
+ppt: null
+---
+<p>A student who's doing this course online emailed us a question:</p>
+<blockquote><p><em>I want to save the state of my program every few hours so I can re-start it later.  What's the best format for doing this?</em></p></blockquote>
+<p>There's no simple or single answer, but exploring the options is a natural way to introduce a few more programming ideas.</p>
+<h2>Vectors</h2>
+<p>First, let's suppose the program's state is a list of real numbers, which could represent something like the temperature at each point along a line.  Our data file looks like this:</p>
+<pre>1.0
+1.1
+1.015
+1.23</pre>
+<p>and so on, with one value per line&mdash;or in other words, with a newline character as a separator between numbers.  It's trivial to write functions that will store and load such a list:</p>
+<pre>def save(filename, vector):
+  writer = open(filename, 'w')
+  for value in vector:
+      print &gt;&gt; writer, value
+  writer.close()
+
+def load(filename):
+  reader = open(filename, 'r')
+  vector = []
+  for line in reader:
+      value = float(line.strip())
+      vector.append(value)
+  reader.close()
+  return vector</pre>
+<h2>Matrices</h2>
+<p>What if the program's state is a two-dimensional matrix instead of a vector?  If the matrix is a list of lists in our program, our functions are almost as simple as the vector versions:</p>
+<pre>def save(filename, matrix):
+  writer = open(filename, 'w')
+  for row in matrix:
+      for value in row:
+          print &gt;&gt; writer, value,    # suppress the newline
+      print &gt;&gt; writer                # print a newline
+  writer.close()
+
+def load(filename):
+  reader = open(filename, 'r')
+  matrix = []
+  for line in reader:
+      temp = []
+      line = line.strip().split()
+      for entry in line:
+          value = float(entry)
+          temp.append(value)
+      matrix.append(temp)
+  reader.close()
+  return matrix</pre>
+<p>and so are our data files:</p>
+<pre>1.0 1.015 1.212 1.224
+1.30 1.325 1.39 1.447
+1.676 1.9 1.81 2.001</pre>
+<p><code>save</code> prints each row of the matrix on a single line.  (Remember: a trailing comma in a <code>print</code> statement suppresses the newline Python would normally print, while <code>print</code> with no arguments just prints a newline.)  <code>load</code> reads those lines, splits them on whitespace, and converts the fragments from strings to numbers, building up a list-of-lists as it goes.  Another way of looking at it is that we use newline as a row separator, but a single space as a column separator.</p>
+<h2>Error Checking</h2>
+<p>These functions work, but they wouldn't meet most programmers' standards.  To see why, imagine that our file is improperly formatted:</p>
+<pre>1.0 2.0 3.0
+4.0 5.0
+7.0 8.0 9.0</pre>
+<p>A value is missing from the second row, but our <code>load</code> function won't care: it will happily return an irregular list-of-lists.  The program that uses this matrix might blow up later on, but (a) then we'd have to spend time working backwards from the point of failure, which might be thousands of lines later, and (b) the program might not actually blow up, but instead just produce the wrong answer.</p>
+<p>Since "silent failures" are the worst possible outcome, we'd like to fail early and fail often, so let's modify <code>load</code> to catch this case.  The change is highlighted:</p>
+<pre>def load(filename):
+  reader = open(filename, 'r')
+  matrix = []
+  for line in reader:
+      temp = []
+      line = line.strip().split()
+      for entry in line:
+          value = float(entry)
+          temp.append(value)
+
+<span style="color: red;">        if len(matrix) &gt; 0:
+          assert len(temp) == len(matrix[0]), \
+                 'Rows are not the same length'</span>
+
+      matrix.append(temp)
+  reader.close()
+  return matrix</pre>
+<p>Whenever we construct a new sub-list, we check if there are already any rows in <code>matrix</code>.  If there are, we compare the length of the new row to the length of the zero'th row of <code>matrix</code>, and halt with an error if they're different.  Doing this ensures that all rows have the same length as the first row we read.</p>
+<p>If we're going to check input, let's check output as well.  This doesn't guarantee data files will always be correct, since someone could modify them in a text editor outside our program, but it does reduce the risk.</p>
+<pre>def save(filename, matrix):
+  writer = open(filename, 'w')
+  for row in matrix:
+<span style="color: red;">        assert len(row) == len(matrix[0]), \
+             'Rows are not the same length'</span>
+      for value in row:
+          print &gt;&gt; writer, value,
+      print &gt;&gt; writer
+  writer.close()</pre>
+<p>Again, the change is highlighted in bold, and again, we check the length of each row against the length of the zero'th row.  And yes, the first time through the loop we will check the zero'th row's length against itself, but it's simpler (and probably more efficient) to do that unnecessary calculation than to avoid it.</p>
+<h2>Metadata</h2>
+<p>Our functions now check the lengths of rows, but what if entire rows are missing?  Or what if we saved the state of the program when it was running for a 780&times;780 case, but mistakenly try to load that file when we're doing an 870&times;870 calculation?  The solution that almost every file format uses is to add some <em>metadata</em> that describes the rest of the data.  In our case, the metadata is simply the dimensions of the matrix as a pair of integers on the first line of the file:</p>
+<pre>def save(filename, matrix):
+  writer = open(filename, 'w')
+  <span style="color: red;">print &gt;&gt; writer, len(matrix), len(matrix[0])</span>
+  for row in matrix:
+      assert len(row) == len(matrix[0]), \
+             'Rows are not the same length'
+      for value in row:
+          print &gt;&gt; writer, value,
+      print &gt;&gt; writer
+  writer.close()
+
+def load(filename):
+  reader = open(filename, 'r')
+  <span style="color: red;">dims = reader.readline().strip().split()
+  num_rows = int(dims[0])
+  num_cols = int(dims[1])</span>
+  matrix = []
+
+  for line in reader:
+      temp = []
+      line = line.strip().split()
+      <span style="color: red;">assert len(line) == num_cols, \
+             'Wrong number of columns in line %d' % num_lines</span>
+      for entry in line:
+          value = float(entry)
+          temp.append(value)
+      matrix.append(temp)
+
+  reader.close()
+  <span style="color: red;">assert len(matrix) == num_rows, \
+         'Wrong number of rows'</span>
+  return matrix</pre>
+<p>Before we move on, let's tidy up <code>load</code> a bit.  Recent versions of Python support <em>list comprehension</em>: instead of using a loop to operate on a list element by element, we can write an expression that does the work for us.  For example, if <code>stuff</code> is a list of integers, then:</p>
+<pre>[x**2 for x in stuff if x &gt; 3]</pre>
+<p>creates a list of of the squares of the values in <code>stuff</code> that are greater than 3.  Let's use list comprehension to shorten <code>load</code> a bit:</p>
+<pre>def load(filename):
+  reader = open(filename, 'r')
+  <span style="color: red;">num_rows, num_cols = [int(x) for x in reader.readline().strip().split()]</span>
+  matrix = []
+
+  for line in reader:
+      <span style="color: red;">temp = [float(x) for x in line.strip().split()]</span>
+      assert len(temp) == num_cols, \
+             'Wrong number of columns in line %d' % num_lines
+      matrix.append(temp)
+
+  reader.close()
+  assert len(matrix) == num_rows, \
+         'Wrong number of rows'
+  return matrix</pre>
+<p>List comprehensions are a bit harder to read when you first encounter them, but so are most abbreviations, and since they're becoming more widely used, it's worth getting to know them.</p>
+<h2>Multiple Objects</h2>
+<p>Saving metadata in the file has another benefit.  Suppose our program stores its state in two matrices, not one&mdash;or in five, or in three matrices and a pair of vectors.  Without metadata about their sizes, our function would have no way to know when to stop reading the current object and start reading the next, so we'd have to put each data structure in a file of its own.  With metadata, it's easy&mdash;there is no ambiguity at all in a file like:</p>
+<pre>3 2
+1.0 2.0
+3.0 4.0
+5.0 6.0
+1 4
+100.0 200.0 300.0 400.0
+2 1
+1000.0
+2000.0</pre>
+<p>How should we change our functions to do this?  One option is to pass a list of matrix to <code>save</code>:</p>
+<pre>def save(filename, stuff):
+  writer = open(filename, 'w')
+  for matrix in stuff:
+      print &gt;&gt; writer, len(matrix), len(matrix[0])
+      for row in matrix:
+          assert len(row) == len(matrix[0]), \
+                 'Rows are not the same length'
+          for value in row:
+              print &gt;&gt; writer, value,
+          print &gt;&gt; writer
+  writer.close()</pre>
+<p>Reading is a bit trickier, since we have to look ahead one line to find out if we're at the end of the file or not.  The function below does this, and returns a list of matrices to its caller:</p>
+<p>def load(filename):<br />
+reader = open(filename, 'r')<br />
+results = []<br />
+line = reader.readline()           # prime the pump<br />
+while line:                        # exit loop at end of file<br />
+num_rows, num_cols = [int(x) for x in line.strip().split()]<br />
+matrix = []<br />
+for line in reader:<br />
+temp = [float(x) for x in line.strip().split()]<br />
+assert len(temp) == num_cols, \<br />
+'Wrong number of columns in line %d' % num_lines<br />
+matrix.append(temp)<br />
+assert len(matrix) == num_rows, \<br />
+'Wrong number of rows'<br />
+results.append(matrix)<br />
+line = reader.readline()       # look for start of next matrix</p>
+<p>reader.close()<br />
+return results</p>
+<p>This "lookahead" pattern comes up all the time when reading data.  We could avoid the need for it by starting the file with some more metadata, namely the number of matrices the file is supposed to contain.  In fact, that seems like a good idea anyway, since it allows more error checking, so let's do that instead:</p>
+<pre>def save(filename, stuff):
+  writer = open(filename, 'w')
+  <span style="color: red;">print &gt;&gt; writer, len(stuff)       # number of matrices in file</span>
+  for matrix in stuff:
+      print &gt;&gt; writer, len(matrix), len(matrix[0])
+      for row in matrix:
+          assert len(row) == len(matrix[0]), \
+                 'Rows are not the same length'
+          for value in row:
+              print &gt;&gt; writer, value,
+          print &gt;&gt; writer
+  writer.close()
+
+def load(filename):
+  reader = open(filename, 'r')
+  results = []
+  <span style="color: red;">num_matrices = int(reader.readline().strip())  # number of matrices in file
+  for m in range(num_matrices):</span>
+      num_rows, num_cols = [int(x) for x in line.strip().split()]
+      matrix = []
+      for line in reader:
+          temp = [float(x) for x in line.strip().split()]
+          assert len(temp) == num_cols, \
+                 'Wrong number of columns in line %d' % num_lines
+          matrix.append(temp)
+      assert len(matrix) == num_rows, \
+             'Wrong number of rows'
+      results.append(matrix)
+
+  reader.close()
+  return results</pre>
+<p>We may also want to modify these functions to handle vectors along with matrices, since right now they only work for two-dimensional list-of-lists structures.  We'll revisit that point below.</p>
+<h2>Design for Test</h2>
+<p>We can still improve these functions, though.  If you have gone through the lecture on testing, you will have seen that it's important to <em>design for test</em>, i.e., to write code in a way that makes testing easier and more reliable.  We can apply that idea here by having the <code>save</code> and <code>load</code> functions take open file objects as parameters instead of filenames; that way, we can use <code>stringIO</code> objects (that read from or write to strings instead of files) for testing.  Let's do that:</p>
+<pre>def save(writer, stuff):
+  print &gt;&gt; writer, len(stuff)
+  for matrix in stuff:
+      print &gt;&gt; writer, len(matrix), len(matrix[0])
+      for row in matrix:
+          assert len(row) == len(matrix[0]), \
+                 'Rows are not the same length'
+          for value in row:
+              print &gt;&gt; writer, value,
+          print &gt;&gt; writer
+
+def load(reader):
+  results = []
+  num_matrices = int(reader.readline().strip())  # number of matrices in file
+  for m in range(num_matrices):
+      num_rows, num_cols = [int(x) for x in line.strip().split()]
+      matrix = []
+      for line in reader:
+          temp = [float(x) for x in line.strip().split()]
+          assert len(temp) == num_cols, \
+                 'Wrong number of columns in line %d' % num_lines
+          matrix.append(temp)
+      assert len(matrix) == num_rows, \
+             'Wrong number of rows'
+      results.append(matrix)
+  return results</pre>
+<p>We can now test our code like this:</p>
+<pre>from StringIO import StringIO
+
+Data = '''2
+1 1
+1.0
+2 2
+2.0 3.0
+4.0 5.0'''
+
+def test_one_two():
+reader = StringIO(Data)
+result = load(reader)
+assert len(result) == 2
+first = result[0]
+assert len(first) == 1
+assert len(first[0]) == 1
+assert first[0][0] == 1.0
+second = result[1]
+...etc...</pre>
+<h2>Data Types</h2>
+<p>Now, what if our program's state is integers rather than floating point numbers?  Or complex values?  We could pick one and stick to it, but we'd really like to be able to re-use our save-and-load functions elsewhere.  One option is to require the user to tell us how to do the conversion using some sort of flag.  To keep things simple, we'll switch back to one matrix per file for the moment:</p>
+<pre>def load(reader, data_type):
+  num_rows, num_cols = [int(x) for x in reader.readline().strip().split()]
+  matrix = []
+
+  for line in reader:
+      <span style="color: red;">if data_type == 'i':
+          temp = [int(x) for x in line.strip().split()]
+      elif data_type == 'f':
+          temp = [float(x) for x in line.strip().split()]
+      elif data_type == 'c':
+          temp = [complex(x) for x in line.strip().split()]
+      else:
+          assert False, 'Unknown data type "%s"' % data_type</span>
+
+      assert len(temp) == num_cols, \
+             'Wrong number of columns in line %d' % num_lines
+      matrix.append(temp)
+
+  assert len(matrix) == num_rows, \
+         'Wrong number of rows'
+  return matrix</pre>
+<p>Again, this works, but wouldn't meet most programmers' standards.  The warning sign is the <code>if/elif/else</code>: we're using a flag to select a function, and if we decide to add another data type, we'll have to modify this function.  Good functions obey the <em>Open/Closed Principle</em>: they are open for extension, but closed for modification.  Putting it another way, it should be possible to extend a function's behavior in plausible ways without rewriting it.</p>
+<p>How can we do that here?  Simple: have the user pass in the function that's to be used to convert the strings read from the file.  Remember, a function is just another kind of data, one that happens to be made up of instructions instead of characters or integers or colors:</p>
+<pre>def load(reader, converter):
+  num_rows, num_cols = [int(x) for x in reader.readline().strip().split()]
+  matrix = []
+
+  for line in reader:
+      <span style="color: red;">temp = [converter(x) for x in line.strip().split()]</span>
+      assert len(temp) == num_cols, \
+             'Wrong number of columns in line %d' % num_lines
+      matrix.append(temp)
+
+  assert len(matrix) == num_rows, \
+         'Wrong number of rows'
+  return matrix</pre>
+<p>We can then call this function using:</p>
+<pre>reader = open('myfile.dat', 'r')
+matrix = load(reader, float)</pre>
+<p>or:</p>
+<pre>reader = open('myotherfile.dat', 'r')
+matrix = load(reader, int)</pre>
+<p>or however else we want.</p>
+<h2>Registration</h2>
+<p>But hang on: how do we know what conversion function to pass in?  Turning the question around, if we're storing the dimensions of the matrix in the file, shouldn't we also store some indicator of the data's type?  If we only have to support a fixed set of types, we can store the name of the conversion function along with the dimensions, then use that to look up the function we want.  For example, if our file is:</p>
+<pre>float 3 2
+1.0 2.0
+3.0 4.0
+5.0 6.0</pre>
+<p>then our <code>load</code> function would be:</p>
+<pre>def load(reader):
+
+  <span style="color: red;">converters = {
+      'int'     : int,
+      'float'   : float,
+      'complex' : complex
+  }
+
+  metadata = reader.readline().strip().split()
+
+  type_name = metadata[0]
+  assert type_name in converters,
+         'Unknown type name "%s"' % type_name
+  converter = converters[type_name]
+
+  num_rows = int(metadata[1])
+  num_cols = int(metadata[2])</span>
+
+  matrix = []
+
+  for line in reader:
+      temp = [converter(x) for x in line.strip().split()]
+      assert len(temp) == num_cols, \
+             'Wrong number of columns in line %d' % num_lines
+      matrix.append(temp)
+
+  assert len(matrix) == num_rows, \
+         'Wrong number of rows'
+  return matrix</pre>
+<p>Looking at the change more closely:</p>
+<ol>
+<li>The dictionary <code>converters</code> maps function names to functions.</li>
+<li>When we read the metadata from the file, we pull out the conversion function's name and look up the right function.</li>
+<li>Everything else works pretty much as before.</li>
+</ol>
+<p>Unfortunately, we're violating the Open/Closed Principle again.  It's easier to add or change a dictionary entry than to hunt through <code>if</code>'s and <code>elif</code>'s, but we would still have to modify this function's internals to handle another data type...</p>
+<p>...unless, of course, the dictionary of conversion functions was passed into the function from outside.  Let's create a Python file called <code>saveload.py</code> that defines three things:</p>
+<pre>Conversions = {
+  'int'     : int,
+  'float'   : float,
+  'complex' : complex
+}
+
+def save(writer, matrix, converters):
+  <em>...exercise for the reader...</em>
+
+def load(reader, converters):
+  <em>...as above...</em></pre>
+<p>If we want to add another conversion function&mdash;say, for fractions&mdash;all we do is add an entry to <code>Conversions</code> <em>in our own program</em>:</p>
+<pre>import saveload
+
+def fraction(text):
+  <em>...convert a string like '12/17' to a number...</em>
+
+saveload.Conversions['fraction'] = fraction
+
+writer = open('myfractionfile.dat')
+matrix = saveload.load(writer, saveload.Conversions)
+writer.close()</pre>
+<p>In fact, we should add two functions: one to convert strings to values, and one to convert values to strings.  We'll leave that as an exercise too.</p>
+<p>This is a very powerful technique, which you will see used in many different contexts.  The library (in this case, <code>saveload.py</code>) creates a <em>registry</em> of the things it knows how to do.  If we want to add new behavior, all we do is add entries to that registry: we don't have to edit, or even read, the internals of the functions in the library.  We can simplify this even further if we want to:</p>
+<pre>Conversions = {
+  'int'     : int,
+  'float'   : float,
+  'complex' : complex
+}
+
+def save(writer, matrix, <span style="color: red;">converters=Conversions</span>):
+  <em>...</em>
+
+def load(reader, <span style="color: red;">converters=Conversions</span>):
+  <em>...</em></pre>
+<p>Here, we're making use of the fact that Python allows us to define <em>default parameter values</em>.  If we call <code>save</code> and <code>load</code> without passing anything in for <code>converters</code>, Python will pass in <code>Conversions</code> on our behalf.</p>
+<p>I would still take marks off if a student submitted the code shown here for an assignment, or bounce it if it was submitted for code review.  Good file formats support comments and blank lines, and really good ones allow people to embed <a href="provenance.html">provenance information</a> in the data itself, rather than hiding it in comments.  As an exercise, modify <code>saveload.py</code> so that it will write and read files that look like this:</p>
+<pre># Created by Monsterator 4.7
+$Revision: 31$
+
+# alpha
+float 3 2
+1.0 2.0
+3.0 4.0
+5.0 6.0
+
+# beta
+float 1 4
+100.0 200.0 300.0 400.0
+
+# gamma
+int 2 1
+1000
+2000</pre>
+<h2>Mixed Types</h2>
+<p>Let's tackle a slightly different problem next.  Suppose our data has a mix of types, like a table of biographical data:</p>
+<table border="1">
+<tbody>
+<tr>
+<td>'Newton'</td>
+<td>'Isaac'</td>
+<td>1642</td>
+<td>1727</td>
+</tr>
+<tr>
+<td>'Darwin'</td>
+<td>'Charles'</td>
+<td>1809</td>
+<td>1882</td>
+</tr>
+<tr>
+<td>'Turing'</td>
+<td>'Alan'</td>
+<td>1912</td>
+<td>1954</td>
+</tr>
+</tbody>
+</table>
+<p>We could use our matrix format:</p>
+<pre>3 4
+Newton Isaac 1642 1727
+Darwin Charles 1809 1882
+Turing Alan 1912 1954</pre>
+<p>but look what happens when we try to store information about John Maynard Smith:</p>
+<pre>Maynard Smith John 1920 2004</pre>
+<p>Oops: the space in Maynard Smith's double-barrelled surname is going to break our code.  We could try using a separator that's never supposed to appear in the representation of any value, like a comma:</p>
+<pre>4 4
+Newton,Isaac,1642,1727
+Darwin,Charles,1809,1882
+Turing,Alan,1912,1954
+Maynard Smith,John,1920,2004</pre>
+<p>but this isn't a general solution: as soon as we switch from people's names to (for example) quotations or paper abstracts, we need to be able to store any character that can ever appear in text, which means there isn't a "safe" separator.</p>
+<p>We can solve this problem the same way programming languages do: by using <em>escape sequences</em> for characters that have special meanings.  For example, we could use the two character sequence "\&nbsp;" (backslash space) to indicate that a space in the data file is just a space, not a separator:</p>
+<pre>4 4
+Newton Isaac 1642 1727
+Darwin Charles 1809 1882
+Turing Alan 1912 1954
+Maynard\ Smith John 1920 2004</pre>
+<p>The code that reads lines is pretty simple:</p>
+<pre>for line in reader:
+  fields = line.strip().split()
+  temp = [fields[0]]
+  for f in fields[1:]:
+      if temp[-1][-1] == '\\':
+          temp[-1] += f
+      else:
+          temp.append(f)</pre>
+<p>This turns the line:</p>
+<pre>'Maynard\ Smith John 1920 2004\n'</pre>
+<p>into the list <code>['Maynard\', 'Smith', 'John', '1920', '2004']</code>, then moves list entries from <code>fields</code> to <code>temp</code>, concatenating as it goes when it finds that a preceding entry has a trailing '\'.</p>
+<p>You can probably guess how we're going to handle conversions from strings to other types.  Instead of having a single format name in the metadata at the top of the table, we have as many converters as there are columns in our data:</p>
+<pre>4 4 <span style="color: red;">string string int int</span>
+Newton,Isaac,1642,1727
+Darwin,Charles,1809,1882
+Turing,Alan,1912,1954
+Maynard Smith,John,1920,2004</pre>
+<p>There's a (solvable) problem with this, though: how do we know how many fields in the metadata are dimensions, and how many are types?  We can find out by trying to convert fields to integers one by one until something fails, and assume that's the start of the type list, but it's simpler and more robust to either:</p>
+<ol>
+<li>put the number of dimensions at the start of the list, followed by the sizes, followed by the fields; or</li>
+<li>use some character other than space to separate the dimensions from the fields.</li>
+</ol>
+<p>The first option gives us headers like this:</p>
+<pre>2 4 4 string string string int</pre>
+<p>while the second gives us:</p>
+<pre>4 4 | string string string int</pre>
+<h2>Irregular Data</h2>
+<p>The data we have looked at so far has all consisted of multiple values of the same shape, each independent of the rest.  If we really want to save a program's state, though, we have to handle much more general data structures.  Suppose, for example, that our program's state consists of a list of lists:</p>
+<pre>state_0 = [[1, 2], [3, 4]]</pre>
+<p>If it <em>always</em> consists of exactly one list with exactly two sublists, each of which has exactly two elements, persistence is pretty simple.  But what if our program's state sometimes looks like this:</p>
+<pre>state_1 = [[1, 2, 3], [4]]</pre>
+<p>or like this:</p>
+<pre>state_2 = [[1, 2], [3, [4]]]</pre>
+<p>What we really want is a general-purpose persistence tool that can save arbitrary Python data structures to files and then read them back.</p>
+<p>To start with, let's figure out how to handle <em>atomic values</em> like numbers and strings, and <em>built-in containers</em> like lists and dictionaries.  Our first function looks like this:</p>
+<pre>def save(writer, obj):
+  if type(obj) in Atomic_Types:
+      save_atomic(writer, obj)
+  elif type(obj) in Sequence_Types:
+      save_sequence(writer, obj)
+  elif type(obj) in Dict_Types:
+      save_dict(writer, obj)
+  else:
+      raise ValueError("Bad type: " + `t`)</pre>
+<p>The logic is pretty simple: we use the built-in <code>type</code> function to get the type of the object we're persisting, then hand the object off to a specialized function that knows how to deal with that type.  Our tests depend on the following tables:</p>
+<pre>from types import *
+Atomic_Types = {BooleanType, FloatType, IntType, NoneType, StringType, UnicodeType}
+Sequence_Types = {ListType, TupleType}
+Dict_Types = {DictType}</pre>
+<p>How do we save atomic values? Simple: we write out the name of the type, followed by the Python representation of the value.</p>
+<pre>def save_atomic(writer, obj):
+  print &gt;&gt; writer, repr(obj)</pre>
+<p><code>repr</code> is a built-in Python function that generates a string representation of its argument.  The difference between it and <code>str</code> is that <code>repr</code>'s output is exactly what Python needs to parse to re-create the object in question.  The main difference is in string handling: <code>str('a')</code> is just the string <code>'a'</code>, while <code>repr('a')</code> is the three-character string <code>"'a'"</code>.  And yes, the double quotes are confusing: they're needed to show that the string (the stuff between the double quotes) is three characters long, and that the first and last characters are single quotes.</p>
+<p>All right, how do we save sequences (lists and tuples)?  Here's the code:</p>
+<pre>Braces = {
+  ListType  : ( '[', ']' ),
+  TupleType : ( '(', ')' )
+}
+
+def save_sequence(writer, seq):
+  open, close = Braces[type(seq)]
+  print &gt;&gt; writer, open
+  for element in seq:
+      persist(writer, element)
+  print &gt;&gt; writer, close</pre>
+<p>Again, the logic is pretty simple: we pick opening and closing braces based on the sequence's type (list or tuple), then print them out with the sequence's values in between.  How do we get the values out?  Simple: we just call the top-level function <code>persist</code>.</p>
+<p>This is the point where some people balk.  "How can we call <code>persist</code>? We're already calling it!"  Well, yes and no: by the time we get into <code>save_sequence</code>, there will be a call to <code>persist</code> somewhere below us on the stack, but so what?  Each call to a function automatically creates its own local variables; there's no danger of confusing those belonging to the next call with those belonging to the last.</p>
+<p>Our last function, <code>save_dict</code>, looks a lot like <code>save_sequence</code>.  There's only one style of bracing, and we have to save two objects for each entry (the key and the value), but those are pretty simple modifications:</p>
+<pre>def save_dict(writer, d):
+  print &gt;&gt; writer, '{'
+  for key in d:
+      persist(writer, key)
+      persist(writer, assoc[key])
+  print &gt;&gt; writer, '}'</pre>
+<p>How are we doing so far?</p>
+<pre>test = {
+1           : 'two',
+(3, 'four') : [5, [6, 7]],
+'eight'     : {9 : 10}
+}
+persist(sys.stdout, test)
+<span style="color: blue;"><em>{
+(
+3
+'four'
+)
+[
+5
+[
+6
+7
+]
+]
+1
+'two'
+'eight'
+{
+9
+10
+}
+}</em></span></pre>
+<p>So much for output: how do we read it back in?  The answer to that question is going to reveal a problem with the format we've designed so far, so let's sketch it rather than doing a full implementation.  The starting point is a <code>load</code> function:</p>
+<pre>def load(reader):
+  line = reader.readline().rstrip()
+  if line == '(':
+      result = load_sequence(reader, (), ')')
+  if line == '[':
+      result = load_sequence(reader, [], ']')
+  elif line == '{':
+      result = load_association(reader, {}, '}')
+  else:
+      result = load_atomic(line)
+  return result</pre>
+<p>Yes, if we were doing this for real, we'd put those string constants in a lookup table, but we're just sketching...  What does <code>load_sequence</code> look like?</p>
+<pre>def load_sequence(reader, result, close):
+  line = reader.readline().rstrip()
+  while line != close:
+      val = load(reader)
+      result.append(val)
+  return result</pre>
+<p>There are at least two things wrong with this.  The first is that it doesn't work for tuples: we can't append values to an existing tuple the way we can for lists.  Fine, we can fix that by always constructing a list, then converting to a tuple at the end.  But there's a much bigger problem, one that isn't as easy to solve.  Suppose our input is:</p>
+<pre>[
+1
+]</pre>
+<p>The initial call to <code>load</code> reads the opening '[' and calls <code>load_sequence</code>.  That function reads the '1', decides that it isn't a closing ']', and calls <code>load</code> to read the list's contents.  That second call to <code>load</code> then reads the closing ']', because the '1' has already been read by <code>load_sequence</code>.  Kaboom: <code>load</code> blows up because it's expecting <code>load_sequence</code> to handle closing brackets, and the value in the list is lost.</p>
+<p>The root of the problem is that once again we need to look ahead one element to tell if we're at the end of a list (or tuple, or dictionary).  We can do this by passing the line most recently read as a parameter to every function we call:</p>
+<pre>def load(reader, <span style="color: red;">next_line</span>):
+  if line == '(':
+      result = load_sequence(reader, (), ')', <span style="color: red;">reader.readline()</span>)
+  if line == '[':
+      result = load_sequence(reader, [], ']', <span style="color: red;">reader.readline()</span>)
+  elif line == '{':
+      result = load_association(reader, {}, '}', <span style="color: red;">reader.readline()</span>)
+  else:
+      result = load_atomic(line)
+  return result
+
+def load_sequence(reader, result, close, <span style="color: red;">next_line</span>):
+  while next_line != close:
+      val = load(reader, next_line)
+      result.append(val)
+      <span style="color: red;">next_line = reader.readline()</span>
+  return result</pre>
+<p>This code is significantly more complicated than what we started with&mdash;complicated enough that there's still at least one bug lurking in what we've written so far.  (As an exercise, see if you can trace through the program's execution for nested lists and find it.)</p>
+<p>So let's step back and re-evaluate.  Our format uses human-friendly brackets and parentheses, even though these files are intended for machines to read and write.  What if we switch to this:</p>
+<pre>dict 3
+tuple 2
+  . 3
+  . "four"
+list 2
+  . 5
+  list 2
+    . 6
+    . 7
+. 1
+. "two"
+. "eight"
+dict 2
+  . 9
+  . 10</pre>
+<p>That's a lot harder for human beings to read (quick, what's the second item in the dictionary?).  But it turns out to be a lot easier for computers to read:</p>
+<pre>def load(reader):
+
+  typename, value = reader.readline().strip().split(' ', 1)
+
+  if typename = '.':
+      result = eval(value)
+
+  elif typename == 'list':
+      count = int(value)
+      result = load_seq(reader, count)
+
+  elif typename == 'tuple':
+      count = int(value)
+      result = tuple(load_seq(reader, count))
+
+  elif typename = 'dict':
+      count = int(value)
+      result = load_dict(reader, count)
+
+  return result
+
+def load_seq(reader, count):
+  result = []
+  for i in range(count):
+      value = load(reader)
+      result.append(value)
+  return result</pre>
+<p>That's a lot simpler, isn't it?  To load atomic values, we just evaluate their string representation.  For everything else, the file itself tells us how many entries to read&mdash;there's no need to look ahead for an end-of-collection marker.</p>
+<p>There are two lessons here.  The first is that what's easy for human beings to work with is often hard for machines to handle, and vice versa.  We're bad at counting but very good at interpreting context; machines find context very hard, but counting trivial.  If something really has to be written and read by both, pick whatever is easy for people, and figure out how to get the computer to understand it.  If people aren't ever going to view or edit data, though, then choose formatting rules to simplify programming.</p>
+<p>The second lesson is about the design process.  Experienced designers tend to work in a sawtooth pattern: they make a few high-level decisions, see what the implications are for implementation, then use what they've learned to fix design problems right away.  Novices, on the other hand, tend to make some high-level decisions early on, then stick to them no matter what, which means they often spend working around things that could be avoided entirely.  Musicians talk about learning from their instruments; good programmers do the same thing.</p>
+<p><img src="design.png" /></p>
+<h2>Programs Are Data</h2>
+<p>At this point I need to apologize, because I cheated a bit in the previous example.  Let's look more closely at the first few lines of <code>load</code>:</p>
+<pre>def load(reader):
+
+  typename, value = reader.readline().strip().split(' ', 1)
+
+<span style="color: red;">    if typename = '.':
+      result = eval(value)</span>
+
+  ...</pre>
+<p>That function <code>eval</code> seems to be turning a string into&mdash;well, into pretty much anything, since this branch of the code handles all of the basic types.  Let's explore a little:</p>
+<pre>&gt;&gt;&gt;eval('1')
+<span style="color: blue;"><em>1</em></span>
+&gt;&gt;&gt;eval('1 + 2.3')
+<span style="color: blue;"><em>3.3</em></span>
+&gt;&gt;&gt;eval('[1, 2, 3]')
+<span style="color: blue;"><em>[1, 2, 3]</em></span></pre>
+<p><code>eval</code> takes a string containing a legal Python expression and executes it.  Equivalently, it does exactly what Python does when it reads a string from the prompt or from a file: it parses that string to produce some Python instructions in memory and then immediately runs those instructions.  There's no magic here: this is all built into the Python interpreter, just like string concatenation or floating point multiplication.  It only seems strange because compiled languages like C, Fortran, and Java separate the two phases of "compile the program" and "run the program", where interpreted languages like Python, MATLAB, and Ruby combine the two.</p>
+<p>So let's try this:</p>
+<pre>&gt;&gt;&gt;repr(1)
+<span style="color: blue;"><em>'1'</em></span>
+&gt;&gt;&gt;text = repr(1)
+&gt;&gt;&gt;eval(text)
+<span style="color: blue;"><em>1</em></span>
+&gt;&gt;&gt;repr([1, 2, 3])
+<span style="color: blue;"><em>'[1, 2, 3]'</em></span>
+&gt;&gt;&gt;text = repr([1, 2, 3])
+&gt;&gt;&gt;eval(text)
+<span style="color: blue;"><em>[1, 2, 3]</em></span></pre>
+<p>Right: <code>repr</code> produces a string holding exactly what you have to put in a Python program to produce its argument, and <code>eval</code> evaluates such a string.  So how about this as a persistence mechanism:</p>
+<pre>def save(writer, data):
+  writer.write(repr(data))
+
+def load(reader):
+  eval(reader.read())</pre>
+<p>It can't be that simple, can it?  Let's see:</p>
+<pre>&gt;&gt;&gt; from StringIO import StringIO
+&gt;&gt;&gt; data = [1, 'two', {'three' : 4}, [5, 6]]
+&gt;&gt;&gt; writer = StringIO()
+&gt;&gt;&gt; save(writer, data)
+&gt;&gt;&gt; text = writer.getvalue()
+&gt;&gt;&gt; text
+"[1, 'two', {'three' : 4}, [5, 6]]"</pre>
+<p>It seems to be saving properly; what about restoring?</p>
+<pre>&gt;&gt;&gt; reader = StringIO(text)
+&gt;&gt;&gt; load(reader)
+<span style="color: blue;"><em>[1, 'two', {'three' : 4}, [5, 6]]</em></span></pre>
+<p>Again, <em>there is no magic here.</em> Python's <code>repr</code> is doing exactly what we did when we wrote our earlier <code>save</code> function: it is walking through the data structure recursively, writing out items as it finds them.  <code>eval</code> is more complicated than our earlier <code>load</code>, but only because it knows how to do arithmetic and other calculations.  If all <code>eval</code> had to do was load data structures, it would look a lot like our <code>load</code> function.</p>
+<p>But there <em>is</em> one more wrinkle.  Let's try this:</p>
+<pre>&gt;&gt;&gt; x = []
+&gt;&gt;&gt; x.append(x)</pre>
+<p>These two innocuous lines of code create the following data structure:</p>
+<p><img src="circular.png" /></p>
+<p>What happens if we give it to <code>repr</code>?</p>
+<pre>&gt;&gt;&gt; repr(x)
+<span style="color: blue;"><em>'[[...]]'</em></span></pre>
+<p>That "..." is Python's way of saying, "I give up."  In order to save the list, it has to save the item in the list.  In order to save that item, it has to save the list, because the only item in the list <em>is</em> the list.</p>
+<p>This example seems pretty artificial, so let's look at another.  Let's use dictionaries to represent early kings of France:</p>
+<pre>&gt;&gt;&gt; chlodio = {'name' : 'Chlodio the Longhair', 'from' : 428, 'to' : 448}
+&gt;&gt;&gt; merovech = {'name' : 'Merovech', 'from' : 448, 'to' : 457}
+&gt;&gt;&gt; childeric = {'name' : 'Childeric I', 'from' : 457, 'to' : 481}</pre>
+<p>Good so far.  Now add some links:</p>
+<pre>&gt;&gt;&gt; chlodio['heir'] = merovech
+&gt;&gt;&gt; merovech['heir'] = childeric
+&gt;&gt;&gt; childeric['heir'] = None  # was actually Clovis I, but never mind for now</pre>
+<p>No problem yet, so let's keep going.  (This is an example of Peter's Programming Principle: software tends to expand until it breaks.)</p>
+<pre>&gt;&gt;&gt; childeric['father] = merovech
+&gt;&gt;&gt; merovech['father] = chlodio
+&gt;&gt;&gt; chlodio['father] = None  # was actually Theudemeres, but never mind that either</pre>
+<p>This is a perfectly reasonable structure, but once again, it's circular: in order to save <code>chlodio</code>, we have to save <code>merovech</code>, but to save <code>merovech</code>, we have to save <code>chlodio</code>.  Python's <code>repr</code> function detects this and prints "..." to say, "Can't help you."  Our earlier <code>load</code> function, in contrast, would just keep calling itself until it had used up all the memory set aside for the function call stack, at which point Python would fall over.</p>
+<p>The solution? Keep track of things we have already saved, and if we encounter them again, print out a marker that means, "Already done that."  Again, to keep things readable, we'll only look at the case of arbitrarily-nested lists of integers: we'll ignore floats, strings, tuples, dictionaries, and everything else for the moment.</p>
+<p>That solution has three parts.  The first simply gets the ball rolling:</p>
+<pre>def save(writer, thing):
+  save_recursive(writer, thing, [])</pre>
+<p>The second part, <code>save_recursive</code>, does most of the hard work.  It checks to see whether the thing we're trying to save has already been seen, i.e., if this is the second (or third, or fourth...) time we've encountered an aliased object.  If it is, we write "recycle", followed by a sequence number that uniquely identifies that thing.  We'll see in a minute how these sequence numbers are created, what ensures they're unique, and so on.</p>
+<p>If we <em>haven't</em> already seen <code>thing</code>, then it must be either an integer or a list.  If it's an integer, we write "int" and its value as we've done before.  If it's a list, we write "list" and its length, followed by its elements, which are written by calling <code>save_recursive</code> for each one.  Before we do that, though, we append <code>thing</code> to the end of <code>seen</code> to record the fact that we've seen it.  That way, if we encounter it again, our first test&mdash;the one that looks for things we've already printed out&mdash;will say, "Yes, this one has been seen before," and we won't try printing it again.</p>
+<pre>def save_recursive(writer, thing, seen):
+  already_seen = look_for(thing, seen)
+  if already_seen &gt;= 0:
+      print &gt;&gt; writer, 'recycle', already_seen
+  elif type(thing) is IntType:
+      print 'int', thing
+  elif type(thing) is ListType:
+      seen.append(thing)
+      print 'list', len(thing)
+      for item in thing:
+          save_recursive(writer, item, seen)
+  else:
+      assert False, 'Whoops'</pre>
+<p>All that's left is to write <code>look_for</code>, the function that checks in <code>seen</code> to see if something has already been printed.  If it has, we return its index in <code>seen</code> for <code>save_recursive</code> to print out (along with the word "recycle").  If we haven't seen this thing before, we return -1.</p>
+<pre>def look_for(thing, seen):
+  result = -1 # meaning "not found"
+  try:
+      location = seen.index(thing)
+      if seen[location] is thing:  # rule out false matches
+          result = location
+  except ValueError:
+      pass # nothing matches
+  return result</pre>
+<p>We have to do two checks when looking for <code>thing</code> in <code>seen</code>.  The first, <code>seen.index(thing)</code>, tells us if something with the same value as <code>thing</code> is in the list; the second, <code>seen[location] is thing</code>, checks whether that value is actually the same object in memory as what we're looking for.  This is needed because of this case:</p>
+<pre>&gt;&gt;&gt; first = [1, 2]
+&gt;&gt;&gt; second = [1, 2]      # same value, different object in memory
+&gt;&gt;&gt; outer = [first]
+&gt;&gt;&gt; outer.index(second)
+0
+&gt;&gt;&gt; outer[0] is second
+False</pre>
+<p>And that's pretty much it.  We now have all the pieces we need to build functions to save and restore arbitrary chunks of data, of arbitrary types, connected in arbitrary ways.  There are lots of ways to generalize it, and to make it faster: for example, by using a dictionary instead of a list to store things we've seen in order to keep search times under control.  The standard Python library's <a href="http://docs.python.org/library/pickle.html"><code>pickle</code></a> module provides a fast, general implementation of all these ideas, and there are other libraries that work across multiple languages.</p>

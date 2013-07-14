@@ -1,0 +1,242 @@
+---
+layout: v4_topic
+title: Provenance
+lesson_title: Essays
+prev: v4/essays/config.html
+next: v4/essays/counting.html
+uplink: v4/essays/index.html
+pdf: null
+ppt: null
+---
+<p>One of the capstone ideas of this course is automatically tracking the provenance of scientific data.  In art, the "provenance" of a work is the history of who owned it, when, and where.  In science, it's the record of how a particular result came to be: what raw data was processed by what version of what program to create which intermediate files, what was used to turn those files into Figure 6 of which paper, and so on.</p>
+<p>A lot of people are building interesting tools to track data provenance&mdash;if you're interested, have a look at the <a href="http://web.archive.org/web/20070106063549/http://twiki.ipaw.info/bin/view/Challenge/">Provenance Challenge</a> web site (via the Internet Archive) and its successor, the <a href="http://openprovenance.org/">Open Provenance</a> initiative.  I expect that their stuff will be in this course in two years' time; before then, though, we can explore the core ideas by extending and combining things we mentioned in our lectures on <a href="{{page.root}}/v4/python/index.html">Python</a> and <a href="{{page.root}}/v4/vc/index.html">version control</a>.</p>
+<p>To start with, suppose you have a text file <code>combustion.dat</code> in a Subversion repository.  Run the following two comments:</p>
+<pre>$ svn propset svn:keywords Revision combustion.dat
+$ svn commit -m "Turning on the 'Revision' keyword" combusion.dat
+</pre>
+<p>Now open the file in an editor.  Assuming that the file format uses <code>#</code> as a comment character, add the following line somewhere near the top:</p>
+<pre># $Revision:$</pre>
+<p>Save the file, and commit the change:</p>
+<pre>$ svn commit -m "Inserting the 'Revision' keyword" combusion.dat</pre>
+<p>If you open the file again, you'll see that Subversion has changed your line to something like:</p>
+<pre># $Revision: 143$</pre>
+<p>i.e., Subversion has inserted the version number after the colon and before the closing <code>$</code>.</p>
+<p>Here's what just happened.  First, Subversion allows you to set <a href="http://svnbook.red-bean.com/en/1.4/svn.advanced.props.special.keywords.html">properties</a> for files and and directories.  These properties aren't in the files or directories themselves, but live in Subversion's own database.  One of those properties, <code>svn:keywords</code>, tells Subversion to look in files that are being changed for strings of the form <code>$propertyname: ...$</code>, where <code>propertyname</code> is a string like <code>Version</code> or <code>Author</code> (about half a dozen such strings are supported), and <code>...</code> may be blank or not.  If it sees such a string, Subversion rewrites it as the commit is taking place to replace <code>...</code> with the current version number, the name of the person making the change, or whatever else the property's name tells it to do.  You only have to add the string to the file once: after that, Subversion updates it for you every time the file changes.</p>
+<p>Putting the version number in the file this way can be pretty handy.  If you copy the file, for example, it carries its version number with it, so you can tell which version of the file you have even if it's outside version control.  We can make it even more useful by being a bit clever about the design of our data format (or our parser, which amounts to the same thing).  Suppose our original data format allows files to look like this:</p>
+<pre># Raw combusion data
+
+Experiment-Date: 2010-10-29
+Experiment-Site: Hornings Mills
+Readings:
+8.3
+7.2
+9.6
+4.0
+8.2
+7.0</pre>
+<p>Here's a bit of Python code that reads in such a file:</p>
+<pre><strong>def</strong> parse_data_file(reader):
+  '''Read a combusion data file from reader, returning a dictionary
+  of properties and a list of readings.'''
+
+  properties = {}
+  values = []
+  state = 'header'
+  <strong>for</strong> line <strong>in</strong> reader:
+
+      # Ignore comments and/or blank lines
+      line = line.split('#')[0].strip()
+      <strong>if</strong> line == '':
+          <strong>continue</strong>
+
+      # Still reading header?
+      <strong>if</strong> state == 'header':
+          key, value = line.split(':')
+
+          # End of header, switching to actual readings?
+          <strong>if</strong> key == 'Readings':
+              state = 'readings'
+
+          # Or store the property?
+          <strong>else</strong>:
+              key = key.strip()
+              value = value.strip()
+              properties[key] = value
+
+      # Actual data readings
+      <strong>elif</strong> state == 'readings':
+          val = float(line)
+          readings.append(val)
+
+      # Whoops: state should only be 'header' or 'readings'
+      <strong>else</strong>:
+          <strong>assert</strong> <strong>False</strong>, 'Unknown state "%s"' % state
+
+  # Finished reading in loop, so return what we found
+  <strong>return</strong> properties, values</pre>
+<p>Let's modify the code so that our file can look like this:</p>
+<pre># Raw combusion data
+$Revision: 143$
+
+Experiment-Date: 2010-10-29
+Experiment-Site: Hornings Mills
+Readings:
+8.3
+7.2
+9.6
+4.0
+8.2
+7.0</pre>
+<p>The change is highlighted below (and notice in passing that we were able to add this feature without changing anything else in our parsing function, which is a sign that our original design was a good one):</p>
+<pre><strong>def</strong> parse_data_file(reader):
+  '''Read a combusion data file from reader, returning a dictionary
+  of properties and a list of readings.'''
+
+  properties = {}
+  values = []
+  state = 'header'
+  <strong>for</strong> line <strong>in</strong> reader:
+
+      # Ignore comments and/or blank lines
+      line = line.split('#')[0].strip()
+      <strong>if</strong> line == '':
+          <strong>continue</strong>
+
+      # Still reading header?
+      <strong>if</strong> state == 'header':
+          key, value = line.split(':')
+
+          # End of header, switching to actual readings?
+          <strong>if</strong> key == 'Readings':
+              state = 'readings'
+<em><span style="color: maroon;">
+          # A special property name from Subversion?
+          elif key[0] == '$':
+              assert value[-1] == '$', \
+                     'Expected "$" at the end of SVN property value'
+              key = key[1:]            # strip '$' off the front of key
+              value = value[:-1]       # and off the end of the value
+              properties[key] = value  # and store it
+</span></em>
+          # Or store the property?
+          <strong>else</strong>:
+              key = key.strip()
+              value = value.strip()
+              properties[key] = value
+
+      # Actual data readings
+      <strong>elif</strong> state == 'readings':
+          val = float(line)
+          readings.append(val)
+
+      # Whoops: state should only be 'header' or 'readings'
+      <strong>else</strong>:
+          <strong>assert</strong> <strong>False</strong>, 'Unknown state "%s"' % state
+
+  # Finished reading in loop, so return what we found
+  <strong>return</strong> properties, values</pre>
+<p>Why make this change?  Because now any program that reads a combusion data file will know what version of that file it has, <em>and can copy that version number forward to its output</em>.  For example, if the old output was:</p>
+<pre>Experiment-Date: 2010-10-29
+Experiment-Site: Hornings Mills
+Sliding-Average:
+7.75
+8.40
+6.80
+6.10
+7.60</pre>
+<p>the new data can be:</p>
+<pre>Experiment-Date: 2010-10-29
+Experiment-Site: Hornings Mills
+<em><span style="color: maroon;">Input-Version: 143</span></em>
+
+Sliding-Average:
+7.75
+8.40
+6.80
+6.10
+7.60</pre>
+<p>It's only one line, but it's a big change: the output file now has a record of its provenance.  And we can feed this forward using the same trick.  For example, if we're averaging results of lots of experiments, we could arrange things so that our final output file&mdash;the one we hand over to IDL or MATLAB to generate the graph we need for our paper&mdash;would look like:</p>
+<pre>Input-File: 2010-10-29 / Hornings Mills / 143
+Input-File: 2010-10-28 / Hornings Mills / 127
+Input-File: 2010-10-28 / Danbury / 31
+XY-Data:
+0 1243
+1 1157
+2 1161
+3 1104
+4 1092</pre>
+<p>i.e., it knows its own provenance too.  No more hunting around in a panic the night before the paper is due trying to figure out which data files we need to re-generate Figure 6 because the journal wants it as an SVG instead of as a PNG; no more nightmares about someone accusing us of faking our results because we can't... quite... reproduce that crucial table from three years ago.</p>
+<p>But we're only half done.  There's one more thing that we can and should do.  Let's go into the program that turns raw combustion data into sliding averages and add the lines emphasized below:</p>
+<pre>#!/usr/bin/env python
+'''Calculate sliding averages on combustion data.'''
+
+<em><span style="color: maroon;">NAME = 'calc_sliding_average.py'
+VERSION = '$Revision: 472$'</span></em>
+CORRECTION_FILTER = [...lots of magic numbers...]
+
+def parse_data_file(reader):
+  ...mumble mumble mumble read read read...
+  return properties, values
+
+def sliding_average(raw_properties, raw_values, correction_filter):
+  ...mumble mumble mumble math math math...
+  return result_properties, result_values
+
+def store_results(writer, properties, values):
+  print &gt;&gt; writer, 'Program-Name: ', NAME
+<em><span style="color: maroon;">    print &gt;&gt; writer, 'Version: ', VERSION[1:-1].split(':')[1].strip()</span></em>
+  ...mumble mumble mumble write properties and values as before...
+
+if __name__ == '__main__':
+  reader = open(sys.argv[1], 'r')
+  props, vals = parse_data_file(reader)
+  reader.close()
+
+  props, vals = sliding_average(props, vals, CORRECTION_FILTER)
+
+  writer = open(sys.argv[2], 'w')
+  store_results(writer, props, vals)
+  writer.close()</pre>
+<p>Please don't be frightened by the line that prints out the program's version number&mdash;the expression <code>VERSION[1:-1].split(':')[1].strip()</code> is just:</p>
+<ol>
+<li>taking everything except the first and last character of <code>VERSION</code>;</li>
+<li>splitting it on colons;</li>
+<li>taking the second part of the result (remember, Python counts from 0, so the second part's index is 1);, and</li>
+<li>stripping off leading and trailing whitespace.</li>
+</ol>
+<p>Look instead at the first and second highlighted lines, which define the variables <code>NAME</code> and <code>VERSION</code>.  The first is, well, it's the name of the program that's calculating sliding averages.  The second includes the revision number that exactly identifies which version of the program is used.  Crucially, both pieces of data are embedded in strings, rather than in comments, so that the program has access to them&mdash;in particular, so that it can include them in its output.  When <em>this</em> program runs, its output doesn't just record the provenance of the data that was manipulated: it also records the identity of the program that did the manipulating.</p>
+<p>And we can go even further.  Suppose I'm writing a library of data smoothing functions to be used by other people's programs, but not the I/O routines.  How do I get my library's version number included in their output?  Short answer: I can't&mdash;they have to do it.  Long answer: I can't, but I can help them do the right thing by doing this:</p>
+<pre># In Hamming library
+VERSION = '$Revision: 318$'</pre>
+<p>so that they can do this:</p>
+<pre># In program
+import hamming
+
+VERSION = '$Revision: 7$'                # The program's version number
+
+ALL_VERSIONS [VERSION, hamming.VERSION]  # All relevant version numbers</pre>
+<p>Now, instead of just printing its own version number, the data smoothing program can also record the identities of the libraries it was using.  That way, if the program itself doesn't change, but the FFT library was upgraded, there's a record of the change in the output file.</p>
+<p>And there's one more thing, which a surprising number of people overlook.  Suppose my smoothing program's output depends on a sensitivity parameter that's provided on the command line, like this:</p>
+<pre>$ calc_sliding_average --sensitivity 0.05 todays_data.dat todays_results.dat</pre>
+<p>When it writes its output file, it must record the value of sensitivity along with everything else, or it won't be possible to reproduce the calculation reliably.  Carrying on with the earlier example, here's the change:</p>
+<pre>Experiment-Date: 2010-10-29
+Experiment-Site: Hornings Mills
+<em><span style="color: maroon;">Sensitivity: 0.05</span></em>
+Input-Version: 143
+Sliding-Average:
+7.75
+8.40
+6.80
+6.10
+7.60</pre>
+<p>At this point, I hope you have realized two things:</p>
+<ol>
+<li>Tracking provenance is just a matter of careful bookkeeping.</li>
+<li>Doing everything, and doing it yourself, is a lot of work.</li>
+</ol>
+<p>This brings us back to the Provenance Challenge and <a href="http://openprovenance.org/">Open Provenance</a> efforts.  You shouldn't have to write your own provenance tracking software, any more than you should have to write your own FFT functions.  When they're done, tracking provenance in a transferable way&mdash;i.e., in the same format as everyone else, so that everyone's tools and libraries can play nicely together&mdash;should be as easy as multiplying matrices.  We're not there yet, though, so until we are, please:</p>
+<ol>
+<li>design or extend data formats and parsers so that you can include $-property strings in data files;</li>
+<li>embed $-property strings in software; and</li>
+<li>carry at least some of these values forward when doing calculations, so that your calculations are at least partially traceable.</li>
+</ol>

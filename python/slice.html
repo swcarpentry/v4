@@ -1,0 +1,157 @@
+---
+layout: v4_topic
+title: Slicing
+lesson_title: Python
+prev: v4/python/tuples.html
+next: v4/python/text.html
+uplink: v4/python/index.html
+pdf: slice.pdf
+ppt: slice.ppt
+youtube: {"slug": "l-QiTCY-4rY", "time": "00:03:37.00"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="slice/001.png" />
+    <p class="media-body">Hello, and welcome to the twelfth episode of the Software Carpentry lecture on Python.  This episode will show you how to take sections out of lists, strings, and tuples.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/002.png" />
+    <p class="media-body">Lists, strings, and tuples are all sequences.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/003.png" />
+    <p class="media-body">Which means they can all be indexed by integers in the range 0 to <code>len</code> minus 1.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/004.png" />
+    <p class="media-body">But they can also be <em>sliced</em> using a range of indices.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/005.png" />
+    <p class="media-body">To see how slicing works, let's assign the string <code>'uranium'</code> to the variable <code>element</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/006.png" />
+    <p class="media-body">If we index the string with the expression <code>1:4</code>, we get back the characters from index 1, up to but not including index 4, i.e., characters 1, 2, and 3.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/007.png" />
+    <p class="media-body">If we don't specify the lower bound, it defaults to 0, which is the start of the string.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/008.png" />
+    <p class="media-body">Similarly, if we don't specify the upper bound, it defaults to the end of the string.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/009.png" />
+    <p class="media-body">And we can use negative indices as bounds too, which count positions backward from the end of the string.  The slice expression <code>-4:</code> gives us characaters -4, -3, -2, and -1.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/010.png" />
+    <p class="media-body">Indices are interpreted the same way for slices as they are for single elements, but there is one important difference.  When a single index is used to get one element from a string or list, Python always checks that it's in bounds, and gives an error if it isn't.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/011.png" />
+    <p class="media-body">But Python just truncates out-of-bounds values when slicing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/012.png" />
+    <p class="media-body">Here's our string <code>'uranium'</code> again.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/013.png" />
+    <p class="media-body">If we try to get element 400, we get an error, because the string isn't that long.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/014.png" />
+    <p class="media-body">If we take a slice from index 1 up to index 400, though, Python rounds down the upper bound for us.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/015.png" />
+    <p class="media-body">Some people find this useful&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/016.png" />
+    <p class="media-body">&hellip;but others trip over the inconsistency from time to time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/017.png" />
+    <p class="media-body">This behavior is handy, though: no matter how long the string <code>text</code> is, the expression <code>text[1:3]</code> is always legal, but its value may be zero, one, or two characters long.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/018.png" />
+    <p class="media-body">Have a look at these examples and make sure you understand why each one has the value it does.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/019.png" />
+    <p class="media-body">To be consistent, the expression <code>text[1:1]</code> is <em>always</em> the empty string.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/020.png" />
+    <p class="media-body">Because going from location 1, up to but not including location 1, is an empty range.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/021.png" />
+    <p class="media-body">Carrying on, if the lower bound is greater than the upper bound, that's an empty string too.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/022.png" />
+    <p class="media-body"><em>Not</em> the reverse of the string that would be selected if the bounds were reversed.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/023.png" />
+    <p class="media-body">However, when we compare bounds, we have to remember that negative indices count backward: <code>text[1:-1]</code> is everything except the first and last characters of the string, because the index -1 means "the next-to-last legal index of the sequence".  It may look odd, but it's consistent.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/024.png" />
+    <p class="media-body">The other thing that's important to remember about slicing is that it always creates a new object.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/025.png" />
+    <p class="media-body">But only the thing being sliced is copied, so aliasing is still possible.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/026.png" />
+    <p class="media-body">Here's an example: the list <code>points</code> has four element, each of which is a reference to a two-element list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/027.png" />
+    <p class="media-body">The expression <code>points[1:-1]</code> creates a new list with two elements.  Those two elements are references to the second and third of the sublists that <code>points</code> referred to.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/028.png" />
+    <p class="media-body">If we change the content of those sublists&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/029.png" />
+    <p class="media-body">&hellip;by reaching through <code>middle</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/030.png" />
+    <p class="media-body">&hellip;then not only is <code>middle</code> changed&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/031.png" />
+    <p class="media-body">&hellip;but <code>points</code> appears to change as well.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/032.png" />
+    <p class="media-body">Let's have another look at what just happened.  Here's how <code>points</code> is laid out in memory.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/033.png" />
+    <p class="media-body">When we slice it to create <code>middle</code>, Python copies the second and third elements of <code>points</code>, but those values are references to other lists.  <code>points</code> and <code>middle</code> now both contain references to those sublists.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/034.png" />
+    <p class="media-body">If we overwrite <code>middle[0][0]</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/035.png" />
+    <p class="media-body">&hellip;and <code>middle[1][10]</code>, the changes are shared by <code>points</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="slice/036.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

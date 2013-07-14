@@ -1,0 +1,249 @@
+---
+layout: v4_topic
+title: Introduction
+lesson_title: Sets and Dictionaries
+prev: null
+next: v4/setdict/tuples.html
+uplink: v4/setdict/index.html
+pdf: v4/setdict/intro.pdf
+ppt: v4/setdict/intro.ppt
+youtube: {"slug": "X6u0La4tDtg", "time": "00:08:28.72"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="intro/001.png" />
+    <p class="media-body">Hello, and welcome to the first episode of the Software Carpentry lecture on sets and dictionaries, two ways of storing data that can make many programs both simpler and faster.  In this episode we'll have a look at sets, which are the simpler of the two.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/002.png" />
+    <p class="media-body">Most programmers meet lists (or arrays) early in their careers, and use them for almost everything thereafter.  However, they are not the only way to store multiple values in a program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/003.png" />
+    <p class="media-body">In mathematics, you're far more likely to encounter sets, and these come up in many algorithms as well.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/004.png" />
+    <p class="media-body">A set is an unordered collection of distinct items.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/005.png" />
+    <p class="media-body">The word "collection" means that a set can hold zero or more values.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/006.png" />
+    <p class="media-body">The word "distinct" means that any particular value is either in the set or not: a set can't store two or more copies of the same thing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/007.png" />
+    <p class="media-body">And finally, "unordered" means that values are simply "in" the set.  They're not in any particular order, and there's no first value or last value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/008.png" />
+    <p class="media-body">This third part is what novices trip over the most: the first few times people use sets, they tend to expect that values are stored in alphabetical or numerical order, or in the order they were added to the set, but they're not.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/009.png" />
+    <p class="media-body">Sets were a relatively late addition to Python: the language was already ten years old when they put in.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/010.png" />
+    <p class="media-body">That's still better than most languages, though.  Despite how often sets come up in various algorithms, most languages still don't provide them as a built-in type.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/011.png" />
+    <p class="media-body">If you're using Python 2.6 or earlier, you create a set by calling <code>set</code> and passing it a list of the values you want in the set.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/012.png" />
+    <p class="media-body">In version 2.7 or later, you can simply write down the set as you would in a math class.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/013.png" />
+    <p class="media-body">However, in both versions, you have to call <code>set</code> to create an empty set&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/014.png" />
+    <p class="media-body">&hellip;because when sets were added to the language, empty curly braces&mdash;the mathematical notation for an empty set&mdash;were already being used for something else (which we'll see in a couple of episodes).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/015.png" />
+    <p class="media-body">We'll use the Python 2.7 notation&mdash;the more natural one&mdash;in this lecture.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/016.png" />
+    <p class="media-body">As I said a moment ago, the values in a set are distinct, i.e., any value is simply present or absent.  This means that sets can easily be used to get rid of duplicate values.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/017.png" />
+    <p class="media-body">For example, suppose we want to find out what letters are used in a word.  If we create a set, then add the characters in the word to the set one by one, the set will automatically discard duplicates.  When we print the set out, what we get are the unique values.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/018.png" />
+    <p class="media-body">Notice that these values aren't printed in alphabetical order, or in the order they were added to the set.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/019.png" />
+    <p class="media-body">This is because set elements are <em>not ordered</em>, and it's important to keep this in mind when using them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/020.png" />
+    <p class="media-body">Here's a much shorter way to find the distinct letters in a word:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/021.png" />
+    <p class="media-body">Just create a set, passing the word in as an argument.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/022.png" />
+    <p class="media-body">This works because Python knows how to loop over the characters in a string the same way that it loops over the items in a list.  In general, if you can loop over it, you can build a set from it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/023.png" />
+    <p class="media-body">What you <em>can't</em> do is build a set from several distinct values in one go.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/024.png" />
+    <p class="media-body">Many novices try to build a set like this, but Python insists that all the initial values be in a single container that can be looped over, like a list or string.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/025.png" />
+    <p class="media-body">To show you what we can do with sets, let's create three holding the integers 0 through 9, the first half of that same range of numbers (0 through 4), and the odd values 1, 3, 5, 7, and 9.  Notice that in the first case, the function <code>range</code> is returning a list of ten integers, which is passed directly into <code>set</code> to create the set we want.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/026.png" />
+    <p class="media-body">We've already seen how to add elements using set's <code>add</code> method.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/027.png" />
+    <p class="media-body">We can also empty out a set by calling its <code>clear</code> method.  Just like the methods of strings and lists, we call a method using object dot method name instead of a "naked" function name.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/028.png" />
+    <p class="media-body">We can use other methods to find the difference between two sets&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/029.png" />
+    <p class="media-body">&hellip;or their intersection.  In each case, the method creates and returns a new set instead of modifying either the set the method is called for, or the one passed in as an argument.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/030.png" />
+    <p class="media-body"><code>issubset</code> doesn't produce a new set.  Instead, it just reports whether all the elements in one set are present in another.  Notice the order: <code>lows.issubset(ten)</code> checks whether <code>lows</code> is a subset of <code>ten</code>, not the other way around.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/031.png" />
+    <p class="media-body">Of course, the complementary method <code>issuperset</code> also exists, and does what you'd expect.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/032.png" />
+    <p class="media-body">Now let's remove the zero from <code>lows</code>, leaving the set of integers 1, 2, 3, and 4.  This is similar to deleting an element from a list, but there's an important difference.  When deleting from a list, you specify the <em>location</em> of the element to delete.  When deleting from a set, you must specify the <em>value</em> you want to take out.  If that value isn't in the set, this method does nothing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/033.png" />
+    <p class="media-body">Here's another method that creates a new set.  <code>symmetric_difference</code> is sometimes called "exclusive or"; it returns the values that are in one set or another, but not in both.  It's useful from time to time&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/034.png" />
+    <p class="media-body">&hellip;but you'll probably use plain old <code>union</code> more often.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/035.png" />
+    <p class="media-body">Finally, you can count how many values are in a set using <code>len</code>, just as you would to find the length of a list or string&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/036.png" />
+    <p class="media-body">&hellip;and check whether a particular value is in the set or not using <code>in</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/037.png" />
+    <p class="media-body">To help make programs eaiser to type and read, most of the methods we've just seen can be written using arithmetic operators as well.  For example, instead of <code>lows.issubset(ten)</code>, we can write <code>lows &lt;= ten</code>, just as we would if we were using pen and paper.  There are even a couple of operators, like less than <code>&lt;</code>, that don't have long-winded equivalents.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/038.png" />
+    <p class="media-body">One operator that <em>isn't</em> in this list is "not".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/039.png" />
+    <p class="media-body">Mathematicians are quite comfortable negating sets: for example, the negation of "the set {1, 2}" is "all integers that aren't 1 or 2".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/040.png" />
+    <p class="media-body">This is a lot harder to do in a program, though.  To continue with our example, is the string "pterodactyl" in the negation of the set {1, 2} or not?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/041.png" />
+    <p class="media-body">We'll take another look at this problem when we get to classes and object-oriented programming in a later lecture.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/042.png" />
+    <p class="media-body">Right now, let's use sets to clean up some field data.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/043.png" />
+    <p class="media-body">We have two files.  The first has the names of all the birds our supervisor considers uninteresting from a research point of view.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/044.png" />
+    <p class="media-body">The second contains the names of all the birds we saw during a three-week field trip in a mosquito-infested hellhole in northern Ontario.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/045.png" />
+    <p class="media-body">Our task is to copy those observations, removing the uninteresting birds as we do so.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/046.png" />
+    <p class="media-body">This is the main body of our program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/047.png" />
+    <p class="media-body">We start by reading in the set of birds we're supposed to be subtracting from our observations.  That's going to take a few lines of code, so for now, we'll pretend we can do this by calling a function called <code>read_set</code>, which we'll come back and write in a minute or two.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/048.png" />
+    <p class="media-body">Next, we open our input file for reading, and our output file for writing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/049.png" />
+    <p class="media-body">We then read lines from the input file one at a time and strip off any leading or trailing whitespace.  In particular, <code>line.strip</code> will remove the newline and/or carriage return characters at the ends of the lines we're reading in, so that we just have the names of the birds.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/050.png" />
+    <p class="media-body">These two lines are the heart of our program.  If the bird name we just read is <em>not</em> in the set of names we're supposed to ignore, we print it out.  Everything else in our program is really just there to support these two lines&mdash;a realization that we'll return to later when we talk about program design.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/051.png" />
+    <p class="media-body">Finally, once we've read and filtered all of our input, we close the input and output files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/052.png" />
+    <p class="media-body">So far, so good: all that's left is to write the function that reads in the set of names we're supposed to ignore.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/053.png" />
+    <p class="media-body">We start by creating an empty set, which we will then fill up with bird names, and open the input file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/054.png" />
+    <p class="media-body">We then read lines from the input one at a time, stripping off whitespace&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/055.png" />
+    <p class="media-body">&hellip;and put the strings left over in the set.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/056.png" />
+    <p class="media-body">When we're done, we return the set that we created.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/057.png" />
+    <p class="media-body">Stepping back, the main program and the <code>read_set</code> function have almost exactly the same structure.  Each one initializes some data, opens a file or files, loops over input data, does something with that data, then closes the files it's using.  We'll have a closer look at this pattern, and how we can save ourselves writing it over and over again, in a later lecture.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/058.png" />
+    <p class="media-body">Finally, here's a few tests of our program.  If there's nothing to remove, our output file is the same as our input.  If we're removing just one name, it's subtracted as it should be, while if the name of every bird we saw is in the removals list, the output is empty.  These three tests don't exhaust all the possibilities, but the odds are pretty good that if a program passes them, it's doing the right thing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/059.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

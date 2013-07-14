@@ -1,0 +1,293 @@
+---
+layout: v4_topic
+title: Interface and Implementation
+lesson_title: Testing
+prev: v4/test/unit.html
+next: v4/test/float.html
+uplink: v4/test/index.html
+pdf: v4/test/interface.pdf
+ppt: v4/test/interface.ppt
+youtube: {"slug": "LPKt_q2opAM", "time": "00:10:23.03"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="interface/001.png" />
+    <p class="media-body">Hello, and welcome to the fourth episode of the Software Carpentry lecture on testing.  In this episode, we'll look at why it's important to test interfaces, rather than implementations, and why and how to design software so that it's easy to test.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/002.png" />
+    <p class="media-body">One of the most important ideas in computing is the difference between <em>interface</em> and <em>implementation</em>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/003.png" />
+    <p class="media-body">Something's <em>interface</em> specifies how it interacts with the world: what it will accept as input, and what output it produces.  It's like a contract in business: if Party A does X, then Party B guarantees Y.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/004.png" />
+    <p class="media-body">Something's <em>implementation</em> is how it accomplishes whatever it does.  This might involve calculation, database lookups, or anything else.  The key is, it's hidden inside the thing: how it does what it does is nobody else's business.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/005.png" />
+    <p class="media-body">For example, here's a function in Python that integrates a function of one variable over a certain interval.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/006.png" />
+    <p class="media-body">Its interface is simple: given a function and the low and high bounds on the interval, it returns the appropriate integral.  A fuller definition of its interface would also specify how it behaves when it's given bad parameters, error bounds on the result, and so on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/007.png" />
+    <p class="media-body">Its implementation could use any of a dozen algorithms.  In fact, its implementation could change over time as new algorithms are developed.  As long as its contract with the outside world stays the same, none of the programs that use it should need to change.  This allows users to concentrate on their tasks, while giving whoever wrote this function the freedom to tweak it without making work for other people.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/008.png" />
+    <p class="media-body">We often use this idea&mdash;the separation between interface and implementation&mdash;to simplify unit testing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/009.png" />
+    <p class="media-body">The goal of unit testing is to test the components of a program one by one&mdash;that's why it's called "unit" testing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/010.png" />
+    <p class="media-body">But the components in real programs almost always depend on each other: this function calls that one, this data structure refers to the one over there, and so on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/011.png" />
+    <p class="media-body">How can we isolate the component under test from the rest of the program so that we can test it on its own?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/012.png" />
+    <p class="media-body">One technique is to replace the components we're <em>not</em> currently testing with simplified versions that have the same interfaces, but much simpler implementations, just as a director would use a stand-in rather than a star when fiddling with the lighting for a show.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/013.png" />
+    <p class="media-body">Doing this for programs that have already been written sometimes requires some reorganization, or <em>refactoring</em>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/014.png" />
+    <p class="media-body">But once you understand the technique, you can build programs with it in mind to make testing easier.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/015.png" />
+    <p class="media-body">Let's go back to our photographs of fields in Saskatchewan.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/016.png" />
+    <p class="media-body">We want to test a function that reads a photo from a file.  (Remember that a photo is just a set of rectangles.)</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/017.png" />
+    <p class="media-body">Here's a plausible outline of the function.  It creates a set to hold the rectangles making up the photo, opens a file, and then reads rectangles from the file and puts them in the set.  When the input is exhausted, the function closes the file and returns the set.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/018.png" />
+    <p class="media-body">And here's a unit test for that function.  It reads data from a file called <code>unit.pht</code>, then checks that the result is a set containing exactly one rectangle.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/019.png" />
+    <p class="media-body">This is pretty straightforward, but experience teaches us that it's a bad way to organize things.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/020.png" />
+    <p class="media-body">First, this test depends on an external file, and on that file being in exactly the right place.  Over time, files can be lost, or moved around, which makes tests that depend on them break.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/021.png" />
+    <p class="media-body">Second, it's hard to understand a test if the fixture it depends on isn't right there with it.  Yes, it's easy to open the file and read it, but every bit of extra effort is a bit less testing people will actually do.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/022.png" />
+    <p class="media-body">Third, file I/O is slower than doing things in memory&mdash;tens or hundreds of thousands of times slower.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/023.png" />
+    <p class="media-body">If your program has hundreds of tests, and each one takes a second to run, developers will have to wait several minutes to find out whether their latest change has broken anything that used to work.  The most likely result is that they'll run the tests much less frequently&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/024.png" />
+    <p class="media-body">&hellip;which means they'll waste more time backtracking to find and fix bugs that could have been caught when they were fresh if the tests only took seconds to run.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/025.png" />
+    <p class="media-body">Here's how to fix this.  Imagine that instead of reading rectangles, we're just counting them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/026.png" />
+    <p class="media-body">This simple function assumes the file contains one rectangle per line, with no blank lines or comments.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/027.png" />
+    <p class="media-body">Of course, a real rectangle counting function would probably be more sophisticated, but this is enough to illustrate our point.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/028.png" />
+    <p class="media-body">Here's the function after refactoring.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/029.png" />
+    <p class="media-body">We've taken the inner core of the original function and made it a function in its own right.  This new function does the actual work&mdash;i.e., it counts rectangles&mdash;but it does <em>not</em> open the file that the rectangles are read from.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/030.png" />
+    <p class="media-body">That is still done by the original function.  It opens the input file, calls the new function that we extracted, then closes the file and returns the result.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/031.png" />
+    <p class="media-body">Notice that this function keeps the name of the original function, so that any program that used to call <code>count_rect</code> can still do so.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/032.png" />
+    <p class="media-body">Now let's write some tests.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/033.png" />
+    <p class="media-body">This piece of code checks that <code>count_rect_in</code>&mdash;the function that actually does the hard work&mdash;handles the three-rectangle case properly.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/034.png" />
+    <p class="media-body">Instead of an external file, we're using a string in the test program as a fixture.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/035.png" />
+    <p class="media-body">To make this string look like a file, we're relying on a Python class called <code>StringIO</code>.  As the name suggests, this acts like a file, but uses a string instead of the disk for storing data.  <code>StringIO</code> has all the same methods as a file, like <code>readline</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/036.png" />
+    <p class="media-body">&hellip;so <code>count_rect_in</code> doesn't know that it isn't reading from a real file on disk.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/037.png" />
+    <p class="media-body">We can use this same trick to test functions that are supposed to write to files as well.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/038.png" />
+    <p class="media-body">Instead of opening a file, filling it, and closing it, we create a <code>StringIO</code> object and "write" to that.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/039.png" />
+    <p class="media-body">We then use <code>StringIO</code>'s <code>getvalue</code> method&mdash;one of the few things it has that real files <em>don't</em>&mdash;to get back the text we're written and check that it's correct.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/040.png" />
+    <p class="media-body">For example, here's a unit test to check that another function, <code>photo_write_to</code>, can correctly write out a photo containining only the unit square.  Once again, we create a <code>StringIO</code> and pass that to the function instead of an actual open file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/041.png" />
+    <p class="media-body">If <code>photo_write_to</code> only writes to the file using the methods that real files provide, it won't know that it's been passed something else.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/042.png" />
+    <p class="media-body">Once we're finished writing, we can call <code>getvalue</code> to get the text that we wrote, and check it to make sure it's what it's supposed to be.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/043.png" />
+    <p class="media-body">In order to make output testable, though, there's one more thing we have to do.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/044.png" />
+    <p class="media-body">Here's a possible implementation of <code>photo_write_to</code>.  It puts the rectangles in the photo into a list, sorts that list, then writes the rectangles one by one.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/045.png" />
+    <p class="media-body">This is simple enough, but why do the extra work of sorting?  Why not just loop over the set and write the rectangles out directly?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/046.png" />
+    <p class="media-body">Please take a moment and see if you can think of the reason.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/047.png" />
+    <p class="media-body">Let's work backwards to the answer.  This version of <code>photo_write_to</code> is shorter and faster than the previous one.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/048.png" />
+    <p class="media-body">But there is no way to predict its output for any photo that contains two or more rectangles.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/049.png" />
+    <p class="media-body">For example, here's a simple photo showing two fields of corn ready for harvest.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/050.png" />
+    <p class="media-body">And here are two lines of Python that we might put in a unit test to represent the photo, and write it to a file or a <code>StringIO</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/051.png" />
+    <p class="media-body">You probably think the function's output will look like this&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/052.png" />
+    <p class="media-body">&hellip;but it could equally well look like this, with the rectangles in reverse order.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/053.png" />
+    <p class="media-body">These two representations are conceptually the same, but they're very different as text.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/054.png" />
+    <p class="media-body">The problem, of course, is that sets are unordered.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/055.png" />
+    <p class="media-body">Or rather, the elements in a set are stored in an arbitrary order that's under the computer's control.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/056.png" />
+    <p class="media-body">Since we don't know what that order is, we can't predict the output if we loop over the set directly, which means we don't know what to compare the output to.  If we sort the rectangles, on the other hand, they'll always be in the same order, and to sort them, we have to put them in a list first.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/057.png" />
+    <p class="media-body">One final lesson for this lecture: you probably haven't noticed, but the tests we've written in this episode are inconsistent.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/058.png" />
+    <p class="media-body">Here's the fake "file" we created for testing the photo-reading function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/059.png" />
+    <p class="media-body">And here's the string we used to check the output of our photo-writing function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/060.png" />
+    <p class="media-body">Please take a moment and see if you can see the inconsistency.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/061.png" />
+    <p class="media-body">That's right: one string has a newline at the end, and the other doesn't.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/062.png" />
+    <p class="media-body">It doesn't matter whether we require this or not&mdash;either convention is better than saying "maybe", because if we allow both, our code becomes more complicated, and more testing will be required.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/063.png" />
+    <p class="media-body">Stepping back, the most important lesson in this episode isn't how to test functions that do I/O.  The most important idea is that you should design your programs so that their components can be tested.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/064.png" />
+    <p class="media-body">To do this, you should depend on interfaces, not implementations: on the contracts that functions provide, not on the details of how they accomplish whatever they do.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/065.png" />
+    <p class="media-body">Following this rule will make it easy for you to replace components that you're <em>not</em> currently testing with simplified versions to make it easier to test the ones you <em>are</em> interested in.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/066.png" />
+    <p class="media-body">It will also save you from writing your tests over and over as the internals of the functions you are testing are changed.  Empirical studies have shown that interfaces are longer-lived than implementations: if you rely on the former rather than the latter, you'll spend less time rewriting tests, and more time figuring out what effect climate change is having on fields in Saskatchewan.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/067.png" />
+    <p class="media-body">The other rule when you're designing programs to be testable is to isolate interactions with the outside world.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/068.png" />
+    <p class="media-body">For example, code that opens file should be separated from code that reads data, so that you can test the latter without needing to do the former.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/069.png" />
+    <p class="media-body">Finally, you should make the things you are going to examine to check the result of a test deterministic, i.e., the result of a particular function call should always be exactly the same value, so that you can compare it directly to the expected result.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/070.png" />
+    <p class="media-body">Unfortunately, this last rule can sometimes be hard to follow in scientific programs.  Our next episode will explain why.</p>
+  </div>
+</div>

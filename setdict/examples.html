@@ -1,0 +1,201 @@
+---
+layout: v4_topic
+title: Examples
+lesson_title: Sets and Dictionaries
+prev: v4/setdict/dict.html
+next: v4/setdict/nanotech.html
+uplink: v4/setdict/index.html
+pdf: v4/setdict/examples.pdf
+ppt: v4/setdict/examples.ppt
+youtube: {"slug": "Z8VUNIV0N58", "time": "00:06:46.92"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="examples/001.png" />
+    <p class="media-body">Hello, and welcome to the fourth episode of the Software Carpentry lecture on sets and dictionaries.  In this episode, we'll show you a few examples of how you can use dictionaries in your programs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/002.png" />
+    <p class="media-body">Let's start with the question, "How early in the day did we see each kind of bird?"</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/003.png" />
+    <p class="media-body">Our data looks like this: the date and time of the observation, the bird's name, and an optional comment.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/004.png" />
+    <p class="media-body">We want the minimum of all the times associated with each bird name.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/005.png" />
+    <p class="media-body">We'll use a dictionary with the bird name as the key&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/006.png" />
+    <p class="media-body">&hellip;and the earliest observation time as the value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/007.png" />
+    <p class="media-body">First, though, let's read our data file and create a list of tuples, where each tuple has the date and time as strings, and the bird name.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/008.png" />
+    <p class="media-body">Our function follows the pattern we've seen many times before.  We set up by opening the input file and creating an empty list that we'll append records to.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/009.png" />
+    <p class="media-body">We then process each line of the file in turn.  Splitting the line on the '#' character and taking the first part of the result gets rid of any comment that might be present; stripping off whitespace and then splitting breaks the remainder into fields.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/010.png" />
+    <p class="media-body">To prevent trouble later on, we check that there actually are three fields before going on.  An industrial-strength version of this function would also check that the date and time were properly formatted, but we'll skip that for now.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/011.png" />
+    <p class="media-body">Once we've done our check, we append the triple containing the date, time, and bird name to the list we're going to return.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/012.png" />
+    <p class="media-body">Here's the function that processes that list of triples.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/013.png" />
+    <p class="media-body">This time, we set up by creating an empty dictionary.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/014.png" />
+    <p class="media-body">Our loop handles one triple at a time.  Notice here that we're splitting the triple into its component fields in the loop header: the variable <code>date</code> is automatically assigned the first field of the current tuple, the variable <code>time</code> the second, and the variable <code>name</code> the third.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/015.png" />
+    <p class="media-body">If this bird's name is <em>not</em> already a key in our dictionary, this must be the first time we've seen it.  The value of <code>time</code> in this record is therefore the earliest we've seen the bird, so we record it in a new entry in the dictionary.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/016.png" />
+    <p class="media-body">Otherwise, if there's already an entry for this bird in the dictionary, we record the minimum of the stored time and the new time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/017.png" />
+    <p class="media-body">All right, that wasn't too bad.  What if we want to find out what birds were seen on each day that we were observing?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/018.png" />
+    <p class="media-body">This is similar to the problem we just solved, so the function we'll write has a similar structure.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/019.png" />
+    <p class="media-body">However, since we probably saw more than one kind of bird each day, the values in our dictionary need to be some sort of collection.  Since we're only interested in which birds we saw, we can use a set.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/020.png" />
+    <p class="media-body">Here's our function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/021.png" />
+    <p class="media-body">Again, we set up by creating an empty dictionary&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/022.png" />
+    <p class="media-body">&hellip;and process each record in turn, unpacking it automatically in the loop header.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/023.png" />
+    <p class="media-body">Since we're recording birds by date, the keys in our dictionary are dates rather than bird names.  If the current date isn't already a key in the dictionary, we add it with an empty set as the associated value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/024.png" />
+    <p class="media-body">It is then safe to add the current bird to the set associated with the current date, since the previous two lines guaranteed that there would be such a set, even if this is the first observation for the date in question.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/025.png" />
+    <p class="media-body">Let's watch this function in action.  We start with an empty set.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/026.png" />
+    <p class="media-body">After reading the first observation, we add an entry to our dictionary with the date '2010-07-03' as its key, and an empty set as its value.  We then immediately add the name 'loon' to that set, leaving the structure shown here.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/027.png" />
+    <p class="media-body">Our next observation is a goose on the same day, so we put 'goose' in the set we just created.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/028.png" />
+    <p class="media-body">Our third observation is another loon.  Since adding a value to a set that's already present has no effect, our data structure doesn't change.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/029.png" />
+    <p class="media-body">Next, though, we have the first observation for July 4th.  Since it's the first time we've seen this date, our function adds a new entry to the main dictionary with <code>'2010-07-04'</code> as the key and a set as the value, then adds <code>'ostrich'</code> to that set.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/030.png" />
+    <p class="media-body">Finally, we have another damn loon, which goes into the second of our sets.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/031.png" />
+    <p class="media-body">For our last example, we'll find which bird we saw least frequently.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/032.png" />
+    <p class="media-body">Actually, we'll find which <em>birds</em>, since two or more may be tied for the low score.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/033.png" />
+    <p class="media-body">One way to solve this problem is to do two passes over our data.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/034.png" />
+    <p class="media-body">In the first pass, we find the minimum value in the dictionary.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/035.png" />
+    <p class="media-body">In the second, we find all the keys that have that value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/036.png" />
+    <p class="media-body">It's relatively easy to combine these operations, though, so we'll do the whole thing in one pass.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/037.png" />
+    <p class="media-body">We'll assume that we already have a dictionary of bird names and total observation counts.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/038.png" />
+    <p class="media-body">This is the skeleton for our function: as usual, it contains some setup code and a loop.  The setup code creates a set to hold the names of the birds we saw least frequently.  It also creates a helper variable called <code>number</code>, which holds the current low score.  These values are just placeholders; we'll see in a moment that they are overwritten the very first time we process any real data.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/039.png" />
+    <p class="media-body">Inside the loop, we have to handle three cases.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/040.png" />
+    <p class="media-body">If our result set is empty, then this must be the very first bird we've processed.  In that case, we record its name, and set <code>number</code> to the number of times we saw this bird.  This case should only execute once, since after it runs, the set called <code>result</code> should never be empty, and <code>number</code> should always be greater than zero.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/041.png" />
+    <p class="media-body">In our second case, the number associated with the bird we're processing is a new minimum.  When this happens, we throw away the set of birds we've seen so far and replace it with a set containing only the name of this bird, and assign the new lowest score to <code>number</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/042.png" />
+    <p class="media-body">Finally, if the count for this bird is the same as the current lowest score, we add this bird's name to the set of birds with that score.  There isn't a branch of the <code>if</code> to handle the case where the count for the current bird is greater than the current minimum, since there's nothing for us to do in that case.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/043.png" />
+    <p class="media-body">Let's watch this function run.  Our input dictionary has three entries; we initialize <code>number</code> to 0 and <code>result</code> to an empty set.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/044.png" />
+    <p class="media-body">Processing the first entry in the dictionary takes us into the first of our three cases: <code>number</code> is assigned 3, and <code>'loon'</code> is put in our set of birds.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/045.png" />
+    <p class="media-body">The second entry has a new minimum count, so we replace both the value of <code>number</code> and our set.  This is case #2 from above.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/046.png" />
+    <p class="media-body">Finally, the third bird's count is the same as the current minimum, so we just add it to the set.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="examples/047.png" />
+    <p class="media-body">We hope these examples give you an idea of what you can do with dictionaries, and how useful they can be.  In the next episode, we'll take a look at a slightly larger example.  Before watching it, please give a few of the exercises a try.</p>
+  </div>
+</div>

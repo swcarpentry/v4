@@ -1,0 +1,292 @@
+---
+layout: v4_topic
+title: Pipes and Filters
+lesson_title: The Unix Shell
+prev: v4/shell/makedel.html
+next: v4/shell/perm.html
+uplink: v4/shell/index.html
+pdf: v4/shell/pipefilter.pdf
+ppt: v4/shell/pipefilter.ppt
+youtube: {"slug": "5crQ2hMCgcs", "time": "00:09:11.80"}
+---
+<ul class="keypoints">
+  <li>The real strength of the shell is its ability to combine simple utilities in useful ways.</li>
+  <li>Introduction to a few wild-card characters.</li>
+  <li>Redirection operators &gt; and &gt;&gt;.</li>
+  <li>The pipe operator, |, which passes output directly to another program.</li>
+</ul>
+
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/001.png" />
+    <p class="media-body">Hello, and welcome to the fourth episode of the Software Carpentry lecture on the Unix shell.  In this episode, we'll look at what makes the shell so powerful: the ease with which it lets you combine existing programs in new ways.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/002.png" />
+    <p class="media-body">As we saw in previous episodes, a shell is a program that takes commands from the user, tells the computer to run the corresponding programs, and shows the user their output.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/003.png" />
+    <p class="media-body">We've already seen commands to move around the filesystem, and to create, rename, copy, and delete files and directories.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/004.png" />
+    <p class="media-body">What we'll see in this episode is that commands like these are much more powerful when they're combined.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/005.png" />
+    <p class="media-body">We'll start with a directory called <code>molecules</code> that contains six files describing some simple organic molecules.  The <code>.pdb</code> extension indicates that these files are in Protein Data Bank format, a simple text format that specifies the type and position of each atom in the molecule.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/006.png" />
+    <p class="media-body">Let's go into that directory with <code>cd</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/007.png" />
+    <p class="media-body">&hellip;and run the command <code>wc *.pdb</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/008.png" />
+    <p class="media-body">The <code>*</code> in <code>*.pdb</code> is a <em>wildcard</em> character.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/009.png" />
+    <p class="media-body">It matches zero or more characters.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/010.png" />
+    <p class="media-body">So the shell expands the expression <code>*.pdb</code> to be the complete list of <code>.pdb</code> files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/011.png" />
+    <p class="media-body">The shell does this <em>before</em> <code>wc</code> runs, so the actual command is <code>wc cubane.pdb ethane.pdb</code> and so on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/012.png" />
+    <p class="media-body"><code>wc</code> stands for "word count".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/013.png" />
+    <p class="media-body">It counts the number of lines, words, and characters in files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/014.png" />
+    <p class="media-body">Its output, shown here, prints these values in columns: lines, words, characters, and the filename, one line per file, with a line for the total at the end.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/015.png" />
+    <p class="media-body">If we run <code>wc -l</code> instead, our output shows only the number of lines per file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/016.png" />
+    <p class="media-body">We can use <code>-w</code> to get only the number of words, or <code>-c</code> to get only the number of characters.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/017.png" />
+    <p class="media-body">Now, which of these files is shortest?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/018.png" />
+    <p class="media-body">It's an easy question to answer when there are only six files&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/019.png" />
+    <p class="media-body">&hellip;but what if there were 6000?  That's the kind of job we want a computer to do.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/020.png" />
+    <p class="media-body">Our first step toward a solution is to run the command <code>wc -l *.pdb &gt; lengths</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/021.png" />
+    <p class="media-body"><code>&gt;</code> tells the shell to redirect the output to a file instead of printing it to the screen.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/022.png" />
+    <p class="media-body">The shell will create the file if it doesn't exist&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/023.png" />
+    <p class="media-body">&hellip;or overwrite its contents if it does.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/024.png" />
+    <p class="media-body">Notice that there is no screen output: everything that <code>wc</code> would have printed has gone into the file <code>lengths</code> instead.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/025.png" />
+    <p class="media-body"><code>ls lengths</code> confirms that the file exists.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/026.png" />
+    <p class="media-body">And we can print its contents to the screen using <code>cat lengths</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/027.png" />
+    <p class="media-body"><code>cat</code> stands for "concatenate": it prints the contents of files one after another.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/028.png" />
+    <p class="media-body">In this case, there's only one file, so <code>cat</code> just shows us what's in it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/029.png" />
+    <p class="media-body">Now let's use the <code>sort</code> command to sort its contents.  This does <em>not</em> change the file: instead, it prints the sorted lines to the screen as shown here.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/030.png" />
+    <p class="media-body">We can put the sorted list of lines in another temporary file called <code>sorted-lengths</code> by putting <code>&gt; sorted-lengths</code> after the command, just as we used <code>&gt; lengths</code> to put the output of <code>wc</code> into <code>lengths</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/031.png" />
+    <p class="media-body">And now, we can run another command called <code>head</code> to get the first few lines in <code>sorted-lengths</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/032.png" />
+    <p class="media-body">Giving <code>head</code> the argument <code>-1</code> tells us we only want the first line of the file; <code>-20</code> would get the first 20, and so on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/033.png" />
+    <p class="media-body">This must be the file with the fewest lines, since <code>sorted-lengths</code> holds files and their line counts in order from the least to the most.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/034.png" />
+    <p class="media-body">If you think this is confusing, you're in good company: even once you understand what <code>wc</code>, <code>sort</code>, and <code>head</code> do, all those intermediate files make it hard to follow what's going on.  How can we make it easier to understand?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/035.png" />
+    <p class="media-body">Let's start by getting rid of the <code>sorted-lengths</code> file by running the <code>sort</code> and <code>head</code> commands together.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/036.png" />
+    <p class="media-body">That vertical bar between them is called a <em>pipe</em>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/037.png" />
+    <p class="media-body">It tells the shell that we want to take the output of the command on the left&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/038.png" />
+    <p class="media-body">&hellip;and use it as the input to the command on the right&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/039.png" />
+    <p class="media-body">&hellip;without explicitly creating a temporary file.  The computer can create such a file itself if it wants to, or run the two programs simultaneously and pass data from one to the other through memory without ever putting it on disk: we don't have to know or care.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/040.png" />
+    <p class="media-body">Well, if we don't need to create the temporary file <code>sorted-lengths</code>, can we get rid of the <code>lengths</code> file too?  The answer is "yes": we can use another pipe to send the output of <code>wc</code> directly to <code>sort</code>, which then sends its output to <code>head</code>.  This is exactly like a mathematician nesting functions and saying "the square of the sine of <em>x</em> times &pi;": in our case, the calculation is "head of sort of word count of <code>*.pdb</code>".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/041.png" />
+    <p class="media-body">This simple idea is why Unix has been so successful.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/042.png" />
+    <p class="media-body">Instead of creating enormous programs that try to do many different things, Unix programmers focus on creating lots of simple tools that:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/043.png" />
+    <p class="media-body">each do one job well, and</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/044.png" />
+    <p class="media-body">work well with each other.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/045.png" />
+    <p class="media-body">Ten such tools can be combined in 100 ways, and that's only looking at pairings: when we start to look at pipes with multiple stages, the possibilities are almost endless.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/046.png" />
+    <p class="media-body">Here's what actually happens behind the scenes when we create a pipe.  We'll use an octagon to show a running program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/047.png" />
+    <p class="media-body">The technical term for this is a <em>process</em>: it's a program that's actually loaded into memory and "live".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/048.png" />
+    <p class="media-body">Every process has an input channel called <em>standard input</em>.  By this point, you may be surprised that the name is so memorable, but don't worry:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/049.png" />
+    <p class="media-body">most Unix programmers call it <em>stdin</em>, just to be safe.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/050.png" />
+    <p class="media-body">Every process also has a default output channel called <em>standard output</em>, or <em>stdout</em>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/051.png" />
+    <p class="media-body">When we run a program normally, the shell temporarily sends whatever we type on our keyboard to the process's stdin, and sends whatever the process prints to stdout to our computer's screen.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/052.png" />
+    <p class="media-body">For example, if we run <code>wc -l *.pdb &gt; lengths</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/053.png" />
+    <p class="media-body">&hellip;the shell starts by telling the computer to create a new process to run the <code>wc</code> program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/054.png" />
+    <p class="media-body">Since we've provided some filenames as arguments, <code>wc</code> reads from them instead of from standard input.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/055.png" />
+    <p class="media-body">And since we've used <code>&gt;</code> to redirect output to a file, the shell connects the process's standard output to that file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/056.png" />
+    <p class="media-body">Here's what happens when we run <code>wc -l *.pdb | sort</code> instead.  The shell creates two processes, one for each component of the pipe, so that <code>wc</code> and <code>sort</code> run simultaneously.  The standard output of <code>wc</code> is fed directly to the standard input of <code>sort</code>; since there's no redirection with <code>&gt;</code>, <code>sort</code>'s output goes to the screen.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/057.png" />
+    <p class="media-body">And if we run <code>wc -l *.pdb | sort | head -1</code>, we get the three processes shown here, with data flowing from the files, through <code>wc</code> to <code>sort</code>, and from <code>sort</code> through <code>head</code> to the screen.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/058.png" />
+    <p class="media-body">This programming model is called <em>pipes and filters</em>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/059.png" />
+    <p class="media-body">A <em>filter</em> is a program that transforms a stream of input into a stream of ouptut.  Almost all of the standard Unix tools can work this way: unless told to do otherwise, they read from stdin, do something to what they've read, and write to stdout.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/060.png" />
+    <p class="media-body">A <em>pipe</em> is just a connection between two filters.  Behind the scenes, the computer may do some clever things to move data around, but from the user's point of view, all a pipe does is move bytes from one process to another.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/061.png" />
+    <p class="media-body">The key is that any program that reads lines of text from standard input, and writes lines of text to standard output, can work with every other program that behaves this way as well.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/062.png" />
+    <p class="media-body">You and <em>and should</em> write your programs this way, so that you and other people can put those programs into pipes to multiply their power.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/063.png" />
+    <p class="media-body">To summarize, we now have a bunch of commands for moving around the file system&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/064.png" />
+    <p class="media-body">&hellip;and three for working with text: <code>wc</code> to count things, <code>sort</code> to sort them, and <code>head</code> to select lines from the front of a file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/065.png" />
+    <p class="media-body">After this episode is over, please go and explore a few other simple text processing commands, such as <code>tail</code>, <code>split</code>, <code>cut</code>, and <code>uniq</code>.  Remember, each tool you learn multiplies the power of the tools you already know.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/066.png" />
+    <p class="media-body">We've also met three more special characters: the pattern-matching wildcard <code>*</code>, redirection with <code>&gt;</code>, and most important of all, the pipe <code>|</code>, which allows us to connect processes together.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/067.png" />
+    <p class="media-body">Again, once this episode is over, please take a moment to find out what two other characters do: <code>&lt;</code>, which redirect input, and <code>?</code>, a wildcard that matches a single character instead of any number.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="pipefilter/068.png" />
+    <p class="media-body">In our next episode, we'll have a look at how Unix controls who can do what to files and directories.</p>
+  </div>
+</div>

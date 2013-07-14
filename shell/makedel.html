@@ -1,0 +1,299 @@
+---
+layout: v4_topic
+title: Creating and Deleting
+lesson_title: The Unix Shell
+prev: v4/shell/filedir.html
+next: v4/shell/pipefilter.html
+uplink: v4/shell/index.html
+pdf: v4/shell/makedel.pdf
+ppt: v4/shell/makedel.ppt
+youtube: {"slug": "FmXtSATyuII", "time": "00:06:25.80"}
+---
+<ul class="keypoints">
+  <li>Creating directories and files using mkdir and a simple editor called nano.</li>
+  <li>Moving and copying files.</li>
+  <li>Deleting files and directories.</li>
+</ul>
+
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/001.png" />
+    <p class="media-body">Hello, and welcome to the third episode of the Software Carpentry lecture on the Unix shell.  In this episode, we'll see how to create, rename, copy, and delete files and directories.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/002.png" />
+    <p class="media-body">As we've seen in previous episodes, one way to interact with a computer&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/003.png" />
+    <p class="media-body">&hellip;is through a command-line shell.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/004.png" />
+    <p class="media-body">When we type in commands like these, the shell finds the corresponding programs, runs them on our behalf, and shows us their output.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/005.png" />
+    <p class="media-body">But how do we create files and directories for it to show us?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/006.png" />
+    <p class="media-body">Let's go back to Vlad's home directory, <code>/users/vlad</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/007.png" />
+    <p class="media-body">As in the previous episode, <code>ls -F</code> shows us the files and directories it contains, with a trailing slash after each directory to help us tell them apart.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/008.png" />
+    <p class="media-body">Let's create a new directory called <code>tmp</code> with the command <code>mkdir tmp</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/009.png" />
+    <p class="media-body">As you might guess from its name, <code>mkdir</code> means "make directory".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/010.png" />
+    <p class="media-body">Since <code>tmp</code> is a relative path (without a leading slash), the new directory is made below the current one.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/011.png" />
+    <p class="media-body">Let's run <code>ls</code> again.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/012.png" />
+    <p class="media-body">There it is.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/013.png" />
+    <p class="media-body">Graphically, we started with this directory tree&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/014.png" />
+    <p class="media-body">&hellip;and created the new directory here.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/015.png" />
+    <p class="media-body">However, there's nothing below it yet: <code>tmp</code> is empty.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/016.png" />
+    <p class="media-body">All right: we're in <code>/users/vlad</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/017.png" />
+    <p class="media-body">&hellip;and <code>tmp</code> is empty&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/018.png" />
+    <p class="media-body">&hellip;which we can tell because <code>ls</code> doesn't print any output.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/019.png" />
+    <p class="media-body">If we use <code>ls -a</code> to show directories whose names start with '.', though, we see that <code>.</code> and <code>..</code> are there, as they always are.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/020.png" />
+    <p class="media-body">The first name, <code>.</code>, refers to the directory itself, i.e., <code>/users/vlad/tmp</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/021.png" />
+    <p class="media-body">The second, <code>..</code>, refers to its parent, which just happens to be the current working directory <code>/users/vlad</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/022.png" />
+    <p class="media-body">Let's change our working directory to <code>tmp</code> using <code>cd</code>, then run the command <code>nano junk</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/023.png" />
+    <p class="media-body"><code>nano</code> is a very simple text editor that only a programmer could really love.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/024.png" />
+    <p class="media-body">And we really do mean "text": it can only work with plain character data, not tables, images, or any other human-friendly media.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/025.png" />
+    <p class="media-body">This is what nano looks like when it runs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/026.png" />
+    <p class="media-body">The cursor is the blinking square in the upper left; it shows us where what we type will be inserted.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/027.png" />
+    <p class="media-body">Let's type in a short quotation&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/028.png" />
+    <p class="media-body">&hellip;then use Control-O to write our data to disk.  By convention, Unix uses the caret <code>^</code> followed by a letter to mean "control plus that letter".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/029.png" />
+    <p class="media-body">Once our quotation is saved, we can use Control-X to quit the editor and return to the shell.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/030.png" />
+    <p class="media-body">nano doesn't leave any output on the screen after it exits.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/031.png" />
+    <p class="media-body">But <code>ls</code> now shows that we have created a file called <code>junk</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/032.png" />
+    <p class="media-body">Running <code>ls</code> with the <code>-s</code> flag shows us how large things are.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/033.png" />
+    <p class="media-body">Unfortunately, by default Unix reports sizes in disk blocks&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/034.png" />
+    <p class="media-body">&hellip;which probably isn't the <em>least</em> helpful option imaginable.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/035.png" />
+    <p class="media-body">If we add the <code>-h</code> flag, <code>ls</code> uses more human-friendly units for its output.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/036.png" />
+    <p class="media-body">Here, 512 is the number of bytes the file takes up.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/037.png" />
+    <p class="media-body">This is more than we actually typed in because the computer rounds sizes up: the smallest unit of storage on the disk is typically a block of 512 bytes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/038.png" />
+    <p class="media-body">Let's tidy up by running <code>rm junk</code>.  "rm" stands for "remove"&mdash;this command deletes files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/039.png" />
+    <p class="media-body">It's important to remember that <em>there is no undelete</em>.  Unix doesn't move things to a trash bin: it unhooks them from the file system so that their storage space on disk can be recycled.  Tools for finding and recovering deleted files do exist, but there's no guarantee they'll work in any particular situation, since the computer may reclaim the file's disk space right away.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/040.png" />
+    <p class="media-body">If we now run <code>ls</code>, its output is empty once again, which tells us that our file is gone.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/041.png" />
+    <p class="media-body">Let's re-create that file&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/042.png" />
+    <p class="media-body">&hellip;and then move up one directory to <code>/users/vlad</code> using <code>cd ..</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/043.png" />
+    <p class="media-body">If we try to remove the <code>tmp</code> directory using <code>rm tmp</code>, we get an error message: <code>rm</code> only works on files, not directories.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/044.png" />
+    <p class="media-body">The right command is <code>rmdir</code>, which stands for "remove directory".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/045.png" />
+    <p class="media-body">It doesn't work yet either, though, because the directory we're trying to remove isn't empty.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/046.png" />
+    <p class="media-body">This little safety feature can save you a lot of grief, particularly if you are a bad typist.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/047.png" />
+    <p class="media-body">If we want to get rid of <code>tmp</code> we must first delete the file <code>junk</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/048.png" />
+    <p class="media-body">The directory is now empty, so <code>rmdir</code> deletes it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/049.png" />
+    <p class="media-body">Let's create that directory and file one more time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/050.png" />
+    <p class="media-body"><code>junk</code> isn't a particularly informative name, so let's change the file's name using <code>mv</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/051.png" />
+    <p class="media-body"><code>mv</code> is short for "move": we use it to move a file from one place to another.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/052.png" />
+    <p class="media-body">It also works on directories: there is no separate <code>mvdir</code> command.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/053.png" />
+    <p class="media-body">The first argument tells <code>mv</code> what we're moving.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/054.png" />
+    <p class="media-body">The second tells it where the thing we're moving is to go.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/055.png" />
+    <p class="media-body">In this case, we're moving <code>tmp/junk</code> to <code>tmp/quotes.txt</code>, which has the same effect as renaming the file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/056.png" />
+    <p class="media-body">Sure enough, <code>ls</code> shows us that <code>tmp</code> now contains one file called <code>quotes.txt</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/057.png" />
+    <p class="media-body">Let's bring that file into the current working directory.  Again, we use <code>mv</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/058.png" />
+    <p class="media-body">&hellip;but this time, the second argument is a directory.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/059.png" />
+    <p class="media-body">The effect is to move the file from the directory it was in to a different directory.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/060.png" />
+    <p class="media-body">Sure enough, <code>ls</code> shows us that <code>tmp</code> is now empty&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/061.png" />
+    <p class="media-body">&hellip;but we now have <code>quotes.txt</code> in our current directory.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/062.png" />
+    <p class="media-body">And notice, by the way, that <code>ls</code> with a filename or directory name as an argument lists only that file or directory.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/063.png" />
+    <p class="media-body">The <code>cp</code> command works very much like <code>mv</code>, except it copies a file instead of moving it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/064.png" />
+    <p class="media-body">We can check that it did the right thing using <code>ls</code> with two paths as arguments.  Like many other Unix commands, <code>ls</code> can process up to thousands of paths at once.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/065.png" />
+    <p class="media-body">To prove that we made a copy, let's delete the <code>quotes.txt</code> file in the current directory&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/066.png" />
+    <p class="media-body">&hellip;and then run <code>ls</code> again.  This time, <code>ls</code> tells us that it can't find <code>quotes.txt</code> in the current directory, but it does find the copy in <code>tmp</code>, which we didn't delete.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/067.png" />
+    <p class="media-body">Let's make one more copy.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/068.png" />
+    <p class="media-body">This time, though, we don't specify the destination filename, just a directory, so the copy will keep the original's filename.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/069.png" />
+    <p class="media-body">To summarize, here are the commands we've seen so far, along with the two special directory names.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="makedel/070.png" />
+    <p class="media-body">In the next episode, we'll see how to operate on text files using pipes and filters.</p>
+  </div>
+</div>

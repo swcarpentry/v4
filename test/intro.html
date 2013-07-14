@@ -1,0 +1,297 @@
+---
+layout: v4_topic
+title: Introduction
+lesson_title: Testing
+prev: null
+next: v4/test/except.html
+uplink: v4/test/index.html
+pdf: v4/test/intro.pdf
+ppt: v4/test/intro.ppt
+youtube: {"slug": "W8kh1UQ-dMg", "time": "00:09:09.40"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="intro/001.png" />
+    <p class="media-body">Hello, and welcome to the first episode of the Software Carpentry lecture on testing. In this episode, we'll look at what testing can actually do, and start exploring how you can go about it systematically.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/002.png" />
+    <p class="media-body">Nobody actually enjoys testing software.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/003.png" />
+    <p class="media-body">So if you'd like to skip this lecture, you can, provided that:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/004.png" />
+    <p class="media-body">Your programs always work correctly the first time you run them, or</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/005.png" />
+    <p class="media-body">You don't actually care whether they're doing the right thing or not, as long as their output <em>looks</em> plausible.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/006.png" />
+    <p class="media-body">You can also skip this lecture if you enjoy wasting time and taking longer to get things to work.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/007.png" />
+    <p class="media-body">You might not think that has much to do with testing, but study after study has shown that the more you invest up front in quality, the sooner your program will be ready to use. Just as in manufacturing and medicine, slowing down a little is the best way to speed things up a lot.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/008.png" />
+    <p class="media-body">Testing actually serves two purposes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/009.png" />
+    <p class="media-body">It tells you whether your program is doing what it's supposed to do.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/010.png" />
+    <p class="media-body">But if it's done right, it will also tell you <em>what</em> your program actually <em>is</em> supposed to be doing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/011.png" />
+    <p class="media-body">Tests are runnable specifications of a program's behavior.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/012.png" />
+    <p class="media-body">Unlike design documents or comments in the code, you can actually run your tests, so it's harder for them to fall out of sync with the program's actual behavior. In well-run projects, tests also act as examples to show newcomers how the code should be used, and how it's supposed to behave under different circumstances. We'll explore this idea in detail in a later episode.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/013.png" />
+    <p class="media-body">Before we go on, though, it's important to understand that there's a lot more to software quality than testing. Testing doesn't create quality, it measures it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/014.png" />
+    <p class="media-body">As Steve McConnell said, trying to improve the quality of software by doing more testing is like trying to lose weight by weighing yourself more often.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/015.png" />
+    <p class="media-body">But a good set of tests will help you track down bugs more quickly, which in turn speeds up development.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/016.png" />
+    <p class="media-body">It's also important to understand that testing can only do so much. For example, suppose you're testing a function that compares two 7-digit phone numbers.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/017.png" />
+    <p class="media-body">There are 10<sup>7</sup> such numbers&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/018.png" />
+    <p class="media-body">&hellip;which means that there are 10<sup>14</sup> possible test cases for your function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/019.png" />
+    <p class="media-body">At a million tests per second, it would take you 155 days to run them all.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/020.png" />
+    <p class="media-body">And that's only one simple function: exhaustively testing a real program with hundreds or thousands of functions, each taking half a dozen arguments, would take many times longer than the expected lifetime of the universe.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/021.png" />
+    <p class="media-body">And how would you actually write 10<sup>14</sup> tests? More importantly, how would you check that the tests themselves were all correct?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/022.png" />
+    <p class="media-body">In reality, "all" that testing can do is show that there <em>might</em> be a problem in a piece of code. If testing doesn't find a failure, there could still be bugs lurking there that we just didn't find. And if testing says there <em>is</em> a problem, it could well be a problem with the test rather than the program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/023.png" />
+    <p class="media-body">So why test? Because it's one of those cases where something that shouldn't work in theory is surprisingly effective in practice. It's just like mathematics: any theorem proof might contain a flaw that just hasn't been noticed yet, but somehow we manage to make progress.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/024.png" />
+    <p class="media-body">The obstacle to testing isn't actually whether or not it's useful, but whether or not it's easy to do. If it isn't, people will always find excuses to do something else.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/025.png" />
+    <p class="media-body">It's therefore important to make things as painless as possible. In particular, it has to be easy for people to:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/026.png" />
+    <p class="media-body">add or change tests</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/027.png" />
+    <p class="media-body">understand the tests that have already been written</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/028.png" />
+    <p class="media-body">run those tests</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/029.png" />
+    <p class="media-body">and understand those tests' results.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/030.png" />
+    <p class="media-body">And test results must be reliable.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/031.png" />
+    <p class="media-body">If a testing tool says that code is working when it's not, or reports problems when there actually aren't any, people will lose faith in it and stop using it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/032.png" />
+    <p class="media-body">Let's start with the simplest kind of testing. A <em>unit test</em> is a test that exercises one component, or unit, in a program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/033.png" />
+    <p class="media-body">Every unit test has five parts. The first is the <em>fixture</em>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/034.png" />
+    <p class="media-body">&hellip;which is the thing the test is run on, such as the inputs to a function, or some data files to be processed.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/035.png" />
+    <p class="media-body">The second part is the <em>action</em>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/036.png" />
+    <p class="media-body">&hellip;which is what we do to the fixture. Ideally, this just involves calling a function, but some tests may involve more.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/037.png" />
+    <p class="media-body">The third part of every unit test is its <em>expected result</em>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/038.png" />
+    <p class="media-body">&hellip;which is what we expect the piece of code we're testing to do or return. If we don't know the expected result, we can't tell whether the test passed or failed. As we'll see in a couple of episodes, defining fixtures and expected results can be a good way to design software.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/039.png" />
+    <p class="media-body">The first three parts of the unit test are used over and over again. The fourth part is the <em>actual result</em>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/040.png" />
+    <p class="media-body">&hellip;which is what happens when we run the test on a particular day, with a particular version of our software.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/041.png" />
+    <p class="media-body">The fifth and final part of our test is a <em>report</em>..</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/042.png" />
+    <p class="media-body">&hellip;which tells us whether the test passed, or whether there's a failure of some kind that needs human attention. As with the actual result, this could be different each time we run the test.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/043.png" />
+    <p class="media-body">So much for terminology: what does this all look like in practice? Suppose we're testing a function called <code>dna_starts_with</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/044.png" />
+    <p class="media-body">It returns <code>True</code> if its second argument is a prefix of the first, i.e., if one sequence starts with another.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/045.png" />
+    <p class="media-body">And it returns <code>False</code> otherwise.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/046.png" />
+    <p class="media-body">For example, <code>'actggt'</code> does start with <code>'act'</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/047.png" />
+    <p class="media-body">&hellip;but not with <code>'ctg'</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/048.png" />
+    <p class="media-body">We'll build a simple set of tests for this function from scratch to introduce some key ideas.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/049.png" />
+    <p class="media-body">Then later introduce a Python library that can handle the things that are done the same way each time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/050.png" />
+    <p class="media-body">Let's start by testing our code directly using <code>assert</code>. Here, we call the function four times with different arguments, checking that the right value is returned each time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/051.png" />
+    <p class="media-body">This is much better than nothing, but it has several shortcomings.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/052.png" />
+    <p class="media-body">First, there's a lot of repeated code: only a fraction of what's on each line is unique and interesting.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/053.png" />
+    <p class="media-body">That repetition makes it easy to overlook things, like the <code>not</code> used to check that the last test returns <code>False</code> instead of <code>True</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/054.png" />
+    <p class="media-body">This code also only tests up to the first failure. If any of the tests doesn't produce the expected result, the <code>assert</code> statement will halt the program. It would be more helpful if we could get data from all of our tests every time they're run, since the more information we have, the faster we're likely to be able to track down bugs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/055.png" />
+    <p class="media-body">Here's a different approach. It requires a bit more typing to set up, but after that, makes testing a lot easier. First, let's put the inputs and output of each test in a table. The first two entries in each row are the argumets to our function, and the third is what the function should return for those arguments.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/056.png" />
+    <p class="media-body">Right away, this is easy to read than line after line of <code>assert</code> and function calls.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/057.png" />
+    <p class="media-body">It's also easy to add new tests: just insert a line with the right values.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/058.png" />
+    <p class="media-body">Of course, those tests won't run themselves, so here's five lines of Python (plus a comment) to do that. This code simply loops over the entries in the table, calling the function with the arguments provided, and counting how many times the function returned the right result. When the loop finishes, this code prints out a summary to tell us how many of our tests passed.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/059.png" />
+    <p class="media-body">This is better than the previous pile of <code>assert</code> statements and function calls because no runnable code has to be copied to add a new test. That makes the pattern in our tests clearer, and reduces the chances of us introducing a bug by copying and pasting incorrectly. This code also runs all of our tests every time, so we always get a complete picture of how well we did.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/060.png" />
+    <p class="media-body">However, if any of our tests fail, this code won't tell us which ones. If we had a hundred tests, and two were failing, figuring out which two would take some time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/061.png" />
+    <p class="media-body">This slightly modified version of our code solves that problem.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/062.png" />
+    <p class="media-body">The built-in function <code>enumerate</code> takes a list (or any other sequence) as an argument, and produces one pair for each entry in that list. The first half of each pair is an element index, and the second is the element itself.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/063.png" />
+    <p class="media-body">In our case, the elements of <code>Tests</code> have three parts. We can extract the index and those three parts in a single step as shown here. The first time through the loop, <code>i</code> will be assigned 0, while <code>seq</code>, <code>prefix</code>, and <code>expected</code> will be assigned the three parts of our test. The next time through the loop, <code>i</code> will be assigned 1, and so on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/064.png" />
+    <p class="media-body">The two lines that call <code>dna_starts_with</code>, check its result, and increment the counter of successful tests are exactly the same as before.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/065.png" />
+    <p class="media-body">So is the line after the loop that summarizes how many tests passed.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/066.png" />
+    <p class="media-body">But these two lines are new. If a test fails, we immediately print out its index to make it easy to find in the <code>Tests</code> table.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/067.png" />
+    <p class="media-body">This pattern&mdash;creating fixtures, acting on them, and collecting and reporting results&mdash;is the heart of almost all testing tools.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/068.png" />
+    <p class="media-body">Many good libraries have been written in many languages to help programmers write tests that follow this pattern.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/069.png" />
+    <p class="media-body">We'll look at one such library for Python in a couple of episodes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/070.png" />
+    <p class="media-body">First though, we'll have a look at how you should go about handling errors in your programs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/071.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

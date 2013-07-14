@@ -1,0 +1,33 @@
+---
+layout: v4_topic
+title: "Interlude: Using a Debugger"
+lesson_title: Python
+prev: v4/python/alias.html
+next: v4/python/func.html
+uplink: v4/python/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "dK6HPVagXsk", "time": "00:06:10.00"}
+---
+<div>
+  <p>Hello and welcome to another episode of Software Carpentry.  In the next few minutes we'll introduce you to a powerful tool that will let you do more in less time.  </p>
+  <p>Suppose we have some data files formatted <a href="http://svn.software-carpentry.org/swc/4.0/topics/programming/src/observations.txt">as shown</a> (two columns of digits; each column is separated by a tab character).   Each line is a single observation and observations are divided into groups, which are separated by blank lines.  We want a function that will tell us how many observations are in each group.  For example, in this file the function would return 4, 3, and one. </p>
+  <p><a href="http://svn.software-carpentry.org/swc/4.0/topics/programming/src/countrec.py">Here is our first attempt</a> at solving the problem. The function <code>count_observations</code> takes as its single argument a list of strings &mdash; similar to that that would be returned by <code>readlines()</code>. We initalise the list of group sizes to the empty list, and the size of the current group to zero. For each line in the list, we strip off leading and trailing whitespace.  If the result is the empty string, then we've hit a blank line. So, we append the count of the number of observations in the current group to the list we're going to return and reset the count to zero so that we can start another group.</p>
+  <p>If the line <i>isn't</i> empty, then we simply add one to the count of the number of observations in the current group. And of course, when we're done processing all of the lines, we return the list of counts.</p>
+  <p>Down below our function we have three simple tests.  Here's a single line.  Well, we should get back a list containing only the number one.  Here's two lines: we should get back [2] because they're in the same group. And here is a line with some data, followed by a blank line which contains only the newline character, followed by another line with some data. We should get back the result [1,2] because we have two groups, each with one record. </p>
+  <p>Let's try running our program from the command line.<br />
+<code>python count_rec.py</code></p>
+  <p>And&hellip; it fails.  In fact, our very first test failed. Something is wrong with the function. If you're like most programmers, and you're using a basic editor like notepad, you probably debug by adding print statements to your program. We could go in right now and start: printing out the lines that we're reading, print out whether or not we went into the <code>if</code> or the <code>else</code>, print out the current count, and so forth.  But that's inefficient; there is a much better way. </p>
+  <p>Let's use an Integrated Development Environment, or IDE.  We will show you <a href="http://www.wingware.com/wingide/trial">Wing</a>, but <a href="http://wiki.python.org/moin/IntegratedDevelopmentEnvironments">there are many others out there</a>, for many different languages.  </p>
+  <p>Let's open up our file.  Okay, there is our code, and there is our tests.  Let's go up here and say Debug. It runs our code and tells us that we failed on line 17, and highlights the line where we failed.  So far that's no more information that we had, but look down here in the bottom left. The debugger is showing us the values of all of the variables.  For example, it is showing us that the variable <code>data</code> is a list and contains a single line. We can explore the data in our program while it's running.  We can do much more than that. </p>
+  <p>Let's stop the debugger and go up to the first line of <code>count_observations</code> and click in the left margin to set a breakpoint.  That little red stop sign means the program will be halted here, while it's running, so that we can see what's going on.  We click Debug again, and sure enough the program stops and tells us we're on line five of the file.  It's highlighted. </p>
+  <p>If we look down below, we see our local variables.  We have one variable called lines.  That contains the input argument.  So let's go up to here and go Step Over. We want to step over this line to the next one. Looking down at the variables again we've now got a variable called <code>counts</code>.   Step Over.  We've now got a variable called <code>current</code>.  We can keep stepping and see how our program executes while it's running.  We don't need to have to modify it with print statements; we don't have to exit the code.  And, if we put our mouse over variables, we can actually see in context what their values are. </p>
+  <p>Step.  Alright, <code>line</code> was not the empty string so we went into the <code>else:</code> branch.  Current is now <code>1</code>.  We went back around the loop, and now we exit and we're returning <code>counts</code>. Looking down below, <code>counts</code> is the empty list.  We're not appending the final account to the list. </p>
+  <p>Let's come down to the bottom of the function and say:<br />
+<code> counts.append(current) </code><br />
+So if there isn't a blank line at the end of a file, we still get the last result. </p>
+  <p>Save the file.  Run Debug.  We hit our breakpoint again.  We can use F6 on a windows machine to Step Over, and sure enough, <code>counts.append(..)</code> gets executed and we're about to return the list containing 1, so the next time we Step, we'll pop out of the function, do the assertion.  Sure enough we're back in our main program and the assertion didn't fail. </p>
+  <p>Let's see if it works for the case of two lines.  Again, we Step in, and this time, rather than step line by line, we're going to use Step Out.  That will just run the code until the current function returns.  Alright! That assertion passed. </p>
+  <p>Now, let's go up here and take out the breakpoint. Now suppose we want to go into the function, but we don't have the breakpoint set.  We can use Step Into.  That will step into function calls rather than stepping over them. So we use Step Into.  We're in our function, and we run a couple of lines.  We decide: let's just see how it goes. So we do step out, and we're at the end of our program and everything worked.  </p>
+  <p>The beauty was we did not have to modify our code with print statements, or read screens of output to try to diagnose the problem. We can see our data in place as the code is executing. </p>
+</div>

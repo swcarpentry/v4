@@ -1,0 +1,265 @@
+---
+layout: v4_topic
+title: Macros
+lesson_title: Make
+prev: v4/make/rules.html
+next: null
+uplink: v4/make/index.html
+pdf: v4/make/macros.pdf
+ppt: v4/make/macros.ppt
+youtube: {"slug": "buxd7FcyAU4", "time": "00:08:47.70"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="macros/001.png" />
+    <p class="media-body">Hello, and welcome to the fifth episode of the Software Carpentry lecture on Make.  In this episode, we'll see how to define macros and include one Makefile in another to handle differences between machines.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/002.png" />
+    <p class="media-body">As in previous episodes, we are exploring how to manage tasks and dependencies automatically.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/003.png" />
+    <p class="media-body">We have written a Makefile that will automatically re-create the paper we're working on if any of our raw data files change.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/004.png" />
+    <p class="media-body">Just when we thought we were done, our supervisor reminded us that all papers must conform to the university's new style rules.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/005.png" />
+    <p class="media-body">That means that <code>paper.pdf</code> has one more dependency: the official university style file <code>euphoric.wps</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/006.png" />
+    <p class="media-body">Here's the problem: on our laptop, that file lives in <code>C:\papers</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/007.png" />
+    <p class="media-body">On the machine we use in the lab, though, it's in <code>/lib/styles</code>.  Now, we could create a directory called <code>/lib/styles</code> on our laptop, and put a copy of <code>euphoric.wps</code> there, but there's another problem coming up fast behind us here on the highway of life.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/008.png" />
+    <p class="media-body">The university also has a style guide for diagrams, which is in a file called <code>euphoric.fig</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/009.png" />
+    <p class="media-body">Once again, on our laptop, it's installed in <code>C:\papers</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/010.png" />
+    <p class="media-body">&hellip;but it's in <code>/lib/styles</code> in the lab.  How should we handle this difference?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/011.png" />
+    <p class="media-body">Let's start with the Makefile we've written so far.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/012.png" />
+    <p class="media-body">The brute-force approach is to just add the two new dependencies like this.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/013.png" />
+    <p class="media-body">As you can see, though, there's some redundancy here: we're specifying the same directory twice.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/014.png" />
+    <p class="media-body">And notice before we go on that we haven't explicitly listed <code>euphoric.wps</code> or <code>euphoric.fig</code> as prerequisites of <code>paper.pdf</code> or the two figure we're generating.  Some people would include them, just in case, but it's more common not to list dependencies on "system" files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/015.png" />
+    <p class="media-body">But back to our problem: how do we handle the fact that these two paths need to be different when we're re-creating our paper in the lab?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/016.png" />
+    <p class="media-body">The first option is to use copy and paste, and write two completely separate Makefiles.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/017.png" />
+    <p class="media-body">What we really mean, though, is write <em>and maintain</em>, and that's why this is a bad idea.  As soon as we have two of anything, we'll eventually update one but forget to update the other.  Makefiles are already hard enough to debug; any "solution" that adds more complexity and risk isn't really a solution at all.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/018.png" />
+    <p class="media-body">Our second option is to put everything in one Makefile, and then to comment out the bits intended for the machine we <em>aren't</em> on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/019.png" />
+    <p class="media-body">This is problematic too.  First, we have to make sure we always comment and uncomment lines consistently&mdash;if we uncomment the line for creating the paper on our laptop, for example, but forget to uncomment the line for building the figures, we're going to have another debugging headache.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/020.png" />
+    <p class="media-body">Commenting and uncommenting lines also makes life more difficult for our version control system.  If we update our Makefile from version control, then change the commenting on a few lines, the version control system will want to save those changes in the repository the next time we commit.  We probably don't actually want to do that, since it would mean that the next time we updated on the other machine, its Makefile would be overwritten.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/021.png" />
+    <p class="media-body">The third option&mdash;the right one&mdash;is to refactor our Makefile to make the problem go away entirely.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/022.png" />
+    <p class="media-body">We can do this by defining a <em>macro</em>, just as we would define a constant or variable in a program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/023.png" />
+    <p class="media-body">Here's our Makefile with a macro defined and used.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/024.png" />
+    <p class="media-body">The definition looks like definitions in most programming languages: the macro is called <code>STYLE_DIR</code>, and its value is <code>c:/papers/</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/025.png" />
+    <p class="media-body">To use the macro, we put a dollar sign in front of it (just as we would do in the shell) and wrap its name in curly brackets.  This tells Make to insert the macro's value, so that these two directory paths are what we want on our laptop.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/026.png" />
+    <p class="media-body">This is certainly a step forward: now, when we want to move our Makefile from one machine to another, we only have to change one definition in one place.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/027.png" />
+    <p class="media-body">We no longer have to worry about consistency&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/028.png" />
+    <p class="media-body">&hellip;but we're still making changes to a file that's under version control that we <em>don't</em> want written back to the repository.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/029.png" />
+    <p class="media-body">Before we look at the second half of the solution, it's important to note that we have to put curly brackets or parentheses around a macro's name when we use it&mdash;we can't just write <code>$MACRO</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/030.png" />
+    <p class="media-body">If we do, Make will interpret it as <code>$M</code> (a reference to the macro <code>M</code>) followed by "ACRO".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/031.png" />
+    <p class="media-body">Since we probably don't have a macro called <code>M</code>, <code>$M</code> will expand to the empty string, so <code>$MACRO</code> without parentheses will just be "ACRO".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/032.png" />
+    <p class="media-body">This is almost certainly not what we want&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/033.png" />
+    <p class="media-body">Why does Make think that macro names are only one letter long unless we tell it they're longer?  To make a long story short, it's another wart left over from its history.  Almost everyone trips over it occasionally, and as with other bugs, it can be very hard to track down.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/034.png" />
+    <p class="media-body">Back to our Makefile&hellip; It's common practice to use macros to define all the flags that tools need, so that if a tool is invoked in two or more actions, it's passed a consistent set of flags.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/035.png" />
+    <p class="media-body">Here, for example, we're defining <code>STYLE_DIR</code> to point to the directory holding our style files, then using that definition in two other macros.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/036.png" />
+    <p class="media-body">The first, <code>WPD2PDF_FLAGS</code>, is the single flag and argument we want to pass to the tool that turns our word processor file into a PDF.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/037.png" />
+    <p class="media-body">The second, <code>SGR_FLAGS</code>, combines <code>STYLE_DIR</code> with a couple of other flags to build the arguments for the tool that turns data files into SVG diagrams.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/038.png" />
+    <p class="media-body">And now we're ready to solve our original problem.  Let's move the definition of <code>STYLE_DIR</code>&mdash;the macro that changes from machine to machine&mdash;out of our main Makefile, and into a Makefile of its own called <code>config.mk</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/039.png" />
+    <p class="media-body">We can then include that file in our main Makefile using Make's <code>include</code> command.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/040.png" />
+    <p class="media-body">Our other macros and commands can then use the definition of <code>STYLE_DIR</code> just as if it had been defined in the main Makefile.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/041.png" />
+    <p class="media-body">Once we've tested this to make sure it works, we can copy <code>config.mk</code> to create two files that we'll put in version control.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/042.png" />
+    <p class="media-body">The first, <code>config-home.mk</code>, defines <code>STYLE_DIR</code> for use on our laptop.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/043.png" />
+    <p class="media-body">The second, <code>config-lab.mk</code>, defines it for use in the lab.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/044.png" />
+    <p class="media-body">As we said, these two files go in version control, and are only changed when they need to be (i.e., when the style files move, or their names change).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/045.png" />
+    <p class="media-body">We then copy one or the other on the machine we're using to create the file <code>config.mk</code> that our main Makefile actually includes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/046.png" />
+    <p class="media-body">For example, here's what we have in the <code>paper</code> directory on our home machine when we do a fresh checkout from version control: along with our data files and the word processor file, we have our main Makefile and the two machine-specific configuration makefiles.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/047.png" />
+    <p class="media-body">So we copy <code>config-home.mk</code> to create <code>config.mk</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/048.png" />
+    <p class="media-body">Meanwhile, when we check out in the lab&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/049.png" />
+    <p class="media-body">&hellip;we copy <code>config-lab.mk</code> to create <code>config.mk</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/050.png" />
+    <p class="media-body">In both cases, our main Makefile is now happy, because the file it's including now exists, and has the right definition of <code>STYLE_DIR</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/051.png" />
+    <p class="media-body">We can also solve this problem by defining <code>STYLE_DIR</code> on the command line each time we run Make.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/052.png" />
+    <p class="media-body">To do this, we use the <code>-D</code> flag, and specify the macro's name and the value we want to give it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/053.png" />
+    <p class="media-body">This is almost always a bad idea, though.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/054.png" />
+    <p class="media-body">We have to remember to type the definition each time&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/055.png" />
+    <p class="media-body">&hellip;and we have to type it <em>correctly</em> each time.  This isn't too bad with just one definition, but if there are half a dozen, well, you see the problem.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/056.png" />
+    <p class="media-body">There's also no record in the Makefile itself of the flag, which makes life harder for other people who want to re-create our paper.  How do they know what to type?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/057.png" />
+    <p class="media-body">There are many other approaches to handling platform dependence in builds that we won't go into in this lecture.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/058.png" />
+    <p class="media-body">One of the most popular, which is used by tools like CMake and GNU's Autoconf and Automake, is to write a higher-level specification for the build that can then be compiled to create Makefiles or build files for other tools like integrated development environments.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/059.png" />
+    <p class="media-body">The main benefit of doing this is that these tools can manage, and even automatically discover, the difference between machines, so that we don't ever have to worry about them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/060.png" />
+    <p class="media-body">The downside is that these higher-level build files are even harder to debug than Makefiles.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/061.png" />
+    <p class="media-body">Remember: a build file is a program.  Automating tasks with build files can save you endless hours&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/062.png" />
+    <p class="media-body">&hellip;but you have to treat them with the same respect you would give any other program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="macros/063.png" />
+    <p class="media-body">In our next episode, we'll have a quick look at how automated builds can be used to support reproducible research.</p>
+  </div>
+</div>

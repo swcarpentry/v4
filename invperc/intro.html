@@ -1,0 +1,117 @@
+---
+layout: v4_topic
+title: Introduction
+lesson_title: Program Design
+prev: null
+next: v4/invperc/grid.html
+uplink: v4/invperc/index.html
+pdf: v4/invperc/intro.pdf
+ppt: v4/invperc/intro.ppt
+youtube: {"slug": "F1tAUPVzYs4", "time": "00:01:53.17"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="intro/001.png" />
+    <p class="media-body">Good morning, and welcome to the first Software Carpentry lecture on program design. This episode will introduce our sample problem, invasion percolation.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/002.png" />
+    <p class="media-body">Our goal in this lecture is to talk about program design&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/003.png" />
+    <p class="media-body">&hellip;by which of course we mean the <em>principles</em> of program design.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/004.png" />
+    <p class="media-body">Unfortunately, principles are very difficult to teach in the abstract&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/005.png" />
+    <p class="media-body">&hellip;so instead, we're going to give you a few examples of program design.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/006.png" />
+    <p class="media-body">And our first is called <em>invasion percolation</em>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/007.png" />
+    <p class="media-body">Suppose that you've got a fractured piece of rock&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/008.png" />
+    <p class="media-body">&hellip;and you're interested in finding out how far pollution will spread through it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/009.png" />
+    <p class="media-body">One simple way to model this with a computer program is to create a two-dimensional grid of square cells&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/010.png" />
+    <p class="media-body">&hellip;and fill those cells with random values.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/011.png" />
+    <p class="media-body">Mark the center cell as being filled with pollutant&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/012.png" />
+    <p class="media-body">&hellip;and then look at its four neighbors. The neighbor with the lowest value is the one that has the least resistance to the spread of the pollutant&mdash;in our case, the most highly fractured rock.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/013.png" />
+    <p class="media-body">Mark that one as being filled&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/014.png" />
+    <p class="media-body">&hellip;and look at the neighbors of the new filled region.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/015.png" />
+    <p class="media-body">Find the one with the lowest value, and repeat the process over and over again.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/016.png" />
+    <p class="media-body">If you have two cells on the boundary that are tied equal for the lowest value, pick one of them at random&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/017.png" />
+    <p class="media-body">&hellip;and fill it in.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/018.png" />
+    <p class="media-body">Continue this process until you reach the edge of the grid.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/019.png" />
+    <p class="media-body">The fractal that results from this simulation will tell you about how far and how fast the pollutant would spread through the rock.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/020.png" />
+    <p class="media-body">Of course, if you want to look at the statistical properties of these fractals, you need to do lots of simulation&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/021.png" />
+    <p class="media-body">&hellip;on large grids.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/022.png" />
+    <p class="media-body">That means your program has to be fast.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/023.png" />
+    <p class="media-body">So in this lecture we will look at three questions. First, how do we do this at all?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/024.png" />
+    <p class="media-body">Second, how do we tell that it's correct?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/025.png" />
+    <p class="media-body">And third, how do we make it fast?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/026.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

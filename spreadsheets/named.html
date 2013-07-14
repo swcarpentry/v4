@@ -1,0 +1,23 @@
+---
+layout: v4_topic
+title: Named Ranges
+lesson_title: Spreadsheets
+prev: v4/spreadsheets/pivot.html
+next: null
+uplink: v4/spreadsheets/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "KaYjbIpxP5A", "time": "00:02:26.07"}
+---
+<div>
+  <p>Hello, and welcome to episode nine of the Software Carpentry lecture on spreadsheets.  In this episode, we'll look at how to use <em>named ranges</em> to manage the data in spreadsheets.</p>
+  <p>Let's open up our CO2 emission spreadsheet once again, go down to the bottom, and create formulas for the minimum, average, and maximum areas of the provinces and territories.  The minimum is MIN of C2 to C14; the average is AVERAGE of C2 to C14, and the maximum is, you guessed it, MAX of C2 to C14.</p>
+  <p>At this point, your alarm bells should be ringing.  A spreadsheet is a program, albeit a program written in a rather unusual format, and any time information is duplicated in a program, it will eventually be wrong.  We've specified the range C2 to C14 three times; what we <em>should</em> do is use a named range so that we only specify it once.</p>
+  <p>Let's erase our three formulas, then select the range of cells C2 to C14.</p>
+  <p>If we go to the upper left corner of the formula bar, we can type in a name for this range.  Let's call it "Areas".</p>
+  <p>Now, we can write our formulas as "MIN(Areas)", "AVERAGE(Areas)", and "MAX(Areas)".  This is easier to understand, for the same reason that giving variables meaningful names like "temperature" instead of "x1" makes programs easier to understand.</p>
+  <p>It also guarantees that all three formulas are referring to exactly the same range of cells.  If we typed in the range three separate times, we could all too easily type C2 to C4 instead of C2 to C14.  Mistakes like that are very hard to notice in spreadsheets.</p>
+  <p>Finally, using named ranges makes it easier for us to manipulate our spreadsheet.  Let's go to the Name Manager.  It shows us that this spreadsheet has one named range called "Areas".  If we click on the edit control, we can change the range of cells it refers to so that it includes only the Western and Prairies provinces.</p>
+  <p>When we close this dialog, the values of our three formulas have automatically been updated.  We can see this by using "undo" and "redo" to toggle between the old and new values of the range: each time we do, the minimum, average, and maximum are updated, because they refer to different sets of cells in each case.</p>
+  <p>It's also possible to create <em>dynamic</em> named ranges using the "OFFSET" function.  Dynamic ranges automatically adjust their size to include all the values in a row or column, and are very useful when you're using spreadsheets to analyze experimental data.  Please see Excel's own documentation for more information.</p>
+</div>

@@ -1,0 +1,197 @@
+---
+layout: v4_topic
+title: More Tools
+lesson_title: Regular Expressions
+prev: v4/regexp/patterns.html
+next: null
+uplink: v4/regexp/index.html
+pdf: v4/regexp/module.pdf
+ppt: v4/regexp/module.ppt
+youtube: {"slug": "RGN5tS-2Zmo", "time": "00:06:19.83"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="module/001.png" />
+    <p class="media-body">Hello, and welcome to the fifth and final episode of the Software Carpentry lecture on regular expressions.  In this episode, we're going to work through a moderately complex problem using regular expressions, and introduce a few more tools in the regular expression library.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/002.png" />
+    <p class="media-body">Our starting point is an archive of several thousand papers and theses written in LaTeX, a text-based document formatting program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/003.png" />
+    <p class="media-body">Our documents look like this.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/004.png" />
+    <p class="media-body">They all use the same labels to refer to items in a shared bibliography.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/005.png" />
+    <p class="media-body">Our job is to find out how often citations appear together, i.e., how often paper X is cited in the same document as paper Y.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/006.png" />
+    <p class="media-body">As a first step, we need to extract the set of citation labels from each document, and that's the problem we'll tackle in this episode.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/007.png" />
+    <p class="media-body">Let's have a closer look at our input.  In LaTeX, citations are written using '\cite', with cross-reference labels in curly braces.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/008.png" />
+    <p class="media-body">A single citation can include two or more labels separated by commas.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/009.png" />
+    <p class="media-body">There may be white space before or after labels.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/010.png" />
+    <p class="media-body">There can even be line breaks where a citation is split across two lines.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/011.png" />
+    <p class="media-body">And there can be multiple citations per line.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/012.png" />
+    <p class="media-body">Our first idea is to use a group to capture everything inside the curly braces following the word 'cite'.  It seems to work in one simple case.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/013.png" />
+    <p class="media-body">But what if there are multiple citations on a single line?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/014.png" />
+    <p class="media-body">It looks like we're capturing the text <em>between</em> the citations.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/015.png" />
+    <p class="media-body">The reason is that regular expression matching is <em>greedy</em>: it matches as much text as it can, and the '.' in '.+' will match all the characters from the first curly brace to the last one, including the intervening citations and curly braces.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/016.png" />
+    <p class="media-body">Luckily, the diagnosis of our problem suggests its solution: let's have the regular expression match everything <em>except</em> a closing curly brace.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/017.png" />
+    <p class="media-body">This is remarkably easy to do: if the first character in a set in square brackets is the circumflex '^', then the set is negated, i.e., it matches everything <em>except</em> the characters in the set.  The expression '[^}]' therefore matches every character except a closing curly brace.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/018.png" />
+    <p class="media-body">This works for a single citation.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/019.png" />
+    <p class="media-body">All we've done is change '.' to the negated set.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/020.png" />
+    <p class="media-body">What about multiple citations on a single line?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/021.png" />
+    <p class="media-body">Well, it's not gobbling up text we don't want it to, but it's only capturing the first citation.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/022.png" />
+    <p class="media-body">Somehow, we need to extract all matches, not just the first.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/023.png" />
+    <p class="media-body">Luckily, the regular expression library has a function to do exactly this: if we use <code>re.findall</code> instead of <code>re.search</code>, it will give us back a list of all the substrings that matched our pattern.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/024.png" />
+    <p class="media-body">Remember, whatever your problem is, someone has probably run into it before, and there's probably something in the library to help you.  Knowing what's in the library is as important to a programmer as knowing what's in the literature is to a scientist.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/025.png" />
+    <p class="media-body">Let's give <code>findall</code> a try.  It seems to produce the right output.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/026.png" />
+    <p class="media-body">Not bad for a 7-character change.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/027.png" />
+    <p class="media-body">OK, what about spaces in citations?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/028.png" />
+    <p class="media-body">The good news is, nothing breaks. The bad news is, the spaces are saved by <code>findall</code>, which isn't really what we want.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/029.png" />
+    <p class="media-body">We could tidy this up after the fact using <code>string.strip</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/030.png" />
+    <p class="media-body">But let's modify the pattern instead.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/031.png" />
+    <p class="media-body">This modification solves half our problem.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/032.png" />
+    <p class="media-body">If you recall, '\s' is an abbrevation for the set of whitespace characters, so these uses of '\s*' match zero or more spaces immediately after the opening curly brace, or immediately before the closing one.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/033.png" />
+    <p class="media-body">However, the space after the 'Y' is still being returned in the matched text.  Once again, the problem is that regular expressions are greedy: the space after the 'Y' isn't a closing curly brace, so it's matched by the negated character set, and included in the returned string.  The '\s*' that's supposed to match the trailing space is then matched against zero characters instead of one.  It's not what we want, but it's legal.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/034.png" />
+    <p class="media-body">OK, so let's force our match to line up with the break from word to non-word characters using '\b'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/035.png" />
+    <p class="media-body">It works!</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/036.png" />
+    <p class="media-body">The change is to put '\b' after the first unwanted spaces, and before the last ones.  Since the curly braces around the citation labels are also non-word characters, the pattern matches even if there aren't any opening or trailing spaces.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/037.png" />
+    <p class="media-body">The last hurdle is to handle multiple labels inside a single pair of curly braces.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/038.png" />
+    <p class="media-body">The pattern we've built so far doesn't explode when there are two or more labels&mdash;it even handles spaces after the commas.  But it returns all those labels as a single lump of text.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/039.png" />
+    <p class="media-body">We actually could write a pattern that would break everything up on commas, but it would need some very advanced features of the regular expression library, and would be very difficult to read.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/040.png" />
+    <p class="media-body">Instead, let's use another basic function, <code>re.split</code>, to separate multiple labels.  <code>re.split</code> does the same thing as <code>string.split</code>, but unlike its simpler cousin, it breaks things up everywhere that a pattern matches.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/041.png" />
+    <p class="media-body">The best way to show <code>re.split</code> in action is to write the function we originally set out to create.  Let's start with a skeleton that includes some test data, a function that does nothing (but doesn't just fail), and a couple of lines that call that function and display the result.  So far, so good.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/042.png" />
+    <p class="media-body">Now let's write our function.  For readability's sake, we'll put our patterns at the top and give them memorable names.  Inside the function, we'll pull out all the citations using the first pattern, then split each result everywhere there's a comma with optional spaces before or after it.  We'll stuff all the results into a set, and return that; if no matches were found, that set will be empty.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/043.png" />
+    <p class="media-body">We can use one more trick from the regular expression library to make this function more efficient.  Instead of turning the regular expression into a finite state machine over and over again, we can <em>compile</em> the regular expression and save the resulting object.  That object has methods with the same names as the functions we've been using from the library, like <code>search</code> and <code>findall</code>, but if we're using the same pattern over and over again, compiling it once and re-using the compiled object is much faster.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/044.png" />
+    <p class="media-body">As you can see, the changes required are very small: instead of saving the textual representations of our expressions, we compile them, and then instead of calling the top-level functions from the regular expression library, we call the methods of those saved objects.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/045.png" />
+    <p class="media-body">And here's the result: a set of all the citations in our test data, pulled out with just a dozen lines of code.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="module/046.png" />
+    <p class="media-body">This is the end of our lecture on regular expressions.  We'll touch on a few other ideas in the exercises, but we hope these five episodes have shown you enough to help you solve some everyday data crunching problems.</p>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+---
+layout: v4_topic
+title: Nested Queries with Microsoft Access
+lesson_title: Using Access
+prev: v4/access/join.html
+next: v4/access/null.html
+uplink: v4/access/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "3xQEfon-JPY", "time": "00:03:28.00"}
+---
+<div>
+  <p>Welcome to another episode of the Software Carpentry lecture on databases using Microsoft Access. This episode is about <em>nested queries</em>.</p>
+  <p>In Access, we are able to nest one query inside of another to use the first query's results in place of a table. In other words, a query can provide the data source from which another query can select data, filter, sort, aggregate, et cetera. This allows us to answer questions like, "Which scientist worked on more than one project?"</p>
+  <p>Let's start by determining how many different projects each scientist has worked on. We can begin by finding the distinct list of projects each scientist worked on using unique values. We want to count how many projects are listed here for each scientist. Since counting is an aggregation, we need to use the results of this query as input for a separate query that does the aggregation.</p>
+  <p>To nest this query as the source for a larger query, we start by saving this query as "ProjectsByScientist". Then we create a second query. When we start the query, instead of adding an existing table, we click on the queries tab and add the "ProjectsByScientist" query. We can now use this query just like a table and aggregate the values by clicking on "totals", grouping by login ID, and counting "project". Now, if we want to see a list of only the scientists that have worked on more than one project, we can filter this count to be greater than one, and choose not to show the project column.</p>
+  <p>Nesting queries like this is really useful if the data you want to write a query on isn't present in exactly the right form in the database. You can use one query to get the data in the form you need it in, and then when nesting, you are able to use these results as the input for a larger query.</p>
+  <p>There are also other things that we can do with nested queries, such as use the results of one query to filter the results of another query. This allows us to do things like determine which scientists have <em>not</em> been experimenting with time travel. But these types of nested queries or <em>subqueries</em> can't be generated using Access's graphical interface. They require us to use Structured Query Language, a programming language typically referred to as "SQL" or "sequel". If you're interested in how to do this, check out the Software Carpentry lectures on databases using SQL.</p>
+  <p>In this screencast, we've introduced the idea of nesting queries. We've seen that you can use a nested query in place of a table to answer more complicated questions than you could using a single query on its own.</p>
+</div>

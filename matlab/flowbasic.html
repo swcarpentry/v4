@@ -1,0 +1,125 @@
+---
+layout: v4_topic
+title: Basic Flow Control
+lesson_title: MATLAB
+prev: v4/matlab/indexing.html
+next: v4/matlab/flowmore.html
+uplink: v4/matlab/index.html
+pdf: v4/matlab/flowbasic.pdf
+ppt: v4/matlab/flowbasic.ppt
+youtube: {"slug": "qcqUqQSF8sw", "time": "00:08:32.83"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/001.png" />
+    <p class="media-body">Hello, and welcome to another episode of the Software Carpentry lecture on MATLAB programming.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/002.png" />
+    <p class="media-body">MATLAB contains all of the major flow control statements that you would expect of a modern programming language.  In this episode, we will look at if/else if/else statements as well as loops.  Another episode will investigate functions. We also want to emphasize that under a data parallel approach to programming, loops and if-else statements are not the solution to every problem.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/003.png" />
+    <p class="media-body">For instance, if we want to perform one of two functions on each element of a matrix, we could write a for loop with an if-else inside.  In MATLAB, it is better to express the concept "all at once" by passing an array of values that satisfy each condition to A or to B.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/004.png" />
+    <p class="media-body">To introduce loops, we will use a running example from statistics.  Suppose we are given a matrix of disease statistics.  Each row is a patient, and we have their T cell counts at each hour.  Unfortunately, the T cell count is missing for some time points.  Those points are marked with a 0, and we need to decide what to do with the missing data.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/005.png" />
+    <p class="media-body">One of the simplest ways to interpolate missing data is to replace it with the average of the two closest data points.  Other more sophisticated interpolation algorithms might make use of more nearby points or use something besides linear interpolation.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/006.png" />
+    <p class="media-body">We will write a function interpolate. Functions in MATLAB are stored in files with the ".m" extension.  The easiest way to write functions is to use MATLAB's built in editor.  Type "edit interpolate.m" in the MATLAB command prompt.  This opens an editor where we can write our interpolation function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/007.png" />
+    <p class="media-body">The first line of a function file is a header, which looks like this.  The header's job is to list the name of the function, the parameters, and the return variables of the function. For the rest of the lecture, we will be working in this editor.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/008.png" />
+    <p class="media-body">A naive implemention of interpolation will loop through each person and data value.  We will test whether the value is 0 and it if is, we replace it with the local interpolation.  This approach is not a data parallel way of thinking about problems involving matrices.  It requires that we loop through every value of the matrix.  Still, it is informative to write the naive version to make sure we understand what the program is doing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/009.png" />
+    <p class="media-body">In MATLAB, a for loop has the notation For index equals array. In this case, the index is 'i' and the array is the vector 1,2,3,4,5, which has the shorthand 1 colon 5 notion.   The statements that are repeated each iteration through a for loop are called the body of the loop, and the end of the body is marked with the keyword end.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/010.png" />
+    <p class="media-body">The shorthand a colon b returns a, a + 1, a + 2, up to b.  Another way to say the same thing is that the mesh size is 1.  To change the mesh size, we can pass a colon c colon b.  Now, c is the mesh size.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/011.png" />
+    <p class="media-body">You might want to guess what this loop will display if you type it on the MATLAB prompt.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/012.png" />
+    <p class="media-body">Since a command without a semicolon prints its response to the console, in this case, we just list the numbers 1 through 5.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/013.png" />
+    <p class="media-body">In our interpolate function, we need to figure out what sizes to use for loops.  These can be gotten from the size function, which returns the size of the array.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/014.png" />
+    <p class="media-body">We also make a copy of data and call it clean_data.  Since this variable has the same name as our return variable, it will be automatically returned at the end of the function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/015.png" />
+    <p class="media-body">Next we loop through each person. For each person, we loop through each measurement except the first and last.  Those need special treatment with linear interpolation, and we leave them to an exercise. Now, for each matrix element, which we index by the variables person and measurement, we check for a very small value.  If the value is nearly zero, we reassign it to the average of the left and right values.  Note that if those values are also zero, then linear interpolation might still return an erroneous value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/016.png" />
+    <p class="media-body">In our test for values that are zero, we do not use the most obvious solution, which is to test for values that are equal to 0 using the equals comparison.  This is because MATLAB is using floating point numbers, and floating point equality tests can be unreliable.  If a number is nearly zero but for some reason is not stored as precisely zero, then we might mistakenly suppose that it is a normal value.  Using a small number that is slightly larger than zero but still much smaller than our measurement values is a good way to avoid this problem.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/017.png" />
+    <p class="media-body">In MATLAB, we do not use a return statement.  Instead, any return variables are returned with whatever value they take at their last assignment.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/018.png" />
+    <p class="media-body">Our program contains two loops.  One loop is over every person in our file while the other loops over each measurement for that person.  Data parallel programming tries to avoid writing loops over matrices because they are slow and tend to hide the program logic.  In this case, we should look for a better solution.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/019.png" />
+    <p class="media-body">A better solution would be to let MATLAB identify all of the locations that are zero for us so that we only have to loop over locations that definitely need to be replaced.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/020.png" />
+    <p class="media-body">It turns out that MATLAB has a function called find that does exactly the opposite of what we need.  It returns all of the non-zero elements of an array.  If we ask find for two return values, it will return an array of row values and an array of column values.  Each row, column pair gives a non-zero entry.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/021.png" />
+    <p class="media-body">In order to find zeros rather than nonzeros, we first find the result of a comparison with EPS.  The result of the comparison is a matrix with ones where data is near zero and zeros everywhere else.  Find returns the indices of elements in our data matrix that are zero.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/022.png" />
+    <p class="media-body">Our new program is even more compact than the last, and we've only looped over those values that definitely need to be replaced.  One thing that we have to be careful about is that we only pass find the center of our matrix.  The first and last measurements must get special treatment, which is again left as an exercise.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/023.png" />
+    <p class="media-body">Our new function has less loops, but it does not change the theoretical workload of the computer.  Some loop has to go through every value and test whether it is zero, but that loop was written by someone else and embedded in MATLAB's find function.  This loop will be faster and less buggy than anything we can write, which means we should take advantage of it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/024.png" />
+    <p class="media-body">Another question is whether we can do even better with our program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/025.png" />
+    <p class="media-body">Rather than loop through values of the arrays I and J, we can use the lesson that we learned in the episode on array indexing to interpolate all of the missing values in one line.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/026.png" />
+    <p class="media-body">To review, MATLAB provides a complete set of flow control structures including while loops, if else if and else loops, and for loops.  It would seem strange that we spent an episode on flow control that ended with a  program that didn't have any loops or if statements left.  In MATLAB, as in all data parallel languages, loops should be used to control the general flow of the program but they should probably not be used to iterate through every element of a data structure.  It's best to use built in functions for those tasks.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/027.png" />
+    <p class="media-body">Before you write a MATLAB function, you should ask yourself if there are prebuilt functions that you can combine to lighten your programming and debugging load. Before you write a loop or if statement in MATLAB, you should ask yourself if there is a data parallel way to accomplish the same task.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flowbasic/028.png" />
+    <p class="media-body">In our next episode, we will take a deeper look at more advanced MATLAB function writing, which can make use of the flexible way that MATLAB handles function parameters and returns.</p>
+  </div>
+</div>

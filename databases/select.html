@@ -1,0 +1,77 @@
+---
+layout: v4_topic
+title: Selecting Data
+lesson_title: Databases
+prev: v4/databases/intro.html
+next: v4/databases/filter.html
+uplink: v4/databases/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "Gua3FpRzLdQ", "time": "00:04:38.15"}
+---
+<div>
+
+  <p>Welcome to the Software Carpentry screencast on Databases. This screencast is on retreiving data from tables in a database.</p>
+  <p>Databases come in many flavours. In these screencasts we will be using the SQLite Manager plugin for Firefox to interact with our database.</p>
+  <p>As we've seen, a database is a way to store information that is arranged as tables.</p>
+  <p>We will be using a database that has a single table named Experiment.</p>
+  <p>This table is a log of all of the work done on experiments in a research lab, broken down by project and scientist</p>
+  <p>The table has a column for the login id of the scientist, the name of their project, a numeric id for their experiment, how many hours they spent on it, and when it took place.</p>
+  <p>Each row, or record, in this table describes one scientist's work on a certain experiment on a given date.</p>
+  <p>To start, lets write an SQL query that retrieves the loginID and the Project name from the Experiment table.</p>
+  <p>We do that by using the SQL command, SELECT. We then list the columns we want to read from the database table.</p>
+  <p>We want the LoginID, and Project name, so we write those column names, and then we write FROM, and the name of the table we want the data from, Experiment:</p>
+
+<pre>SELECT LoginID, Project FROM Experiment;</pre>
+
+  <p>We put a semi-colon at the end to tell the database this is the end of the command.</p>
+  <p>I've capitalised the words SELECT, and FROM because they are SQL keywords. Capitalisation isn't necessary, but we'll continue this throughout the screencast so that it is clear what is a keyword and what is a table name or field name.</p>
+  <p>When we run the command, it shows us all of the data from the Experiment table for the two columns that we asked for: the LoginID, and the name of the Project.</p>
+  <p>If wanted the Hours column, we'd just add that to the list of columns in the SELECT clause:</p>
+
+<pre>SELECT LoginID, Project, Hours FROM Experiment;</pre>
+
+  <p>So, After the SELECT command you listed the fields you want returned. You can place them in any order. We could write:</p>
+
+<pre>SELECT Project, LoginID,</pre>
+
+  <p>And you can repeat field names if you'd like:</p>
+
+<pre>SELECT Project, LoginID, LoginID, Project</pre>
+
+  <p>If you want to pull up all of the columns in a table, you can use the asterisk, or star, after SELECT. The asterisk means "all of the column names" &mdash; it is just a shortcut. So, if we run this query:</p>
+
+<pre>SELECT * FROM Experiment;</pre>
+
+  <p>we see all of the columns from the Experiment table.</p>
+  <p>If the there are duplicate rows returned by your query, it is possible to remove the duplicates. For example, we can fetch only the Project column from the Experiment table:</p>
+
+<pre>SELECT Project FROM Experiment;</pre>
+
+  <p>and if we just wanted to know which different Projects the scientists were working on , we put DISTINCT keyword right after the SELECT keyword,</p>
+
+<pre>SELECT DISTINCT Project FROM Experiment;</pre>
+
+  <p>This lists all of the projects, but only once.</p>
+  <p>If select more than one column name:</p>
+
+<pre>SELECT DISTINCT Project, LoginID FROM Experiment;</pre>
+
+  <p>then only the distinct pairs of projects and login IDs are returned.</p>
+
+  <p>Suppose that 10% of the time spent on each experiment was prep. work which needs to be accounted for separately.</p>
+  <p>In our SELECT statement we can add expressions that do computations on each row.</p>
+  <p>So, to calculate 10% of the time spent on each experiment, we can add an expression to the list of columns in the SELECT field (in this case we'll leave the * there to select all of the columns), but we'll add the expression Hours * .1</p>
+
+<pre>SELECT *, Hours * .1 FROM Experiment</pre>
+
+  <p>When we run the query, the expression Hours * .1 is evaluated for each row and appended to the output.</p>
+  <p>When appending expressions in the SELECT clause, you can use any of the fields, all of the arthimetic operators can be used here, as well as a certain built-in functions.</p>
+  <p>For instance, We could round these values to the first decimal place by using the ROUND function:</p>
+
+<pre>SELECT *, ROUND(Hours * .1, 1) FROM Experiment</pre>
+
+  <p>In this screencast we've introduced the very basics of interacting with and retrieving data from database.</p>
+  <p>We've seen that you can select columns from a table to retreive, use the DISTINCT keyword to only return unique rows, as well as append calculated columns to output.</p>
+
+  </div>

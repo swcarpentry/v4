@@ -1,0 +1,353 @@
+---
+layout: v4_topic
+title: Querying Directory Contents
+lesson_title: Systems Programming
+prev: v4/sysprog/dirwalk.html
+next: v4/sysprog/filepaths.html
+uplink: v4/sysprog/index.html
+pdf: v4/sysprog/queries.pdf
+ppt: v4/sysprog/queries.ppt
+youtube: {"slug": "seHFBvGgHgA", "time": "00:07:27.70"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="queries/001.png" alt="media 001" />
+    <p class="media-body">Hello and welcome to the third episode of the Software Carpentry lectures on handling directories and files in Python. Here, we'll continue to look at how we can explore directories by looking at the ways in which Python allows us to find out more about the contents of directories.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/002.png" alt="media 002" />
+    <p class="media-body">We now know how to move around directories&#8230;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/003.png" alt="media 003" />
+    <p class="media-body">&#8230;and see what's in them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/004.png" alt="media 004" />
+    <p class="media-body">But there are many other things we might want to find out.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/005.png" alt="media 005" />
+    <p class="media-body">We might want to check whether a file or directory already exists. This can be useful before saving a file to allow the user to decide if the file is to be overwritten.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/006.png" alt="media 006" />
+    <p class="media-body">We may have a variable and want to see whether that refers to a file or a directory.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/007.png" alt="media 007" />
+    <p class="media-body">We may want to see if two variables refer to the same file or directory.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/008.png" alt="media 008" />
+    <p class="media-body">We may want to find out what we can do with a file or directory. Are we allowed to read it, to update it, or delete it?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/009.png" alt="media 009" />
+    <p class="media-body">And, we may want to get information such as the file size, who owns it and when it was last modified.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/010.png" alt="media 010" />
+    <p class="media-body">A simple check we often want to do is to see whether a file or directory exists.  Python provides the exists function that does this check.  This takes an argument which can be an absolute or relative path and returns true if it exists as a file or directory and false otherwise.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/011.png" alt="media 011" />
+    <p class="media-body">Let's start with a relative path to a file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/012.png" alt="media 012" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/013.png" alt="media 013" />
+    <p class="media-body">And now an absolute path.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/014.png" alt="media 014" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/015.png" alt="media 015" />
+    <p class="media-body">And a relative path to a directory.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/016.png" alt="media 016" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/017.png" alt="media 017" />
+    <p class="media-body">And the absolute path.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/018.png" alt="media 018" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/019.png" alt="media 019" />
+    <p class="media-body">And something that does not exist.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/020.png" alt="media 020" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/021.png" alt="media 021" />
+    <p class="media-body">And the absolute path to something that does not exist.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/022.png" alt="media 022" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/023.png" alt="media 023" />
+    <p class="media-body">Now, let's look at telling apart files and directories. Python provides two functions, isfile and isdir, which check whether their argument is a path to a file or a directory. They can take relative or absolute paths. Let's import these.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/024.png" alt="media 024" />
+    <p class="media-body">Now, let's call isfile on a relative path to a file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/025.png" alt="media 025" />
+    <p class="media-body">As expected, it returns true.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/026.png" alt="media 026" />
+    <p class="media-body">And, for a path to a directory.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/027.png" alt="media 027" />
+    <p class="media-body">This time, it returns false.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/028.png" alt="media 028" />
+    <p class="media-body">And for a path to something that does not exist.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/029.png" alt="media 029" />
+    <p class="media-body">It also returns false.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/030.png" alt="media 030" />
+    <p class="media-body">Isdir is much the same. When given the path to a directory&#8230;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/031.png" alt="media 031" />
+    <p class="media-body">&#8230;it returns true.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/032.png" alt="media 032" />
+    <p class="media-body">And for a file&#8230;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/033.png" alt="media 033" />
+    <p class="media-body">&#8230;it returns false.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/034.png" alt="media 034" />
+    <p class="media-body">And when given a nonexistent directory&#8230;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/035.png" alt="media 035" />
+    <p class="media-body">&#8230;again, it returns false.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/036.png" alt="media 036" />
+    <p class="media-body">As isfile and isdir are just functions that return true or false we can use them in conditionals. So here is one example where we define a simple function to print whether the path it is given is&#8230;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/037.png" alt="media 037" />
+    <p class="media-body">A file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/038.png" alt="media 038" />
+    <p class="media-body">A directory.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/039.png" alt="media 039" />
+    <p class="media-body">Or does not exist.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/040.png" alt="media 040" />
+    <p class="media-body">And here we see it running on a path to a file. This time we use an absolute path, just for a change.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/041.png" alt="media 041" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/042.png" alt="media 042" />
+    <p class="media-body">And here it is with a path to a directory.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/043.png" alt="media 043" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/044.png" alt="media 044" />
+    <p class="media-body">And with a path something that does not exist.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/045.png" alt="media 045" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/046.png" alt="media 046" />
+    <p class="media-body">Samefile allows us to check whether two paths point to the same file or directory. This is useful when paths are held in variables. So, let's import it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/047.png" alt="media 047" />
+    <p class="media-body">And create some variables with file paths.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/048.png" alt="media 048" />
+    <p class="media-body">If we compare file1 and file2, which contain relative and absolute paths to the same file, then&#8230;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/049.png" alt="media 049" />
+    <p class="media-body">&#8230;we get the expected result of true.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/050.png" alt="media 050" />
+    <p class="media-body">And if we compare file1 to a different path, file3, then&#8230;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/051.png" alt="media 051" />
+    <p class="media-body">&#8230;we get false.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/052.png" alt="media 052" />
+    <p class="media-body">Before trying to perform operations on a file, for example to open it for reading or writing, to delete it, or, for files that are executable binaries, to execute it, it can be useful to check if we are allowed to do these operations. Python's access function allows us to do these checks. So let's import access.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/053.png" alt="media 053" />
+    <p class="media-body">Access takes two arguments, the path to a file or directory and a flag that specifies what access permissions we want to check. So let's import the flags. There are four.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/054.png" alt="media 054" />
+    <p class="media-body">As an example of each in turn&#8230;. F_OK allows us to check if the file or directory exists.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/055.png" alt="media 055" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/056.png" alt="media 056" />
+    <p class="media-body">R_OK is for checking if we have permission to read the file or directory.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/057.png" alt="media 057" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/058.png" alt="media 058" />
+    <p class="media-body">W_OK is for checking if we can edit, update, or delete it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/059.png" alt="media 059" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/060.png" alt="media 060" />
+    <p class="media-body">And, X_OK is for checking if we can execute a file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/061.png" alt="media 061" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/062.png" alt="media 062" />
+    <p class="media-body">We can combine conditions using the logical OR, vertical bar, operator. So we can check if we can both read and write a file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/063.png" alt="media 063" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/064.png" alt="media 064" />
+    <p class="media-body">Or check if we can both read and execute a file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/065.png" alt="media 065" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/066.png" alt="media 066" />
+    <p class="media-body">Or if a file exists and we can read it and write it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/067.png" alt="media 067" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/068.png" alt="media 068" />
+    <p class="media-body">It can also be useful to get operating system information about files and directories.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/069.png" alt="media 069" />
+    <p class="media-body">The stat function returns a record holding various information about a file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/070.png" alt="media 070" />
+    <p class="media-body">The information in this record can then be accessed. This includes its protection bits.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/071.png" alt="media 071" />
+    <p class="media-body">Inode number.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/072.png" alt="media 072" />
+    <p class="media-body">Device.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/073.png" alt="media 073" />
+    <p class="media-body">Number of hard links.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/074.png" alt="media 074" />
+    <p class="media-body">Owner's user ID.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/075.png" alt="media 075" />
+    <p class="media-body">Owner's group ID.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/076.png" alt="media 076" />
+    <p class="media-body">File size in bytes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/077.png" alt="media 077" />
+    <p class="media-body">Most recent access time. The meaning is operating system dependant.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/078.png" alt="media 078" />
+    <p class="media-body">Most recent modification time. Again, operating system dependant.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/079.png" alt="media 079" />
+    <p class="media-body">The time of the most recent change to metadata, under Linux, or creation time, under Windows.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/080.png" alt="media 080" />
+    <p class="media-body">These times may be floats or integers. You can check this by calling the stat_float_times function. Here, it says the values are integers.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/081.png" alt="media 081" />
+    <p class="media-body">The stat record may also contain operating system-specific information.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/082.png" alt="media 082" />
+    <p class="media-body">For example, for Linux this can include the number of blocks used by the file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/083.png" alt="media 083" />
+    <p class="media-body">And the file system block size.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/084.png" alt="media 084" />
+    <p class="media-body">We've looked at a number of Python functions to find out more information about files and directories. From the os.path module we used. Exists to see if a file or directory exists. Isfile and isdir to determine whether a path specifies a file or a directory. And, samefile to see whether two paths point to the same file or directory. From the os module we used. Access to see what access permissions we have to a file or directory and determine if we can read it, write to it, delete it, or, for files, execute it. And, we used stat to get low-level operating system-specific information such as file sizes, permission bits, user and group IDs and creation and modification times.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="queries/085.png" alt="media 085" />
+    <p class="media-body">Thank you for listening.</p>
+  </div>
+</div>

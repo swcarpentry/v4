@@ -1,0 +1,28 @@
+---
+layout: v4_topic
+title: Conditionals
+lesson_title: Spreadsheets
+prev: v4/spreadsheets/sorting.html
+next: v4/spreadsheets/lookup.html
+uplink: v4/spreadsheets/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "vg2EO5lcKKA", "time": "00:03:22.24"}
+---
+<div>
+  <p>Hello, and welcome to the fifth episode of the Software Carpentry lecture on spreadsheets.  In this episode, we will look at how to do the equivalent of if-then-else in a spreadsheet.</p>
+  <p>Here's a version of our spreadsheet with each province and territory assigned to one of five regions.  How many are in each region?  To find out, we'll use the COUNTIF function.</p>
+  <p>Its first argument is the range of cells we want to look at, and its second is a single value.  Its result is the number of cells in that region that have that value.</p>
+  <p>So COUNTIF of B2:B14 and the string "West" is the number of provinces and territories in the west, while COUNTIF of B2:B14 and "Prairies" is the number in the Prairies, and so on.</p>
+  <p>Rather than putting the region names in the formula, let's use them as row headings, then refer to those headings in our formula.  This way, we can copy and paste the formula to get the right answer for all regions without retyping anything.</p>
+  <p>Notice that we use an absolute reference for the range of cells that we're counting in, so that it isn't translated when we paste the formula, but a relative reference for the label, so that it is.</p>
+  <p>Now let's add another column for the total CO2 emission in each region in 2008.  To calculate this, we use the SUMIF function.  Instead of counting the number of cells with a certain property, it adds up the values of cells in one set that correspond to cells in another set that pass some test.</p>
+  <p>The first argument is the range of cells we're testing: in our case, the name of the region each province or territory is in.</p>
+  <p>The second is what we're comparing those values to: for cell C16, we want to compare it to the value in cell A16.</p>
+  <p>The third argument specifies the cells whose values Excel should add up.  It only adds the ones that correspond to cells in the first range that are equal to the value specified as the middle argument.</p>
+  <p>We can apply multiple tests in a single function call using the functions COUNTIFS (with an "S" on the end) and SUMIFS, which take one or more pairs of arguments.</p>
+  <p>The first argument in each pair is a range, and the second specifies the test.  All of the ranges must have the same shape, i.e., the same number of cells in the same rectangular pattern.</p>
+  <p>For example, let's count how many provinces or territories in each region are over their CO2 per capita limit.  The first range is B2 to B14, which must be equal to the region name.  The second range is G2 to G14, which is the emissions per capita.  These pass if the values are greater than 0.02.</p>
+  <p>Notice the double quotes around the test: without this, Excel will complain that we can't check if nothing is greater than 0.02.</p>
+  <p>Let's copy and paste this formula into the five cells, then use Trace Precedents to take a closer look.  As you can see, the value in D20 depends on three other values: the region name in A20, the range of region names in B2 to B14, and the range of per capita emissions in G2 to G14.</p>
+</div>

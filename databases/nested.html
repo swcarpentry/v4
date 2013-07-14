@@ -1,0 +1,135 @@
+---
+layout: v4_topic
+title: Nested Queries
+lesson_title: Databases
+prev: v4/databases/null.html
+next: null
+uplink: v4/databases/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "oy0CojdyKTo", "time": "00:06:50.13"}
+---
+<div>
+
+  <p>Welcome to the Software Carpentry screencast on Databases. This screencast is on nesting queries.</p>
+  <p>How do we find scientists that haven't been experimenting with time travel?</p>
+  <p>Our first instinct might be to write a query like this:</p>
+
+<pre>SELECT DISTINCT LoginID,
+FROM Experiment
+WHERE Project != 'Time Travel';</pre>
+
+  <p>Unfortunately, this query doesn't give us what we want, since 'ivan' and 'skol' (Sofia) have each worked both on Time Travel but also on other projects as well.</p>
+  <p>There are scientists who have worked on Time Travel Projects&hellip;.. and their are scientists who have worked on other projects&hellip;&hellip; and, of course, there are scientists who have worked on both Time Travel projects AND other projects as well.</p>
+  <p>Our query is returning all of the scientists who have worked on projects other than Time Travel&hellip; but that includes scientists that have worked on time travel and other projects.</p>
+  <p>Our original question was to find all of the scientists that had never worked on Time Travel.</p>
+  <p>To see why, let's look at the experiment table, but we'll sort the records by scientist and project:</p>
+
+<pre>SELECT * FROM Experiment ORDER BY LoginID, Project;</pre>
+
+  <p>Our original query reject rows where the project was 'Time Travel'.</p>
+  <p>But for scientists like Ivan, who have worked on other projects, their other projects don't get filtered out, and so their names appear in the final results.</p>
+  <p>The strategy for answering this question is to start with all of the scientists &hellip;</p>
+  <p>&hellip; subtract those scientists which have worked on Time Travel projects</p>
+  <p>&hellip; to get just the scientists that haven't been experimenting with Time Travel.</p>
+  <p>To do this we'll make use of <em>nested queries</em>.</p>
+
+  <p>Finding all of the scientists who have worked on Time Travel projects is easy:</p>
+
+<pre>SELECT DISTINCT LoginID FROM Experiment
+WHERE Project = 'Time Travel';</pre>
+
+  <p>Finding all of the scientists is also easy:</p>
+
+<pre>SELECT DISTINCT LoginID FROM Experiment;</pre>
+
+  <p>What we want to do is somehow:</p>
+
+<pre>SELECT DISTINCT LoginID FROM Experiment
+WHERE</pre>
+
+  <p>subtract, or filter, from these results the results of our earlier query:</p>
+
+<pre>WHERE LoginID NOT IN ('ivan', 'skol');</pre>
+
+  <p>In SQL we're able to nest one query inside of another to use its results in filter conditions.</p>
+  <p>So, we create a filter condition that only includes scientists</p>
+
+<pre>SELECT DISTINCT LoginID FROM Experiment
+WHERE LoginID NOT IN
+(SELECT DISTINCT LoginID FROM Experiment
+WHERE Project = 'Time Travel');</pre>
+
+  <p>where their LoginID is not in&hellip; and then we put the results of the first query in parentheses.</p>
+  <p>So, we can read this query as saying, "Fetch all of the scientists who have run experiments, but exclude them if they appear in the list of scientists who have worked on Time Travel".</p>
+  <p>And this is what we wanted!</p>
+  <p>The pattern demonstrated by this query, of selecting and then filtering based on the results of nested query, is very useful one.</p>
+  <p>I should note, that the nested query here is completely separate from the larger query. It just fetches a list of LoginIDs once, and those loginIDs are used by the larger query's filter condition as it inspects each record.</p>
+  <p>But nested queries can also refer to the larger query they are embedded in.</p>
+  <p>For instance, in our screencast on JOIN we asked the question: which scientists have worked on more than one project?</p>
+  <p>We answered the question by joining the Experiment table to itself and then filtering results so that we only had scientists that had been paired with themselves, but working on different projects.</p>
+  <p>Using nested queries we can answer this same question in a different way.</p>
+  <p>Let's first remind ourselves of who has worked on which projects:</p>
+
+<pre>SELECT LoginID, Project FROM Experiment ORDER BY LoginID, Project;</pre>
+
+  <p>Best has worked on one project, so has Dian Fossey, dimitri, Banting, Herschel.</p>
+  <p>But, Ivan Pavlov has worked on two projects, and so has Lomonosov, and so has Kovaleskaya</p>
+  <p>So, we can write a query that selects the scientists from the experiments table &hellip;</p>
+
+<pre>SELECT DISTINCT LoginID FROM Experiment e1
+WHERE</pre>
+
+  <p>where&hellip; and here we want to filter out the scientist if they haven't worked on any other project. That is, in order to be included they must /have/ worked on another project:</p>
+
+<pre>WHERE LoginID IN (</pre>
+
+  <p>Well, we need a query that will fetch the OTHER projects the scientist has been involved in.</p>
+  <p>So, we start with fetching the LoginIDs</p>
+
+<pre>SELECT DISTINCT LoginID FROM Experiment e2
+...</pre>
+
+  <p>but put a filter condition in so that the loginIDs we fetch are those of the same scientist, but have a different project.</p>
+
+<pre>...
+WHERE e2.LoginID = e1.LoginID AND e1.Project != e2.Project);</pre>
+
+  <p>When we run this query we get Pavlov, Lomonosov, Kovaleskaya as expected.</p>
+  <p>This is a different kind of nested query than we wrote before, because the results of this nested query depend on which record is being processed by the outer query.</p>
+
+<pre>SELECT DISTINCT LoginID FROM Experiment e1
+WHERE LoginID IN (
+SELECT DISTINCT LoginID FROM Experiment e2
+WHERE e2.LoginID = e1.LoginID AND e1.Project != e2.Project);</pre>
+
+  <p>Nested queries can also be use in place of tables. That is, a nested query can provide the datasource from which you select, filter, aggregate, etc.</p>
+  <p>For example, what if we wanted to know how many different projects each scientist had worked on.</p>
+  <p>We can begin by finding the distinct list of projects each scientist worked on, which can do like so:</p>
+
+<pre>SELECT DISTINCT LoginID, Project FROM Experiment;</pre>
+
+  <p>We want to count how many projects are listed here for each scientist.</p>
+  <p>Since counting is an aggregation, we need to use the results of this query as input for a separate query that does the aggregation.</p>
+  <p>We can nest this query as the source for a larger query by wrapping it in parentheses, and putting it in the FROM clause:</p>
+
+<pre>...
+FROM (SELECT DISTINCT LoginID, Project FROM Experiment);</pre>
+
+  <p>We want the scientist, and count of their projects:</p>
+
+<pre>SELECT LoginID, COUNT(*)
+FROM (SELECT DISTINCT LoginID, Project FROM Experiment)
+...</pre>
+
+  <p>and we want to count over each scientist:</p>
+
+<pre>...
+GROUP BY LoginID</pre>
+
+  <p>Nesting queries like this is really useful if the data you want to write a query on isn't present in exactly the right form in the database. You can use one query to get the data in the form you need it in, and then with nesting you're able to use those results as the input for a larger query.</p>
+
+  <p>In this screencast we've introduced the idea of nesting queries.</p>
+  <p>We've seen that you can nest a query to supply elements in a WHERE condition, and we've also seen we can use a nested query in place of a table in the FROM clause.</p>
+
+</div>

@@ -1,0 +1,256 @@
+---
+layout: v4_topic
+title: Directory and File Paths
+lesson_title: Systems Programming
+prev: v4/sysprog/queries.html
+next: v4/sysprog/filemgmt.html
+uplink: v4/sysprog/index.html
+pdf: v4/sysprog/filepaths.pdf
+ppt: v4/sysprog/filepaths.ppt
+youtube: {"slug": "8CVojqyplyI", "time": "00:07:00.60"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/001.png" alt="media 001" />
+    <p class="media-body">Hello and welcome to the fourth episode of the Software
+    Carpentry lectures on handling directories and files in
+    Python. In the previous episodes, we've seen how to
+    explore directories and enquire about their contents. In this
+    one we'll look more at handling directory and file paths,
+    again using the os.path module.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/002.png" alt="media 002" />
+    <p class="media-body">We may want to build up paths from variables containing
+    directory or file names. These variables might come from other
+    functions, from configuration files or from the user, via a GUI,
+    or the command-line. For example, here we have three variables
+    we might use to build a file path.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/003.png" alt="media 003" />
+    <p class="media-body">We could create a new variable, path by appending base, a
+    string with a file separator, user, another file separator
+    string and datadir. This would work just fine.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/004.png" alt="media 004" />
+    <p class="media-body">But the use of the file separator string isn't very
+    clean. More seriously, it assumes we're running on Linux
+    or UNIX which means our code isn't very portable. What if
+    we want to run on Windows too, which uses a backslash as its
+    file separator?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/005.png" alt="media 005" />
+    <p class="media-body">Python provides a join function in its os.path module that
+    means we don't have to worry about file separators.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/006.png" alt="media 006" />
+    <p class="media-body">Join is one of those useful functions that takes two or more
+    arguments.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/008.png" alt="media 008" />
+    <p class="media-body">Join picks a file separator based upon what it knows to be
+    the current operating system.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/009.png" alt="media 009" />
+    <p class="media-body">And if we ran this on Windows, this is what we would get.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/010.png" alt="media 010" />
+    <p class="media-body">Note the backslashes in the path. Actually they are double
+    backslashes but this is only because we are printing them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/011.png" alt="media 011" />
+    <p class="media-body">But, you might say, what about that initial forward
+    slash. How do we handle that?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/012.png" alt="media 012" />
+    <p class="media-body">Python again comes to our rescue with its normpath
+    function. Normpath converts paths to be consistent with the
+    current operating system.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/013.png" alt="media 013" />
+    <p class="media-body">So for Windows it will convert forward slashes to
+    backslashes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/014.png" alt="media 014" />
+    <p class="media-body">And here's another example.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/015.png" alt="media 015" />
+    <p class="media-body">Normpath does more than just convert file separators. Take,
+    for example this messy looking path. Putting this into normpath
+    gives us...</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/016.png" alt="media 016" />
+    <p class="media-body">...something far cleaner.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/017.png" alt="media 017" />
+    <p class="media-body">Normpath also removes duplicated file separators.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/018.png" alt="media 018" />
+    <p class="media-body">...and removes the dot shorthand for the current
+    directory.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/019.png" alt="media 019" />
+    <p class="media-body">It also tries to resolve the double dot short-hand that
+    represents parent directories.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/020.png" alt="media 020" />
+    <p class="media-body">Sometimes we might have a path and want to get the last part
+    of the path, for example the file name or the last
+    directory. Python provides the dirname and basename functions to
+    do this.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/021.png" alt="media 021" />
+    <p class="media-body">Here is a path...</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/022.png" alt="media 022" />
+    <p class="media-body">Dirname extracts the directories up to but not including the
+    last component, in this example a file, in the path.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/023.png" alt="media 023" />
+    <p class="media-body">Basename returns the last component in the path, in this case
+    it's a file name.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/024.png" alt="media 024" />
+    <p class="media-body">Split combines the behaviour of both dirname and basename and
+    returns a pair.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/025.png" alt="media 025" />
+    <p class="media-body">The first element in the pair is the same as what dirname
+    returns.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/026.png" alt="media 026" />
+    <p class="media-body">And the second, the same as what basename returns.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/027.png" alt="media 027" />
+    <p class="media-body">Another similar function is splitext.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/028.png" alt="media 028" />
+    <p class="media-body">Splitext returns a pair consisting of...</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/029.png" alt="media 029" />
+    <p class="media-body">All of the path up to but not including the file
+    extension.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/030.png" alt="media 030" />
+    <p class="media-body">And, the file extension itself. If there is no file extension
+    then this is just an empty string.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/031.png" alt="media 031" />
+    <p class="media-body">Splitdrive also returns a pair.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/032.png" alt="media 032" />
+    <p class="media-body">This consists of a drive name. This will be an empty string
+    if running on Linux or Unix.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/033.png" alt="media 033" />
+    <p class="media-body">And it also returns the rest of the path.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/034.png" alt="media 034" />
+    <p class="media-body">We may not know if a path is relative or absolute.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/035.png" alt="media 035" />
+    <p class="media-body">isabs is a function that checks this.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/036.png" alt="media 036" />
+    <p class="media-body">It just checks whether the path begins with a forward slash,
+    for Linux and Unix, or a backslash, after the drive has been
+    removed, for Windows.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/037.png" alt="media 037" />
+    <p class="media-body">Abspath converts a relative path to an absolute path.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/039.png" alt="media 039" />
+    <p class="media-body">It uses the current working directory, returned by getcwd
+    which we saw in an earlier episode. It just adds this directory
+    to the front of the path. Then it normalizes the path in a
+    similar way to normpath. And let's check that it is indeed
+    now an absolute path.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/040.png" alt="media 040" />
+    <p class="media-body">It is.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/041.png" alt="media 041" />
+    <p class="media-body">And here's another example, with more normalisation
+    needed.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/042.png" alt="media 042" />
+    <p class="media-body">This sets the absolute path to be users vlad data dot-dot
+    dot-dot</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/043.png" alt="media 043" />
+    <p class="media-body">But then normalizes the dot-dot parent directory short-hand
+    to get to users.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/044.png" alt="media 044" />
+    <p class="media-body">It is important to remember that none of these operations
+    check whether the directories or files in the paths actually
+    exist. They are useful, though, as they allow you to build paths
+    for directories or files you will create later.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/045.png" alt="media 045" />
+    <p class="media-body">But it also means you need to do these checks yourself.  So,
+    remember os.path's exists function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/046.png" alt="media 046" />
+    <p class="media-body">In this episode we saw a number of useful os.path
+    functions. Join can join relative paths together using the file
+    separator of the current operating system. Normpath allows us to
+    convert a path to be consistent with the current operating
+    system as well as cleaning it up and removing
+    redundancy. Dirname can get the path to the final directory or
+    file in a path. Basename can get the name of the final directory
+    or file in a path. Split combines the dirname and basename,
+    accessing both the path to the final directory or file and this
+    directory or file itself. Splitext allows us to get a file
+    extension. And, splitdrive allows us to get a drive
+    name. Finally, isabs allows us to see whether a path is relative
+    or absolute and abspath converts a relative path to an absolute
+    one.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filepaths/047.png" alt="media 047" />
+    <p class="media-body">Thank you for listening.</p>
+  </div>
+ </div>

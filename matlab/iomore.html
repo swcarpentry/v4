@@ -1,0 +1,93 @@
+---
+layout: v4_topic
+title: More I/O
+lesson_title: MATLAB
+prev: v4/matlab/iobasic.html
+next: v4/matlab/plots.html
+uplink: v4/matlab/index.html
+pdf: v4/matlab/iomore.pdf
+ppt: v4/matlab/iomore.ppt
+youtube: {"slug": "7GnZ5WQB1rs", "time": "00:05:05.60"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/001.png" />
+    <p class="media-body">Hello, and welcome to another episode of the Software Carpentry lecture on MATLAB programming. In this episode, we will talk about printing formatted output to the screen and exporting data to a file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/002.png" />
+    <p class="media-body">Before we starting printing to the screen, it is important to figure out what kind of output is appropriate to print to the screen.  One common practice is to print intermediate status messages in functions that run for a long time.  A good status message can help the user abort a program if it is not performing correctly.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/003.png" />
+    <p class="media-body">Functions that iterate an unknown number of times often have status messages.  An example of such a function is the power iteration algorithm, which finds the largest eigenpair of a matrix. It is often used on large, sparse matrices such as the matrix of weights used by Google's PageRank algorithm. The basic algorithm is embodied in the red equation, which is just a matrix multiplication and division by a scalar</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/004.png" />
+    <p class="media-body">Here is a piece of MATLAB code that computes the power iteration of a matrix A.  Note that we loop over the iteration until successive approximations b and b_new differ by at most 1e-5.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/005.png" />
+    <p class="media-body">If we define a large matrix and compute the power iteration, there is no guarantee on how long the algorithm will run.  There are several things that can go wrong, including a coding error or floating point error that leads to an infinite loop.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/006.png" />
+    <p class="media-body">One way to monitor the calculation is to compute the stopping criteria and leave off the semicolon.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/007.png" />
+    <p class="media-body">This is not a good idea, because it prints 4 lines per iteration.  If we need to print several status variables per iteration, the output is both long and hard to read.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/008.png" />
+    <p class="media-body">A better strategy is to utilize the fprintf function, which prints formatted text to a file or to the standard output stream.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/009.png" />
+    <p class="media-body">Clearly, this output is cleaner and shorter than it would be if we had just left off a semi-colon.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/010.png" />
+    <p class="media-body">fprintf is mirrored on the printf statement from C or FORTRAN.  The important input is format, which is a string that contains special escape sequences that start with a percent sign.  Each percent sign corresponds to another parameter that will be printed at the specified location.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/011.png" />
+    <p class="media-body">The numbers and digits that follow a percent are hints on how to format the number.  For instance, %d means to interpret the corresponding value as an integer, and we see that the input i makes sense as an integer.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/012.png" />
+    <p class="media-body">Percent f means to interpret the value as a floating point number, so the norm is printed in floating point format.  There is a long list of formatting symbols that is available at the online help for fprintf.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/013.png" />
+    <p class="media-body">Another important use of printed output is for auditing during data exploration.  If you are exploring several kinds of analysis, journaling with the diary function can help keep track of what commands were run and what their output was.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/014.png" />
+    <p class="media-body">MATLAB always tracks the history of commands that were run from the standard prompt.  These can be access from the history screen or by typing the up key in the prompt.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/015.png" />
+    <p class="media-body">History gets us halfway there.  It stores what commands we ran, but it does not store a transcript of the actual output.  Using diary, we can find changes to output that might be caused by changes to functions or data files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/016.png" />
+    <p class="media-body">To turn on the diary, type diary and a filename.  If you don't specify a file name, the output is stored in a file called diary.  You can turn the diary on and off by typing diary on and diary off.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/017.png" />
+    <p class="media-body">Unfortunately, there is no single function that can store any kind of data.  This should make sense, because it is important to specify how you want to interpret an array or structure.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/018.png" />
+    <p class="media-body">If you are saving data that will be reloaded by MATLAB, it is probably best to use MAT files that can store your entire workspace.  However, keep in mind that MAT files can not be examined in a text editor, and you are reliant on MATLAB or a third party program to read the files later on.  Another option for some data is XML, which is a formatted text file that can store multiple variables.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/019.png" />
+    <p class="media-body">Many times, it is important to export data as a sound or image or other medium.  MATLAB provides functions to translate arrays or structures into many media formats.  Some special video or image formats might require codecs to correctly encode a file, and these can be found at MATLAB's file central.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iomore/020.png" />
+    <p class="media-body">The important point is that most data can be interpreted as an array.  MATLAB can import data in many different formats, and it provides tools to export data structures back into many media and storage formats.  In the next episode, we will look at visualization in MATLAB, which includes tools to create plots and images.</p>
+  </div>
+</div>

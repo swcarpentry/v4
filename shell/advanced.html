@@ -1,0 +1,344 @@
+---
+layout: v4_topic
+title: Advanced Tricks
+lesson_title: The Unix Shell
+prev: v4/shell/ssh.html
+next: null
+uplink: v4/shell/index.html
+pdf: v4/shell/advanced.pdf
+ppt: v4/shell/advanced.ppt
+youtube: {"slug": "Ku4X_tis6jY", "time": "00:09:44.00"}
+---
+<ul class="keypoints">
+  <li>Append to files using &gt;&gt; instead of &gt;.</li>
+  <li>Capture standard error using 2&gt; (or 2&gt;&gt; to append).</li>
+  <li>Use for loops to repeat commands.</li>
+  <li>Parenthesize sets of commands to treat them like a single command.</li>
+</ul>
+
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/001.png" />
+    <p class="media-body">Hello and welcome to the Advanced Shell Tricks episode of the Software Carpentry lectures on the Unix shell. In this episode, we'll look at some handy advanced shell techniques that can save you time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/002.png" />
+    <p class="media-body">So, in general, you encounter a technical problem and are wondering how to solve it&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/003.png" />
+    <p class="media-body">For example, on your iPhone or Android smartphone you may hear, "There's an app for that&hellip; check this out!"</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/004.png" />
+    <p class="media-body">Whereas Unix shell programmers will say "There's a shell trick for that&hellip; check this out"&hellip; whilst perhaps recommending you upgrade to an Android smartphone.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/005.png" />
+    <p class="media-body">In previous episodes, we've seen how to do a number of things. Combine existing programs using pipes and filters. For example, counting the number of lines in all PDB files, then sorting those results and picking the top one (i.e. the result with the greatest number of lines).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/006.png" />
+    <p class="media-body">Redirect output from programs to files. For example, counting the number of lines in all pdb files and storing the results in a file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/007.png" />
+    <p class="media-body">Use variables to control program operation. For example, creating a new variable called SECRET_IDENTITY and assigning the value "Dracula" to it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/008.png" />
+    <p class="media-body">And this is one of the true strengths of the Unix shell; the way you can compose all these techniques together. We'll be seeing more of this in this episode!</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/009.png" />
+    <p class="media-body">We've covered some very handy techniques already, but of course we can go further. Redirection for example has some other very useful tricks you can easily learn and use which we'll look at.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/010.png" />
+    <p class="media-body">We've already seen how we can redirect program output to a file, but what else can we do with redirection? Let's revisit our pdb files that we've seen in a previous episode. As a reminder, PDB files are Protein Data Format files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/011.png" />
+    <p class="media-body">So with this command, we can list all the files with a pdb filename extension in the current directory, redirecting the results to a file we call "files".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/012.png" />
+    <p class="media-body">This is all made possible by the "redirection" operator.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/013.png" />
+    <p class="media-body">But what about adding this together with other results generated later? In general, this would be very useful for any time we just want to add things to an existing file. In this example, let us consider a further set of protein data files in the older "ent" format&hellip; how do we perform the same ls operation and add these results to the previous results in "files"?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/014.png" />
+    <p class="media-body">We can first get a list of the files with an ent extension&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/015.png" />
+    <p class="media-body">&hellip;and put that list in a separate file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/016.png" />
+    <p class="media-body">Then, we can use our concatenate "cat" command to create a new file which has the contents of both files in it. But it's a bit long winded &mdash; couldn't we just "append" the results to our existing file "files"? The answer is yes!</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/017.png" />
+    <p class="media-body">This command does exactly that &mdash; the output from this command is redirected to a file as before, but in an "append" sense.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/018.png" />
+    <p class="media-body">Also note that if the file doesn't exist beforehand, it is created.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/019.png" />
+    <p class="media-body">Now let's look at something a little different&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/020.png" />
+    <p class="media-body">So we know ls operates within its own process, and all output is normally directed through its parent "shell" process to the display.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/021.png" />
+    <p class="media-body">But in the case of redirection, ls still operates within its own process, but instead of its output being directed through its parent shell process to the display, it is redirected to a file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/022.png" />
+    <p class="media-body">Now here's something to ponder&hellip; what happens with error messages?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/023.png" />
+    <p class="media-body">For example, running ls on a non-existent path will give an error.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/024.png" />
+    <p class="media-body">Ok, no problem so far&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/025.png" />
+    <p class="media-body">But why isn't the error message in "files"? This is the big question! Why, and how, are we seeing it?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/026.png" />
+    <p class="media-body">In essence, this is because the standard output and standard error are separate "channels".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/027.png" />
+    <p class="media-body">So what was happening with the previous example? This is how we looked at it before, with standard output.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/028.png" />
+    <p class="media-body">So let's expand on this a little, by adding in the standard error.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/029.png" />
+    <p class="media-body">Now we see that the standard error is not being redirected, like the standard output, to a file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/030.png" />
+    <p class="media-body">Perhaps unsurprisingly, there is a way to capture standard error as well using the Unix shell.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/031.png" />
+    <p class="media-body">So this "2&gt;" operator deals with the redirection of standard error only.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/032.png" />
+    <p class="media-body">As you might expect, error messages end up in our error-log file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/033.png" />
+    <p class="media-body">We can redirect both stdout and stderr like this. Plus, the order in which we add both redirections to the command doesn't matter.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/034.png" />
+    <p class="media-body">So we can redirect both standard error and standard output simultaneously.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/035.png" />
+    <p class="media-body">Of course, we could add other directories into this list too, perhaps one that does exist.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/036.png" />
+    <p class="media-body">So what's this number 2 all about?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/037.png" />
+    <p class="media-body">The "2" refers to the standard error channel, whilst "1" refers to the standard output.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/038.png" />
+    <p class="media-body">By default, "&gt;" on its own refers to standard output, so we could remove the "1" before the first greater-than sign for the same effect.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/039.png" />
+    <p class="media-body">"&amp;" is a useful shorthand if you want a single log of everything.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/040.png" />
+    <p class="media-body">We can even use append here as well.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/041.png" />
+    <p class="media-body">To summarise part 1, we've looked in more depth at redirection. We've looked at redirecting standard output and standard error to a file, overwriting anything in the file previously, or creating it if it doesn't exist.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/042.png" />
+    <p class="media-body">We also looked at redirecting standard output and standard error to a file, but appending it to the contents of a file (although if the file doesn't exist it is created).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/043.png" />
+    <p class="media-body">Now for something completely different&hellip; We've already seen how pipes and filters work with using a single program on some input data.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/044.png" />
+    <p class="media-body">i.e. you have a program which takes some arguments, the program processes these arguments, and some results are output.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/045.png" />
+    <p class="media-body">But what about running the same program separately, for each input? i.e. doing each of these program runs in sequence, one after the other.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/046.png" />
+    <p class="media-body">So instead, we want to run the program separately on each argument. We could of course do this manually, but what if we need to do this with a great many arguments? This wouldn't be terribly efficient!</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/047.png" />
+    <p class="media-body">The good news is that there is a well known programming concept which you can use, called loops. Loops are very useful&mdash;it is difficult to overstate just how useful these can be&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/048.png" />
+    <p class="media-body">So how can they help us with this situation?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/049.png" />
+    <p class="media-body">You've probably encountered compressed files before (like .zip files), it's a common technique for reducing the size of a number of files whilst packaging them into a single, easy-to-manage file. If we consider these pdb files as large files, perhaps we want to email each of them to different individuals.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/050.png" />
+    <p class="media-body">We can use the zip command very easily to compress our cubane.pdb into a zip file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/051.png" />
+    <p class="media-body">We can see that it has compressed the file by 73%. Zip is a handy tool in itself which can also work with directories and their contents. As an aside, you can use e.g. "unzip cubane.zip" to decompress the zip file and extract the cubane.pdb file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/052.png" />
+    <p class="media-body">The first argument is zip filename we wish to create.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/053.png" />
+    <p class="media-body">The second is a list of files (just one in this case) which we want to add to the zip file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/054.png" />
+    <p class="media-body">This would obviously take too long if we were looking at, say, a hundred files. So how can we automate this using loops?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/055.png" />
+    <p class="media-body">Using a loop, we can iterate over each file, and run zip on each of them. So how does this work?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/056.png" />
+    <p class="media-body">The first part says we wish to iterate over our pdb files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/057.png" />
+    <p class="media-body">And on each iteration, let us run our zip command.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/058.png" />
+    <p class="media-body">The "done" part shows the end of our loop, and instructs the loop to do the next file in our pdb list if one exists.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/059.png" />
+    <p class="media-body">The semicolons separate each part of this command. But how does it pick up and use each separate pdb file?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/060.png" />
+    <p class="media-body">This *.pdb would generate a list of the 6 pdb files, so we would expect this loop to run 6 times.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/061.png" />
+    <p class="media-body">This "file" is a variable which we can use to reference each file within the loop.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/062.png" />
+    <p class="media-body">e.g. if $file is "cubane.zip", this becomes cubane.pdb.zip.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/063.png" />
+    <p class="media-body">So here we are just using the "file" variable to specify the file we wish to put in the zip file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/064.png" />
+    <p class="media-body">The zip command runs thus 6 times, once for each pdb file, generating a new zip file for each of them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/065.png" />
+    <p class="media-body">So, with a hundred such files, this would be much more efficient than running zip individually each time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/066.png" />
+    <p class="media-body">If we look at just the zip files, we can see the new ones that have just been created.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/067.png" />
+    <p class="media-body">Let's look at a slightly different problem&hellip; What if we wanted to output the first line of each pdb file?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/068.png" />
+    <p class="media-body">This isn't really what we want&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/069.png" />
+    <p class="media-body">Each first line in this list is prefixed with the filename of where it came from.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/070.png" />
+    <p class="media-body">So when run on multiple files, the head command inserts a filename before each file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/071.png" />
+    <p class="media-body">Perhaps we only want the actual first lines. In which case, we really want to miss out the filename prefixes you get from using the head command over multiple files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/072.png" />
+    <p class="media-body">The good news is that we can use loops to help here.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/073.png" />
+    <p class="media-body">Using a loop, we can run the head command separately on each file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/074.png" />
+    <p class="media-body">We can do this in a very similar way to how we used a loop for zipping multiple files separately.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/075.png" />
+    <p class="media-body">We get these results. So how does this fit in with what we have learned already with pipes and filters?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/076.png" />
+    <p class="media-body">We can take this further&hellip; what if we wanted this list sorted in reverse afterwards?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/077.png" />
+    <p class="media-body">We simply pipe the output from our loop to a command. Although not necessary, we can surround the loop part with parenthesis for clarity, so we can clearly see where the pipe is applied.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/078.png" />
+    <p class="media-body">So we just add the "sort" command to the end of this via a pipe. The "-r" argument just means "sort the list in reverse".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/079.png" />
+    <p class="media-body">And we get our previous list sorted in reverse. So we can happily use this technique within the pipes and filters model we've already learned!</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/080.png" />
+    <p class="media-body">In summary, what new things have we looked at in part 2? We've used the zip command to create a zip file, and used loops to repeat a command many times. This is only the beginning of what you can do with loops. As an exercise, why not take some time to find out what else you can do with them?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="advanced/081.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

@@ -1,0 +1,204 @@
+---
+layout: v4_topic
+title: Introduction
+lesson_title: Version Control
+prev: null
+next: v4/vc/basic.html
+uplink: v4/vc/index.html
+pdf: v4/vc/intro.pdf
+ppt: v4/vc/intro.ppt
+youtube: {"slug": "gY2JwRfin1M", "time": "00:04:04.20"}
+---
+<div class="media">
+  <img class="media-object pull-left" src="intro/001.png" />
+  <p class="media-body">Hello, and welcome to the first episode of the Software Carpentry lecture on version control.  In this episode, we will explain what version control is, how it works, and why you should use it.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/002.png" />
+  <p class="media-body">Suppose Wolfman&hellip;</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/003.png" />
+  <p class="media-body">&hellip;and Dracula&hellip;</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/004.png" />
+  <p class="media-body">&hellip;are writing a paper together.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/005.png" />
+  <p class="media-body">They both want to edit the file at the same time.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/006.png" />
+  <p class="media-body">What should they do?</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/007.png" />
+  <p class="media-body">They <em>could</em> take turns&hellip;</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/008.png" />
+  <p class="media-body">&hellip;but then they'd each spend a lot of time waiting.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/009.png" />
+  <p class="media-body">Or, they could each work on their own copy at the same time&hellip;</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/010.png" />
+  <p class="media-body">&hellip;and patch things up afterward.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/011.png" />
+  <p class="media-body">But stuff always winds up getting lost, overwitten, or duplicated.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/012.png" />
+  <p class="media-body">And nobody wants that.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/013.png" />
+  <p class="media-body">The right solution is to use a <em>version control system</em>.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/014.png" />
+  <p class="media-body">This keeps the master copy of the file&hellip;</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/015.png" />
+  <p class="media-body">&hellip;in a <em>repository</em> located on a <em>server</em>&mdash;a computer that is never used directly by people, but only by the applications serving them.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/016.png" />
+  <p class="media-body">No-one ever edits the master copy directly.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/017.png" />
+  <p class="media-body">Instead, Wolfman and Dracula each have a <em>working copy</em> on their own computer.  This lets them work independently, making whatever changes they want.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/018.png" />
+  <p class="media-body">As soon Wolfman is ready to share his changes, he <em>commits</em> them to the repository.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/019.png" />
+  <p class="media-body">Dracula can then <em>update</em> his working copy to get those changes.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/020.png" />
+  <p class="media-body">And of course, when Dracula finishes working on something, he can commit&hellip;</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/021.png" />
+  <p class="media-body">&hellip;and then Wolfman can update.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/022.png" />
+  <p class="media-body">But what if Dracula and Wolfman make changes to the same part of their working copies?</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/023.png" />
+  <p class="media-body">Old-fashioned version control systems prevented this from happening by <em>locking</em> the master copy.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/024.png" />
+  <p class="media-body">Only one person (or monster) could open the lock at a time.  This guaranteed that two or more people could never accidentally make changes to the same file at the same time&hellip;</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/025.png" />
+  <p class="media-body">&hellip;but once again, it meant that people had to take turns.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/026.png" />
+  <p class="media-body">Most of today's version control systems use a different strategy.  In these systems, nothing is ever locked&mdash;everyone is always allowed to edit their working copy.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/027.png" />
+  <p class="media-body">Sometimes, of course, people will make changes to the same part of the paper.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/028.png" />
+  <p class="media-body">If Wolfman updates the master copy first, his changes are simply copied to the repository.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/029.png" />
+  <p class="media-body">If Dracula now tries to commit something that would overwrite Wolfman's changes&hellip;</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/030.png" />
+  <p class="media-body">&hellip;the version control system stops him&hellip;</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/031.png" />
+  <p class="media-body">&hellip;and marks the <em>conflict</em>.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/032.png" />
+  <p class="media-body">It's up to Dracula to edit the file to <em>resolve</em> the conflict.  He can accept what Wolfman did, replace it with his own work, or write something new that combines the two&mdash;it's up to him.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/033.png" />
+  <p class="media-body">Once he has fixed things, he can go ahead and commit.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/034.png" />
+  <p class="media-body">Version control is better than mailing files back and forth for at least three reasons.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/035.png" />
+  <p class="media-body">First, it's hard (but not impossible) to accidentally overlook or overwrite someone's changes&mdash;the version control system highlights them for you automatically.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/036.png" />
+  <p class="media-body">Second, there are no arguments about whose copy is the most up to date&mdash;the master copy is.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/037.png" />
+  <p class="media-body">Third, nothing that is committed to version control is ever lost, which means it's like having an "infinite undo" in your editor.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/038.png" />
+  <p class="media-body">This works because the version control system never overwrites the master copy in the repository.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/039.png" />
+  <p class="media-body">Instead, every time someone commits a new version&hellip;</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/040.png" />
+  <p class="media-body">&hellip;it is saved on top of the previous one.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/041.png" />
+  <p class="media-body">Since all old versions are saved&hellip;</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/042.png" />
+  <p class="media-body">&hellip;it's always possible to go back in time to see exactly who wrote what on a particular day, or what version of a program was used to generate a particular set of results.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/043.png" />
+  <p class="media-body">Version control systems do have one important shortcoming.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/044.png" />
+  <p class="media-body">If you are working with plain text files&hellip;</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/045.png" />
+  <p class="media-body">&hellip;it's easy for the version control system to find and display differences, and to help you merge them.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/046.png" />
+  <p class="media-body">Unfortunately, images, MP3s, PDFs, or Microsoft Word or Excel files aren't stored as text&mdash;they use specialized binary data formats.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/047.png" />
+  <p class="media-body">Most version control systems don't know how to deal with these formats, so all they can say is, "These files differ."  The rest is up to you.</p>
+</div>
+<div class="media">
+  <img class="media-object pull-left" src="intro/048.png" />
+  <p class="media-body">Even with this limitation, version control is one of the most important concepts in this course.  In the next episode, we'll introduce you to one of the most popular free version control systems around.</p>
+</div>
+

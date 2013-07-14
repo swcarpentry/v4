@@ -1,0 +1,21 @@
+---
+layout: v4_topic
+title: Handling Missing Data with Microsoft Access
+lesson_title: Using Access
+prev: v4/access/nested.html
+next: null
+uplink: v4/access/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "IsNEeASzWrc", "time": "00:04:26.00"}
+---
+<div>
+  <p>Welcome to another episode of the Software Carpentry lecture on databases using Microsoft Access.  This episode is on how to deal with missing data.</p>
+  <p>Here is a table from a previous lecture.  It tracks the work done on experiments broken down by the project and the scientist.  Notice that we've modified the data slightly for this lecture so that some data is missing.  In the real world, data is not always complete: there are always holes.  A database uses a special value for these holes: NULL.  NULL is not zero, false, or the empty string; it is just a different kind of value.  So for these rows where the hours have a NULL value, does this mean that the hours for these experiments are missing, or does it mean that the value is not known?  Or maybe it means something else&mdash;these are questions that we cannot answer just by looking at the data, but instead we have to understand how the data is supposed to be interpreted.  We will tackle this question in a future lecture on data modeling.  In this lecture, we will discuss how to work with NULL values in our queries.</p>
+  <p>Suppose we wanted to know which experiments are missing hours data.  We do this by using the filter "is null" in the criteria row of our query.  We use "is null" and not simply "null", like we would for any other filter, because for many database systems, NULL is a special value that isn't comparable to anything else.  The "is" behaves like the "=" operator, except that it returns "true" when comparing two NULL values.  But if you forget and just use "null", Access is smart enough to fix this for you.</p>
+  <p>Here, you can see that the entries in the "Experiments" table with the missing "hours" fields are returned.  To find all the rows that do <em>not</em> have a NULL value, we can use "is not null" in the criteria row.</p>
+  <p>Because NULL is a different type of value altogether, if your data may have NULL values in it, your queries must take this into account.  For example, suppose we wanted to find all of the experiments which did not take 7 hours.  You might write "&lt;&gt; 7" in the criteria row of the "hours" column.  Notice that the results are missing the rows with NULL values in the "hours" field.  Those records were filtered out because as we've said, only the "is" and "is not" operators return true when comparing a NULL to another value.  If we mean for these rows to be included, we need to add to the criteria clause to explicitly check for NULL values.  Now, when we run our query, we get back those records with NULL hours values along with the other records where the "hours" field doesn't equal 7.</p>
+  <p>NULL values are also handled differently by aggregation functions.  Most aggregation functions ignore NULL values in their calculations.  So for instance, let's look at the "sum" function.  To calculate the total number of hours spent on experiments, we'd start with a query like this, click on "totals", and use "sum" to add up the values.  This total is actually just the sum of all the numeric values: the NULL values are skipped.</p>
+  <p>This is more important for functions like "average", which depend on the total number of records in the aggregation.  NULL values are skipped, and so they don't count toward the average.  The NULL values are <em>not</em> treated as zero; the "average" function just skips over them as if they weren't in the data set.  This is also true for "max", "min", and "count" in Access.</p>
+  <p>In this lecture, we've seen that databases use a special value called NULL for empty or missing information.  This value has to be taken into account and handled in a unique way when you are writing queries.</p>
+</div>

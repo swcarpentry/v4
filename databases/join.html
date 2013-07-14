@@ -1,0 +1,112 @@
+---
+layout: v4_topic
+title: Joining Tables
+lesson_title: Databases
+prev: v4/databases/aggregation.html
+next: v4/databases/null.html
+uplink: v4/databases/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "79EBoVPUzkE", "time": "00:05:40.00"}
+---
+<div>
+
+  <p>Welcome to the Software Carpentry lectures on Databases.</p>
+  <p>In this screencast we'll show you how to combine data from multiple tables.</p>
+  <p>The database we'll use in this screencast has two tables.</p>
+  <p>The Experiment table you are familiar with from previous lectures and the Person table you see here.</p>
+  <p>This table describes each scientist. It contains their Firstname, Lastname, and LoginID</p>
+  <p>Suppose we wanted to get the Experiment data and the scientists' first and last name on each row, not just their login names.</p>
+  <p>We do this by using the JOIN command:</p>
+
+<pre>SELECT *
+FROM Person
+JOIN Experiment;</pre>
+
+  <p>This says, "Join records in the Person table together with records in the Experiment table, and return all of the columns".</p>
+  <p>The results many not be quite what we you expected.</p>
+  <p>When doing a join, by default, the database simply returns a row for every possible combination of rows from the joined tables. (This is called the Cross Product of the rows.)</p>
+  <p>That is, the database does not attempt to figure out out how to join the tables by the column names or by the data it contains &mdash; it leaves that part to you to explain.</p>
+  <p>What we want to do is only return the combinations of rows from the Person table and the Experiment table when the LoginID fields are the same.</p>
+  <p>To express this in SQL we need to use an ON clause that specifies this fact.</p>
+
+<pre>SELECT *
+FROM Person
+JOIN Experiment
+ON Person.LoginID = Experiment.LoginID;</pre>
+
+  <p>The ON clause tells the database which rows to return from the default cross-product of rows we saw before. In this case, it only returns rows from that cross product where the LoginID is the same from both the Person table and the Experiment table.</p>
+  <p>The ON clause is like a WHERE clause that is applied when joining the tables.</p>
+  <p>We could have written the query like this:</p>
+
+<pre>SELECT * FROM Person
+JOIN Experiment
+WHERE Person.LoginID = Experiment.LoginID;</pre>
+
+  <p>but using the ON clause makes it clear what relationship you intend there to be in the join.</p>
+  <p>Notice in our query that we put the Person table name before the LoginID in the ON clause. This is necessary because the LoginID field appears in both the Person and the Experiment table, so we need to be clear which table's field we are refering to.</p>
+  <p>We can use this same 'dot' syntax to refer to columns we want to return.</p>
+  <p>For example, if we wrote this:</p>
+
+<pre>SELECT Person.FirstName, Experiment.*
+FROM Person
+JOIN Experiment
+ON Person.LoginID = Experiment.LoginID;</pre>
+
+  <p>This query returns only the FirstName column from the Person table, and returns every column (that's the star) from the Experiment table.</p>
+  <p>To simplify the query, we can provide an alias for the tables we are joining.</p>
+  <p>We do this by putting the alias right after the table name in the FROM clause:</p>
+
+<pre>SELECT Person.FirstName, Experiment.*
+FROM Person p
+JOIN Experiment e
+ON Person.LoginID = Experiment.LoginID;</pre>
+
+  <p>This means that in this query, the Person table must be refered to as "p", and the Experiment table as "e". So we need to fix up the query with the new names:</p>
+
+<pre>SELECT p.FirstName, e.*
+FROM Person p
+JOIN Experiment e
+ON p.LoginID = e.LoginID;</pre>
+
+  <p>This is exactly the same query as before, except it's a lot shorter which comes in handy when we write more complex queries.</p>
+  <p>You can join more than two tables simply by adding another JOIN..ON clause to the query.</p>
+  <p>Let's add another table into our database. This table is called ExperimentDetails.</p>
+  <p>For each Project and Experiment ID this table lists the name of the experiment, and the location.</p>
+  <p>So say you wanted the full name, and date, location and name of the experiment:</p>
+
+<pre>SELECT ExperimentDate, FirstName, LastName, ExperimentName, Location</pre>
+
+  <p>We'll put these fields down now, and come back later to add in the table aliases once we've written our query.</p>
+  <p>These fields are coming from three tables: Person, Experiment, and ExperimentDetail, so we'll need to join all of these tables together in our query.</p>
+
+<pre>FROM Person p
+JOIN Experiment e</pre>
+
+  <p>The Person table is joined to the Experiment table as before, by the LoginID</p>
+
+<pre>ON p.LoginID = e.LoginID</pre>
+
+  <p>We then join to the ExperimentDetail table by specifying the condition that both the project and experiment must be the same between rows of the Experiment table and of the ExperimentDetail table</p>
+
+<pre>JOIN ExperimentDetail ed
+ON (e.Project = ed.Project AND e.Experiment = ed.Experiment);</pre>
+
+  <p>Now we can go back and update our selected field names with their table aliases:</p>
+
+<pre>SELECT
+e.ExperimentDate,
+p.FirstName,
+p.LastName,
+ed.ExperimentName,
+ed.Location
+FROM Person p
+JOIN Experiment e
+ON p.LoginID = e.LoginID
+JOIN ExperimentDetail ed
+ON (e.Project = ed.Project AND e.Experiment = ed.Experiment);</pre>
+
+  <p>In this screencast we've shown you how to mix data from different tables using a JOIN..ON clause.</p>
+  <p>We've seen that we can join two or more tables using the JOIN clause. The ON clause acts like a filter that specifies the conditions for how to join rows from each table.</p>
+
+</div>

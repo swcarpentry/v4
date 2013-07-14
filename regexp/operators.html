@@ -1,0 +1,249 @@
+---
+layout: v4_topic
+title: Operators
+lesson_title: Regular Expressions
+prev: v4/regexp/intro.html
+next: v4/regexp/mechanics.html
+uplink: v4/regexp/index.html
+pdf: v4/regexp/operators.pdf
+ppt: v4/regexp/operators.ppt
+youtube: {"slug": "G7_HnivvnyE", "time": "00:10:50.34"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="operators/001.png" />
+    <p class="media-body">Hello, and welcome to the second episode of the Software Carpentry lecture on regular expressions.  In this episode, we'll have a look at some operators you can use in your regular expressions.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/002.png" />
+    <p class="media-body">If you recall, we have several notebooks full of data measuring background evil levels in millivaders.  Notebook #1 has these as site, date, and background evil level&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/003.png" />
+    <p class="media-body">&hellip; with single tabs as separators.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/004.png" />
+    <p class="media-body">Some of the site names have spaces&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/005.png" />
+    <p class="media-body">&hellip;and the dates are in the international standard format, with four digits for the year, two for the month, and two for the day.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/006.png" />
+    <p class="media-body">The data in Notebook #2 also has three fields&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/007.png" />
+    <p class="media-body">&hellip;but these are separated by slashes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/008.png" />
+    <p class="media-body">Months are reported using their names, and are of varying length.  The days are also of varying length.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/009.png" />
+    <p class="media-body">We saw in the previous episode that regular expressions are patterns that can be used to match text.  Letters and digits match themselves; vertical bar '|' means OR; the dot '.' matches any single character; you can use parentheses '()' to enforce grouping; the <code>re.search</code> method returns a match object if a match is found or <code>None</code> if one is not; and if a match is found, <code>match.group(k)</code> is the text that matched parenthesized group k.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/010.png" />
+    <p class="media-body">Before we look at how to use regular expressions to extract data from Notebook #2, let's see how we would do it with simple strings.  If our record is the string shown in the first line of code (<code>'Davison/May 22, 2010/1721.3'</code>) we could split on slashes to get the site, the date, and the reading, then split the middle field on spaces to get month, day, and year, and then remove the comma from the day if it is present, because if you recall, some of our readings don't have a comma after the day.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/011.png" />
+    <p class="media-body">This is a <em>procedural</em> way to solve the problem: we are telling the computer how to do something.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/012.png" />
+    <p class="media-body">Regular expressions, by contrast, are <em>declarative</em>: we tell the computer what we want, and it figures out how to do it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/013.png" />
+    <p class="media-body">Our first attempt to parse this data relies on the star '*' operator.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/014.png" />
+    <p class="media-body">'*' means "zero or more repetitions of the pattern that comes before it".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/015.png" />
+    <p class="media-body">It is a <em>postfix</em> operator, just like the 2 in x<sup>2</sup>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/016.png" />
+    <p class="media-body">So '.*' means "zero or more characters", because '.' matches any character, and '*' forces the preceding pattern&mdash;the '.'&mdash;to match zero or more times.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/017.png" />
+    <p class="media-body">In order for the entire pattern to match, the slashes '/' have to line up exactly, because '/' matches against itself.  That's why this seems to grab the site name, the date, and the reading correctly.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/018.png" />
+    <p class="media-body">Unfortunately, we've been over-generous.  Our pattern matches the string '//', and here we're printing out a '*' as well as the group so that you can see there actually are three lines of output.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/019.png" />
+    <p class="media-body">'.*' can match the empty string, because that's zero or more occurrences of a character.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/020.png" />
+    <p class="media-body">That means our pattern will accept badly-formatted data, which is likely to cause us headaches down the road.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/021.png" />
+    <p class="media-body">Let's try a variation that uses '+' (plus) instead of '*' (star).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/022.png" />
+    <p class="media-body">In a regular expression, '+' is a postfix operator meaning "one or more", i.e., it has to match at least one occurrence of the pattern that comes before it.  As you can see, the pattern '(.+)/(.+)/(.+)' <em>doesn't</em> match a string containing only slashes because there aren't characters before, between, or after the slashes for the .+'s to match.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/023.png" />
+    <p class="media-body">If we go back and check it against real data, it seems to be doing the right thing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/024.png" />
+    <p class="media-body">We're actually going to be matching a lot of patterns against a lot of strings, so let's write a function that will apply a pattern to a piece of text, report if there is no match, and if there is a match, print out all of the groups in order.  Here, we're testing our little function against the record we were just using.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/025.png" />
+    <p class="media-body">If we're using regular expressions to extract the site, the date, and the reading, why not break up the date while we're at it?  This patterns pulls out the month, the day, and the year at the same time as it pulls out the site and the reading.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/026.png" />
+    <p class="media-body">But wait a second: why doesn't this work?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/027.png" />
+    <p class="media-body">You probably didn't notice that this record does <em>not</em> have a comma after the day.  The pattern <em>does</em> have one, so this pattern doesn't match this string.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/028.png" />
+    <p class="media-body">Let's fix that by putting a question mark '?' after the comma.  In a regular expression, '?' is a postfix operator meaning "0 or 1 of whatever comes before it".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/029.png" />
+    <p class="media-body">I.e., the pattern that comes before the question mark is optional.  Now, this pattern successfully matches data without a comma&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/030.png" />
+    <p class="media-body">&hellip;and when we test on data <em>with</em> a comma, it still works.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/031.png" />
+    <p class="media-body">Let's tighten up our pattern a little bit more.  We <em>don't</em> want to match this record.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/032.png" />
+    <p class="media-body">Somebody has mis-typed the year, and given us three digits instead of four&mdash;either that, or whoever took this reading was taking advantage of the physics department's time machine.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/033.png" />
+    <p class="media-body">We could use four dots in a row to force the pattern to match exactly four digits&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/034.png" />
+    <p class="media-body">&hellip;but this won't win any awards for readability.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/035.png" />
+    <p class="media-body">Instead, let's put the digit '4' in curly braces '{}' after the dot.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/036.png" />
+    <p class="media-body">Curly braces with a number between them in a regular expression is a postfix operator meaning "match the pattern exactly this many times".  Here, we mean "match '.' four times against the string".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/037.png" />
+    <p class="media-body">Let's do a few more tests.  Here are some records in which the dates are either correct or mangled.  And here's a pattern that should match all the records that are correct, but should fail to match all the records that have been mangled.  We are expecting four digits for the year&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/038.png" />
+    <p class="media-body">&hellip;and we are allowing 1 or 2 digits for the day: the expression '{M,N}' matches a pattern from M to N times.  Here, we're allowing from 1 to 2 characters for the day.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/039.png" />
+    <p class="media-body">When we run this pattern against our test data, we see that three records match.  The second and third make sense: 'May 2' is valid, and 'May 22' is valid.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/040.png" />
+    <p class="media-body">But why does 'May' with no date at all match this pattern?  Let's look at that test case more closely.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/041.png" />
+    <p class="media-body">The groups are 'Davison' (that looks right), 'May' (looks good so far), a ',' on its own (which is clearly wrong), and then the right year and the right reading.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/042.png" />
+    <p class="media-body">Here's what's happened.  The space ' ' after 'May' matches the space ' ' in the pattern.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/043.png" />
+    <p class="media-body">The expression "1 or 2 occurrences of any character" matches the comma ',' because ',' is a character and it's occurring once.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/044.png" />
+    <p class="media-body">The expression ',?' is then not matched against anything, because it's allowed to match zero characters.  '?' means "optional", and in this case, the regular expression pattern matcher is deciding not to match it against anything, because that's the only way to get the whole pattern to match the whole string.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/045.png" />
+    <p class="media-body">And then of course the second space matches the second space in our data.  This is obviously not what we want, so let's modify our pattern again.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/046.png" />
+    <p class="media-body">The pattern here (<code>'(.+)/(.+) ([0-9]{1,2}),? (.{4})/(.+)'</code>) does the right thing for the case where there's no day, and also does the right thing for the case where there <em>are</em> characters for the day.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/047.png" />
+    <p class="media-body">What's going on?  Well, instead of using '.', we're using '[0-9]'.  In a regular expression, square brackets '[]' are used to create a set of characters.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/048.png" />
+    <p class="media-body">For example, the expression '[aeiou]' will match exactly one vowel: it matches one instance of any character in the set.  You can either write these sets out character by character, as we've done with vowels, or if the characters are in a contiguous range, write them as "first character '-' last character", as we've done with the digits.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/049.png" />
+    <p class="media-body">Here's our completed pattern: <code>'(.+)/([A-Z][a-z]+) ([0-9]{1,2}),? ([0-9]{4})/(.+)'</code></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/050.png" />
+    <p class="media-body">We've added one more feature to it: the name of the month has to begin with an upper-case letter, i.e., a character in the set '[A-Z]'&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/051.png" />
+    <p class="media-body">&hellip;followed by one or more lower-case characters in the set '[a-z]'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/052.png" />
+    <p class="media-body">The day is one or more occurrences of the digits 0 through 9.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/053.png" />
+    <p class="media-body">This will allow "days" like '0', '00', '99', and so on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/054.png" />
+    <p class="media-body">We're going to check for that after we convert the day to an integer&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/055.png" />
+    <p class="media-body">&hellip;since the valid range depends on which month we're in, and that can't be done declaratively&mdash;think, for example, about how we would have to handle leap years.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/056.png" />
+    <p class="media-body">Finally, the year is exactly four digits, so it's the set of characters '[0-9]' repeated four times.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/057.png" />
+    <p class="media-body">Again, we'll check for invalid values like '0000' after we convert to integer.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/058.png" />
+    <p class="media-body">With the tools we've seen so far, we can write a simple function that will extract the date from either of the notebooks we're looking at, and return the year, the month, and the day as strings.  First, we test to see if the record has a match for an ISO-formatted date: four digits for the year, dash, two for the month, dash, two for the day.  If it does, then we're done: we return those three fields.  Otherwise, we test the record to see if we can find the name of a month, one or two digits for the day, and then four digits for the year, within slashes.  If so, we return those, permuting the order so that it's year, month, day.  If neither pattern matched then we return <code>None</code> to signal that we can't do anything.  This is a very common way to use regular expressions: rather than trying to combine everything into one enormous pattern, we have one pattern for each valid format of data.  We test, and if the test succeeds, we return what we found.  If it doesn't, we move on to the next pattern.  Working this way is more readable; it's also easier to extend if we have to handle other data formats.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="operators/059.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

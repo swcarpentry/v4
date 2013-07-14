@@ -1,0 +1,37 @@
+---
+layout: v4_topic
+title: Introduction
+lesson_title: Matrix Programming
+prev: null
+next: v4/matrix/basics.html
+uplink: v4/matrix/index.html
+pdf: v4/matrix/intro.pdf
+ppt: v4/matrix/intro.ppt
+youtube: {"slug": "dDKYt2gn5Io", "time": "00:02:01.60"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="intro/001.png" />
+    <p class="media-body">Hello, and welcome to Software Carpentry's lecture series on matrix programming in NumPy. In this episode, we will talk about three ways to work with numerical data, and we will explain why a numerical package like NumPy is the best option.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/002.png" />
+    <p class="media-body">Suppose a scientist is studying patients with Babbage's Syndrome, and she has patient response values for each patient, and each potential treatment. We might ask several questions about the responses, like how similar are patients' responses, or whether one treatment is recommended over another.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/003.png" />
+    <p class="media-body">Both of these questions can be answered using matrix algebra, but there are several ways to program with matrices. These kinds of programs have a lot of loops, which can hide the underlying mathematical operation. In addition, the code is hard to debug, and almost impossible to tune.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/004.png" />
+    <p class="media-body">Another option is to use high-performance libraries written in low-level languages like Fortran and C. For instance, this Fortran subroutine is part of a numerical package called LAPACK. It performs the operation of a constant times a vector plus another vector.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/005.png" />
+    <p class="media-body">A third option is to use a high-level language like MATLAB or NumPy in Python. High-level languages use a data-parallel programming model, which means operations act on entire arrays, rather than using a lot of loops. In addition, high-level packages hide optimization details. In fact, most packages, including NumPy, are wrappers around those clunky high-performance libraries from the previous media.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/006.png" />
+    <p class="media-body">To review, NumPy is a package that facilitates matrix operations in a way that is easier to implement, easier to debug, and emphasizes the mathematical problem over the implementation detail. In the next lecture we will learn about the 'array' type, which is the basic data type in NumPy.</p>
+  </div>
+</div>

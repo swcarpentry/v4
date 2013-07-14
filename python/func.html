@@ -1,0 +1,361 @@
+---
+layout: v4_topic
+title: Functions
+lesson_title: Python
+prev: v4/python/debugger.html
+next: v4/python/funcobj.html
+uplink: v4/python/index.html
+pdf: func.pdf
+ppt: func.ppt
+youtube: {"slug": "gkTga4kP6uo", "time": "00:12:58.10"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="func/001.png" />
+    <p class="media-body">Hello, and welcome to the eighth episode of the Software Carpentry lecture on Python.  In this episode, we'll show you how functions work, and how to define new functions of your own.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/002.png" />
+    <p class="media-body">First, a bit of design philosophy.  A programming language should not try to include everything that anyone might ever want, because (a) it's impossible, and (b) the resulting language would be so large that it would be impossible to learn.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/003.png" />
+    <p class="media-body">Instead, languages should make it easy for people to create what they need to solve their specific problems.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/004.png" />
+    <p class="media-body">Every language does this by allowing programmers to define functions that carry out new higher-level operations.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/005.png" />
+    <p class="media-body">Which leads some people to regard programming as the act of creating a mini-language in which the solution to the original problem is trivial.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/006.png" />
+    <p class="media-body">In Python, we define new functions using the keyword <code>def</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/007.png" />
+    <p class="media-body">For example, here's a function that does nothing but return a particular string to its caller.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/008.png" />
+    <p class="media-body">To call it, we just use the function's name, followed in this case by empty parentheses.  If we print the result, it's the string the function returned.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/009.png" />
+    <p class="media-body">To make functions more useful, we can give them parameters.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/010.png" />
+    <p class="media-body">Here's another greeting function that takes the name of the person being greeted as a parameter.  What it returns depends on that parameter's value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/011.png" />
+    <p class="media-body">Let's have a closer look at what happens when we call it.  First, we assign the string <code>'doctor'</code> to the variable <code>temp</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/012.png" />
+    <p class="media-body">When we call <code>greet</code> with <code>temp</code> as a parameter, Python creates a variable called <code>name</code> and copies the reference in <code>temp</code> into that variable.  <code>temp</code> and <code>name</code> are now aliases for the same string.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/013.png" />
+    <p class="media-body">Inside the function, another new variable called <code>answer</code> is created to hold the result of concatenating <code>'Hello,&nbsp;'</code> and the value of <code>name</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/014.png" />
+    <p class="media-body">When the function returns, its variables <code>name</code> and <code>answer</code> are discarded, but the value that <code>answer</code> was pointing at is returned and assigned to <code>result</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/015.png" />
+    <p class="media-body">As this example shows, each function call creates a new set of variables called a <em>stack frame</em>.  Each function call's frame is stacked on top of those that are currently active, just like the plates in my sink.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/016.png" />
+    <p class="media-body">Let's have a look at another example.  Here we have two functions: <code>add</code> and <code>double</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/017.png" />
+    <p class="media-body">In our main program, we give <code>val</code> the value 10.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/018.png" />
+    <p class="media-body">We then call the function <code>double</code>, which creates a new stack frame.  Initially, that stack frame only contains the variable <code>c</code>, which is the function's sole parameter, and that variable points at the value that was passed into the function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/019.png" />
+    <p class="media-body">Since <code>double</code> immediately calls <code>add</code>, Python immediately pushes another frame on top of the stack.  Since <code>add</code> also only has one parameter, this frame initially only contains the variable <code>a</code>.  Our 10 is now pointed at by three aliases, one in each of three different frames.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/020.png" />
+    <p class="media-body">Now we finally do some computation: <code>b</code> is assigned the value of <code>a</code> plus 1.  Python creates the new value in memory, then creates a new variable <code>b</code> in the current stack frame to point to it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/021.png" />
+    <p class="media-body">Next, the function <code>add</code> returns that value to its caller.  <code>add</code>'s stack frame is popped off the stack and thrown away; the 11 it returned is multiplied by 2 and the result assigned to a new variable <code>d</code>.  This variable is in <code>double</code>'s stack frame, as shown here.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/022.png" />
+    <p class="media-body">Now it's <code>double</code>'s turn to return.  Its result, 22, is assigned to <code>result</code>, and <code>double</code>'s stack frame is discarded.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/023.png" />
+    <p class="media-body">The program can finally print the result of this sequence of calls.  Every modern programming language uses some variation on this basic model: each function call creates a new stack frame, which has its own set of variables, and which is discarded when the function returns.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/024.png" />
+    <p class="media-body">Stack frames also determine what variables are visible, or <em>in scope</em>, at any time.  In Python, the program can only "see" variables in the current frame and the base "global" frame (which isn't part of any function call).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/025.png" />
+    <p class="media-body">If the current and global frames have variables with the same name, the one in the current frame takes precedence.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/026.png" />
+    <p class="media-body">Here's an example: we define a function that, when called, will create a local variable <code>temp</code>, and then create a global variable that's also called <code>temp</code> before calling the function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/027.png" />
+    <p class="media-body">This is what's in memory just before the function returns.  As you can see, the function's <code>temp</code> is a separate variable from the global <code>temp</code>, and when the function refers to <code>temp</code>, it means <em>its</em> <code>temp</code>, not the global one.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/028.png" />
+    <p class="media-body">The final output of this contrived little program is therefore what's shown here.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/029.png" />
+    <p class="media-body">In our examples so far, we have always assigned the values returned by functions to variables before using them so that our diagrams will be easier to draw.  We don't have to do this: Python will create hidden temporary variables for us when and as needed.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/030.png" />
+    <p class="media-body">For example, here's our greeting program rewritten so that the only explicit variable is the parameter <code>name</code> to the function <code>greet</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/031.png" />
+    <p class="media-body">Just before the function returns, Python has created two such variables: one in the global frame to refer to the string <code>'doctor'</code> before it's passed into the function, and one inside the function's stack frame to temporarily store a reference to the result that is to be returned.  Their actual names are a lot longer, and less readable, than <code>_x1_</code> and <code>_x2_</code>, but that doesn't matter: they're never visible to programmers.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/032.png" />
+    <p class="media-body">Python has an explicit <code>return</code> keyword because a function can return a value at any time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/033.png" />
+    <p class="media-body">Here, for example, is a function that returns the sign of a number.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/034.png" />
+    <p class="media-body">If we call it with the parameter 3, the first branch of the <code>if</code> executes and returns 1.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/035.png" />
+    <p class="media-body">If we call it with -9, the <code>return</code> in the <code>else</code> is executed.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/036.png" />
+    <p class="media-body">Returning as soon as a value is known is handy, but over-use can make functions hard to understand, since people have to read the whole thing to figure out how it might behave.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/037.png" />
+    <p class="media-body">There are no hard and fast rules for what's good practice, and what's abuse, but most programmers would agree that&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/038.png" />
+    <p class="media-body">it's OK to have a small number of "early returns" at the very start of the function to handle special cases, and then&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/039.png" />
+    <p class="media-body">&hellip;one at the end to return the "general" result.  We'll see examples of this style later on when we start to write larger programs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/040.png" />
+    <p class="media-body">One important thing to note about Python is that <em>every</em> function returns something, even if it doesn't have an explicit <code>return</code> statement.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/041.png" />
+    <p class="media-body">To see how this works, let's comment out the last two lines of our sign function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/042.png" />
+    <p class="media-body">The sign of 3 is still 1&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/043.png" />
+    <p class="media-body">&hellip;but now, the sign of -9 is <code>None</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/044.png" />
+    <p class="media-body">The rule in Python is that if a function doesn't explicitly return something else, it returns <code>None</code>.  Other languages do this differently: in C, for example, trying to assign the "result" of a function that doesn't return one is a compilation error&mdash;the program can't even be run.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/045.png" />
+    <p class="media-body">This kind of behavior is one more reason why commenting out blocks of code is a bad idea: it's all too easy to accidentally get rid of a <code>return</code> statement, after which your function will silently be telling its caller "no data".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/046.png" />
+    <p class="media-body">Another important feature of functions in Python is that, like variables, they don't have specific types: their parameters can be anything at all, and so can their return values.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/047.png" />
+    <p class="media-body">For example, here's a function called <code>double</code> that multiplies its argument by 2.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/048.png" />
+    <p class="media-body"><code>double</code> of 2 is 4&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/049.png" />
+    <p class="media-body">&hellip;and <code>double</code> of the string <code>'two'</code> is the string <code>'twotwo'</code>.  In the first case, the function took an integer and returned an integer; in the second, it took a string and returned a string.  Python's quite happy to do this&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/050.png" />
+    <p class="media-body">&hellip;since there's nothing in the function that depends on its parameter having either specific type.  For obvious reasons, you should only rely on this behavior when the function only does things that will work on all possible types of input.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/051.png" />
+    <p class="media-body">It's possible to write code like this, that does different things depending on parameters' actual types&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/052.png" />
+    <p class="media-body">&hellip;but it's almost always a sign of bad design, since it will have to be rewritten every time you want to generalize the function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/053.png" />
+    <p class="media-body">If you really want to do this, there's a much better way, which we will explore in detail in the lecture on object-oriented programming.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/054.png" />
+    <p class="media-body">For now, let's go back to functions.  As we said earlier, references to values are copied into parameters when the function is called.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/055.png" />
+    <p class="media-body">This creates aliases: in particular, it means that when a list is passed into a function, what's actually passed in is an alias for the list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/056.png" />
+    <p class="media-body">To explore what this means in practice, here's a function that takes a string and a list as parameters, and appends something to both.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/057.png" />
+    <p class="media-body">Here's some code to set up a pair of variables and call that function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/058.png" />
+    <p class="media-body">Just before the call, the global frame has two variables, as shown here.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/059.png" />
+    <p class="media-body">The call places a new frame with aliases for those variables on top of the stack.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/060.png" />
+    <p class="media-body">The statement <code>a_string&nbsp;+=&nbsp;'turing'</code> creates a new string and overwrites the value of <code>a_string</code> with a reference to it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/061.png" />
+    <p class="media-body">The statement <code>a_list.append('turing')</code>, however, actually modifies the list that <code>a_list</code> is pointing at, which is the same thing that <code>list_val</code> in the caller is pointing it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/062.png" />
+    <p class="media-body">Sure enough, when the function returns and the call frame is thrown away, the new string <code>'alanturing'</code> is lost, because the only reference to it was in the stack frame.  The change to the list, on the other hand, is kept, because the function actually modified the list in place.  We'll explore this idea of passing references around in more detail in a later lecture: it turns out to be fundamental to a lot of computational thinking.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/063.png" />
+    <p class="media-body">First, though, let's finish our look at Python functions.  To avoid writing redundant code, we can define <em>default values</em> for parameters.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/064.png" />
+    <p class="media-body">Here, for example, we've defined an <code>adjust</code> function that has two parameters, but knows to use the value 2.0 for the second one if the caller doesn't pass a value in.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/065.png" />
+    <p class="media-body">If we call this function with one parameter, it is assigned to <code>value</code>, and 2.0 is used for <code>amount</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/066.png" />
+    <p class="media-body">If we call it with two parameters, the second overrides the default for <code>amount</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/067.png" />
+    <p class="media-body">One function with default values is usually easier to read than several functions, each taking a different number of parameters.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/068.png" />
+    <p class="media-body">For example, if Python didn't support default values, we would probably write two functions: one to handle the general case, and another with a slightly different name to handle the common case that did nothing but call its more general cousin.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/069.png" />
+    <p class="media-body">One restriction, though, is that all of the parameters that have default values must come <em>after</em> all of the parameters that don't.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/070.png" />
+    <p class="media-body">To see why, imagine we were allowed to mix defaulting and non-defaulting parameters as shown here.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/071.png" />
+    <p class="media-body">If we call the function with just one parameter, it's pretty clear that its value has to be assigned to <code>middle</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/072.png" />
+    <p class="media-body">&hellip;but what should the program do if the function is called with two parameters?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/073.png" />
+    <p class="media-body">Should it use the provided values for the first and second parameters, and the default for the third&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/074.png" />
+    <p class="media-body">&hellip;or use the first parameter's default, and assign the given values to the second and third?  We could define a rule, but it's simpler and safer to disallow the problem in the first place.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/075.png" />
+    <p class="media-body">To close off this episode, let's try to answer a frequently-asked question: when should we write functions?  And what should we put in them?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/076.png" />
+    <p class="media-body">The answer depends on the fact that human short-term memory can only hold about seven items at a time.  If we try to remember more unrelated bits of information than that for more than a few seconds, they become jumbled and we start making mistakes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/077.png" />
+    <p class="media-body">In particular, if someone has to keep a dozen things straight in their mind in order to understand a piece of code, that code is too long.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/078.png" />
+    <p class="media-body">Functions are a way to divide code up into more comprehensible pieces: essentially, to replace several pieces of information with one to make the whole easier to understand.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/079.png" />
+    <p class="media-body">Functions are therefore not just about eliminating redundancy: they're worth writing even if they're only called once.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/080.png" />
+    <p class="media-body">Here's an example.  This code uses meaningful variable names, and is well structured, but it's still too much to digest in one go.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/081.png" />
+    <p class="media-body">Let's start by replacing the loop bounds with function calls that give us a bit more context.  <code>grid_interior</code> of <code>arg</code> might just return <code>range(1, arg-1)</code>, but try reading the first two lines of this code aloud, and then the first two lines of what it replaced.  This version is easier to understand.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/082.png" />
+    <p class="media-body">Now let's replace those two conditionals with function calls as well.  Again, we've reduced the number of things our eyes have to scan, and provided more information about what we're actually doing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/083.png" />
+    <p class="media-body">Finally, let's call a function that handles updates to our data structure.  Our original nine lines have become five, and those five are all at the same level.  It's hard to pin down exactly what that means, but most programmers would agree that the first version mixed high-level ideas about boundaries and update conditions with low-level details of grid access and cell value comparisons.  In contrast, this version only has the high-level stuff; the low-level implementation details are all hidden in those functions.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/084.png" />
+    <p class="media-body">A good programmer would probably actually write the code shown here right off the bat&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/085.png" />
+    <p class="media-body">&hellip;then go back and write the functions that it assumes&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/086.png" />
+    <p class="media-body">&hellip;and finally refactor.  Essentially, the best way to program is to pretend that the special-purpose computer you wish you had already existed, then bring it into existence piece by piece.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="func/087.png" />
+    <p class="media-body">We'll see more of this top-down style of program design in future lectures.</p>
+  </div>
+</div>

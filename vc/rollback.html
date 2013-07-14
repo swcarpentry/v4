@@ -1,0 +1,57 @@
+---
+layout: v4_topic
+title: Rollback
+lesson_title: Version Control
+prev: v4/vc/conflict.html
+next: v4/vc/commandline.html
+uplink: v4/vc/index.html
+pdf: v4/vc/rollback.pdf
+ppt: v4/vc/rollback.ppt
+youtube: {"slug": "qDc0Hfq4AOE", "time": "00:06:53.00"}
+---
+<div>
+  <p>Hello, and welcome to the fourth episode of the Software Carpentry lecture on version control.  In this episode, we will show you how to use version control to recover old versions of your files.</p>
+  <p>We'll start with the simplest case.  Suppose that Wolfman's working copy of the <code>monsters</code> project is in sync with the head, which is Revision 12.</p>
+  <p>He decides to edit the file <code>moons.txt</code>.</p>
+  <p>Unfortunately, he forgot that there was a full moon.</p>
+  <p>So his changes don't make a lot of sense.</p>
+  <p>The next day, when he's back in human form, he wants to undo his changes.  Without version control, his choices would be grim.  He could ask his colleagues to send him their copies of the files, or try to edit them back into their original state by hand (which for some reason hardly ever seems to work).</p>
+  <p>But he's using Subversion, and hasn't committed his work to the repository, so all he has to do is <em>revert</em> his local changes.  Subversion's <code>revert</code> command simply throws away local changes to files and puts things back the way they were before those changes were made.</p>
+  <p>Let's go through that sequence of steps using SmartSVN.</p>
+  <p>Wolfman runs SmartSVN&hellip;</p>
+  <p>&hellip;selects the file <code>moons.txt</code>, and then double-clicks on it to open it in the editor.</p>
+  <p>When it comes up, he selects the text he wants to replace, and puts in a couple of lines of bad poetry instead.</p>
+  <p>He saves his changes, then loses control of his shape and goes off to howl at the moon.</p>
+  <p>The next morning, when he comes in, he uses "show changes" to take a look at what happened the previous night.</p>
+  <p>He realizes that he doesn't want to keep his changes, so he selects "revert"&hellip;</p>
+  <p>&hellip;and when SmartSVN asks him to confirm, he clicks "revert" again, and SmartSVN puts his file back the way it was.</p>
+  <p>Let's open it again to double-check&mdash;and there's the original contents.</p>
+  <p>Now let's look at what happens when someone wants to undo changes that <em>have</em> been committed.  Suppose that Dracula decides that the numbers in <code>moons.txt</code> would look better commas.</p>
+  <p>He edits the file&hellip;</p>
+  <p>&hellip;then commits his changes to create Revision 13.</p>
+  <p>A little while later, the Mummy sees the change&hellip;</p>
+  <p>&hellip;and orders Dracula to put things back the way they were.  What should Dracula do?</p>
+  <p>We can draw the sequence of events leading up to Revision 13 like this.</p>
+  <p>Dracula wants to erase Revision 13 from the repository, but he can't actually do that.  Once a change is in the repository, it's there forever.</p>
+  <p>What you have to do is copy the old revision forward&hellip;</p>
+  <p>&hellip;and <em>merge</em> it with the current revision.  This is exactly like merging changes made by two different people, which we saw in the previous episode.  The only difference is that the "other person" is actually ourself in the past.</p>
+  <p>Here's what Dracula actually does.</p>
+  <p>He runs SmartSVN, double-clicks <code>moons.txt</code>, goes in, make his change, saves it&hellip;</p>
+  <p>&hellip;and then back in SmartSVN, he uses "commit" to push his changes into the repository.</p>
+  <p>He has now created Revision 13 of the repository.</p>
+  <p>This is the point at which Mummy realizes the changes have to be reverted.</p>
+  <p>Dracula goes back into SmartSVN, and under the "modify" menu, selects "merge".</p>
+  <p>In the dialog that comes up, he specifies a range of revisions.  He wants to merge Revision 12 through to HEAD, and he wants to do a <em>reverse</em> merge, because he's going backward in time.</p>
+  <p>After he clicks, he can bring up a display to see what has changed in his local file.</p>
+  <p>He accepts the changes, and then commits to create Revision 14 in the repository.</p>
+  <p>This guarantees that the changes he made to create Revision 13 are still there if he can ever convince Mummy that numbers should in fact have commas.</p>
+  <p>Merging can be used to recover older revisions of files, not just the most recent. It can also be used to recover many files or directories at a time. But the most frequent use is to manage parallel streams of development in large projects.  This is outside the scope of this lecture, but the basic idea is simple.</p>
+  <p>Suppose that Universal Monsters has just released a new program for designing secret lairs. Dracula and Wolfman are supposed to start adding a few features that had to be left out of the first release because time ran short.</p>
+  <p>At the same time, Frankenstein and the Mummy are doing technical support: their job is to fix any bugs that users find.  All sorts of things could go wrong if both teams tried to work on the same code at the same time.  For example, if Frankenstein fixed a bug and sent a new copy of the program to a user in Greenland, it would be all too easy for him to accidentally include the half-completed shark tank control feature that Wolfman was working on.</p>
+  <p>The usual way to handle this situation is to create a <em>branch</em> in the repository for each major sub-project.  While Wolfman and Dracula work on the <em>main line</em>&hellip;</p>
+  <p>&hellip;Frankenstein and the Mummy create a <em>branch</em>&mdash;a copy of the files and directories in the repository&mdash;and do their work there.  Branches in version control repositories are often described as "parallel universes".  Each branch starts off as a clone of the software at some moment in time&mdash;typically each time the software is released, or whenever work starts on a major new feature.</p>
+  <p>Changes made to a branch only affect that branch, just as changes made to the files in one directory don't affect files in other directories.  However, the branch and the main line are both stored in the same repository, so their revision numbers are always in step.</p>
+  <p>If someone decides that a bug fix in the maintenance branch should also be made to the main line, all they have to do is merge the files in question from one to the other.  This is exactly like merging an old version of a file with the current one, but instead of going backward in time, the change is brought sideways from one branch to another.</p>
+  <p>Branching helps projects scale up by letting sub-teams work independently, but too many branches can cause as many problems as they solve.  If you'd like to know more about branching and merging, see Karl Fogel's excellent book <a href="http://producingoss.com"><cite>Producing Open Source Software</cite></a>, or Laura Wingerd and Christopher Seiwald's "<a href="http://www.perforce.com/perforce/papers/bestpractices.html">High-level Best Practices in Software Configuration Management</a>".  Keep in mind, though, that branching and merging <em>is</em> a fairly advanced topic, and not something you should need until you have many developers or several active versions of your program.</p>
+</div>
+

@@ -1,0 +1,56 @@
+---
+layout: v4_topic
+title: Filtering
+lesson_title: Databases
+prev: v4/databases/select.html
+next: v4/databases/sort.html
+uplink: v4/databases/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "c3hoWxukrPE", "time": "00:03:31.27"}
+---
+<div>
+
+  <p>Welcome to the Software Carpentry screencast on Databases. This screencast is on filtering results from a databse.</p>
+  <p>As we've seen in a previous screencast, we can use the SELECT statement to pull out columns from a table, and add computed values to results.</p>
+  <p>One of the most powerful features of a database is the ability to filter through your data to find the records that match certain criteria.</p>
+  <p>Let's say we wanted to see all of the Experiments before the year 1990.</p>
+  <p>To do this we'd write a SELECT query with all of the columns from the Experiments table,</p>
+
+<pre>SELECT * FROM Experiment</pre>
+
+  <p>and we use the WHERE command to specify our filter conditions</p>
+
+<pre>... WHERE</pre>
+
+  <p>We put the expression, ExperimentDate &lt; '1990-01-01'</p>
+
+<pre>SELECT * FROM Experiment WHERE ExperimentDate &lt; '1900-01-01'</pre>
+
+  <p>This specifies that we want only experiment info with an experiment date before January 1st, 1990.</p>
+  <p>You can think about how this query works as the database inspecting each row from the Experiments table, and checking it against the condition in the WHERE clause. If the condition holds true, then that row is included in the results, otherwise it is filtered out.</p>
+  <p>We can use other comparison operators in our filtering conditions. For example, we could ask for all of the Experiments in table that took 3 or more hours. To do this we change the WHERE condition to be Hours &gt;= 3</p>
+
+<pre>SELECT * FROM Experiment WHERE Hours &gt;= 3</pre>
+
+  <p>We can use most of the familiar comparision operators: equal to, not equal to, greater than, less than, and so on.</p>
+  <p>We can make our WHERE conditions even more sophisticated by using logical operators like AND and OR to combine conditions.</p>
+  <p>For instance, if we want to find all of the experiments run by mlom that took more than three hours, we can modify our query. It already filters for experiments that take more than 3 hours. We can add AND and then the other condition that needs to be met, that the loginID is mlom:</p>
+
+<pre>... WHERE Hours &gt;= 3 AND LoginID = 'mlom'</pre>
+
+  <p>When using an AND operator, each record returned now must satisfy two conditions: in this case, the Hours spent has to be greater than 3, and the loginID must be mlom.</p>
+  <p>If we wanted experiments either by mlom or by best, we would write</p>
+
+<pre>... WHERE Hours &gt;= 3 AND (LoginID = 'mlom' OR LoginID = 'best')</pre>
+
+  <p>The parentheses ensure that the OR-clause is evaluated first, so it is true whether the loginID is mlom or best, and the entire WHERE condition is true if the OR-clause is true AND the hours spent are greater than 3.</p>
+  <p>Another way to write this OR-clause is to use the IN operator.</p>
+  <p>With this operator, we can write a condition that is true if a field&mdash;the loginID in this case&mdash;contains anything from a list of values:</p>
+
+<pre>WHERE Hours &gt;= 3 AND LoginID IN ('mlom', 'best')</pre>
+
+  <p>This is exactly the same as writing out the OR clause, but it's shorter to write, and easier to read.</p>
+  <p>In this screencast we've shown that you can select data from a table and then filter those rows based on TRUE and FALSE conditions using a WHERE clause.</p>
+
+</div>

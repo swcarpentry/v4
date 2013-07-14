@@ -1,0 +1,44 @@
+---
+layout: v4_lesson
+title: Program Design
+children : [
+    {"path" : "intro.html", "title" : "Introduction"},
+    {"path" : "grid.html", "title" : "The Grid"},
+    {"path" : "aliasing.html", "title" : "Aliasing"},
+    {"path" : "random.html", "title" : "Randomness"},
+    {"path" : "neighbors.html", "title" : "Neighbors"},
+    {"path" : "ties.html", "title" : "Handling Ties"},
+    {"path" : "assembly.html", "title" : "Assembly"},
+    {"path" : "bugs.html", "title" : "Bugs"},
+    {"path" : "refactoring.html", "title" : "Refactoring"},
+    {"path" : "test.html", "title" : "Testing"},
+    {"path" : "tuning.html", "title" : "Tuning"}
+]
+prev : v4/oop/index.html
+next : v4/make/index.html
+uplink : v4/index.html
+---
+<div class="overview">
+  <p>
+    Well-structured programs are easier to optimize than poorly-structured ones.
+    If we grow a program as a collection of functions,
+    refactoring along the way,
+    we will be able to change those functions more or less independently of one another
+    to try out new ideas.
+    As is almost always the case,
+    improving the quality of our work improves our performance:
+    it is the opposite of an either/or tradeoff.
+    In addition,
+    choosing the right algorithms and data structures often yields bigger speedups
+    than switching to parallel hardware,
+    so we should always look there first for performance gains.
+  </p>
+</div>
+
+<div class="well well-small">
+  <ul class="keypoints">
+    <li>Build programs top-down: write as if the mini-language you wanted already existed, them go back and fill in the missing pieces.</li>
+    <li>Modular programs are easier to test and refactor than ones with many dependencies between components.</li>
+    <li>Careful choice of algorithms and data structures often produces bigger performance improvements than parallel hardware possibly could.</li>
+  </ul>
+</div>

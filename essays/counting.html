@@ -1,0 +1,455 @@
+---
+layout: v4_topic
+title: Counting Things
+lesson_title: Essays
+prev: v4/essays/provenance.html
+next: v4/essays/persist.html
+uplink: v4/essays/index.html
+pdf: null
+ppt: null
+---
+<p>The starting point for this essay is:</p>
+<blockquote><p><em>We have a bunch of things, and we want to know how many there are.  How should we count them?</em></p></blockquote>
+<p>The answer depends on (a) what constitutes a "thing", and (b) how they are stored (or whether they are stored at all).</p>
+<h2>What if my things are in a list in memory?</h2>
+<p>Easy: use <code>len(list_of_things)</code> or whatever equivalent your language provides.  After all, your program must know how many things it's managing, right?  So just ask it for the answer.</p>
+<h2>But what if the program doesn't know?</h2>
+<p>How could it not know?  First, in some really old languages, there is no way to ask an array at runtime for its length, even though the program knows.  For example, suppose you declare:</p>
+<pre>CONSTANT INTEGER Width 70
+REAL values(Width)</pre>
+<p>Since you know the array's size, you can loop over its elements quite easily:</p>
+<pre>INTEGER i
+REAL sum
+sum = 0
+DO i=1, Width
+  sum = sum + values(i)
+CONTINUE</pre>
+<p>But there's nothing equivalent to Python's <code>len</code> function that will let you ask an arbitrary array how big it is.  In particular, if you're writing a function, and are getting arrays as parameters, you must know their length&mdash;which means you <em>cannot</em> write something that handles arbitrary arrays like this:</p>
+<pre>FUNCTION total(REAL values(*))
+  total = 0
+  DO i=1, LENGTH(values)            !! does not work
+      total = total + values(i)
+  CONTINUE
+END</pre>
+<p>Why not?  Because these languages only allow functions to return scalars (i.e., single values), not arrays or other multi-value structures, so there's no way to make this work:</p>
+<pre>FUNCTION total(REAL grid(*, *)) !! sum values in two-dimensional array
+  INTEGER width, height, i, j
+  width, height = LENGTH(grid)     !! does not work!
+  total = 0
+  DO i=1, width
+      DO j=1, height
+          total = total + grid(i, j)
+      CONTINUE
+  CONTINUE
+END</pre>
+<p>This is such a pain that every language invented since the early 1960s does something smarter.  One possibility is a <code>SIZE</code> function that returns an array's size along some axis:</p>
+<pre>INTEGER width = SIZE(grid, 1)
+INTEGER height = SIZE(grid, 2)</pre>
+<p>Another is an <code>EXTENT</code> function that takes a second array as a parameter and fills it with sizes:</p>
+<pre>INTEGER dims(2)
+EXTENT(grid, dims)
+!! dims(1) is now the X extent
+!! dims(2) is now the Y extent</pre>
+<p>No matter how it's presented to programmers, the underlying implementation is the same: store the array's actual size in memory at runtime along with the data it contains, rather than throwing the size away after compilation and trusting the programmer to get things right.  We have to do this anyway if we're going to check that indices are in bounds (i.e., that we're not asking for element 10000 of a 10-element array), so it isn't actually an added cost.</p>
+<p>The second situation in which a program might not know the size of something comes up in C, where a text string is stored as a sequence of bytes ending in a byte with the value 0 like this:</p>
+<div>
+<table border="1">
+<tbody>
+<tr>
+<td>h</td>
+<td>e</td>
+<td>l</td>
+<td>l</td>
+<td>o</td>
+<td></td>
+</tr>
+<tr>
+<td>104</td>
+<td>101</td>
+<td>108</td>
+<td>108</td>
+<td>111</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>All the program has is a pointer to the start of the string: if it wants to know the length, it has to walk through memory from that location until it finds the terminating 0.  Of course, if the 0 isn't there, the answer will be wrong (and the program will probably blow up in some hard-to-find way).  This design decision made (some) sense back in 1970, but has been the cause of more security bugs in the last 20 years than any other single thing, which is why all modern programming languages explicitly store the lengths of things instead.</p>
+<p>The third case in which the program might not know the size at runtime is when values are stored in a <em>linked list</em>.  In a linked list, every entry is a pair: one part is the value being stored, and the second is a pointer to the next element of the list.  This representation makes inserting and deleting values fast and easy, but counting (and sorting) are slower and more expensive than they are with <em>contiguous</em> representations that store items side by side in one block of memory.  As with C strings, the only way to find out how many things are in the list is to start at the front and count them.  We can speed this up using a "manager" structure that stores pointers to the head and tail of the list, and a count of the number of items.  The cost is a few words of memory, and the extra complexity of keeping the count in the manager in sync with the number of values actually in the list.  Both are small enough that most linked list implementations do it, which makes the linked-vs-contiguous choice a straight engineering tradeoff between two desirable but mutually-exclusive sets of properties.</p>
+<h2>How many things do I have that satisfy some condition?</h2>
+<p>Back to counting...  What if we don't want to count how many things we have in total, but how many we have that satisfy some condition?  The straightforward answer is a loop:</p>
+<pre>def count_odd(values):
+  result = 0
+  for v in values:
+      if is_odd(v):
+          result += 1
+  return result</pre>
+<p>It's simple, and it's easy to test, but it's slow: every time we want the answer, we have to step through all the values again.  It's also inflexible: if we want to know how many values are greater than some threshold, we have to write a whole new function.</p>
+<p>Let's tackle those problems in order.  If we know the condition (or conditions) in advance, we can keep a tally as we insert and remove values:</p>
+<pre>def change(values, location, new_value):
+  values[location] = new_value
+  if is_odd(new_value):
+      return 1
+  else:
+      return -1
+
+numbers = [SIZE]
+num_odd = 0
+num_odd += change(numbers, 0, 31)
+num_odd += change(numbers, 1, 22)
+...</pre>
+<p>This is a bad idea&mdash;a really bad idea.  Sooner or later, someone is going to forget that we're tracking the number of odd values in <code>numbers</code> and overwrite an entry directly:</p>
+<pre>numbers[5] = 55555</pre>
+<p>Poof: our count of how many entries are odd now has a 50/50 chance of being wrong (since <code>numbers[5]</code> might have been either even or odd to start with).  A better solution is to create a class that does the counting for us:</p>
+<pre>class OddCountList(object):
+
+  def __init__(self):
+      self.data = []
+      self.num_odd = 0
+
+  def __setitem__(self, i, v):
+      if is_odd(self.data[i]):
+          self.num_odd -= 1
+      if is_odd(v):
+          self.num_odd += 1
+      self.data[i] = v</pre>
+<p>(If I wanted to write this class properly, I'd derive it from Python's built-in <code>list</code> class, but this hack is enough to get hte idea across.)  The <code>__setitem__</code> method is called whenever the program assigns to <code>X[i]</code>, where <code>X</code> is an instance of this class.  It subtracts one from the odd count if we're overwriting an odd number, adds one to the count if the new value is odd, and then saves the new value.  Nobody has to remember anything: once they've created an <code>OddCountList</code> instead of a plain old list, the object does the right thing every time.</p>
+<p>All right, but what if we want to count the number of values greater than some threshold, rather than the number that are odd?  It would be easy enough to define another class, and then another to count the number of negative values, and so on, but there's a better way.  As we explained in the lecture on <a href="{{page.root}}/v4/python/funcobj.html">first-class functions</a>, most modern languages make it easy to pass a function as a parameter to another function, or store a reference to a function in a data structure.  So let's modify our class:</p>
+<pre>class CountingList(object):
+
+  def __init__(self, condition):
+      self.data = []
+      self.num = 0
+      self.condition = condition
+
+  def __setitem__(self, i, v):
+      if self.condition(self.data[i]):
+          self.num -= 1
+      if self.condition(v):
+          self.num += 1
+      self.data[i] = v</pre>
+<p>If we want to keep track of odd numbers, it's just:</p>
+<pre>def is_odd(v): return (v % 2) == 1
+
+numbers = CountingList(is_odd)</pre>
+<p>If we want to keep track of numbers greater than 100, it's:</p>
+<pre>def is_greater_than_100(v): return v &gt; 100
+
+numbers = CountingList(is_greater_than_100)</pre>
+<p>and so on.  Separating the logic that does the counting from the test to see what should be counted or not lets us recycle the former: we only ever have to write it once.</p>
+<h2>What if my things are in a file instead of in memory?</h2>
+<p>Easy: read the file into a list and count that.</p>
+<h2>What if I have so many things that the won't fit into memory?</h2>
+<p>Good question.  Data sets are getting larger every day (literally); gigabytes are commonplace, and terabytes are no longer even newsworthy, so scientists increasingly have to think about what to do when things won't fit into RAM.  In this situation, the answer is straightforward: count items one by one as they're read:</p>
+<pre>def count_in_stream(stream, condition):
+  result = 0
+  for value in stream:
+      if condition(value):
+          result += 1
+  return result
+
+def count_in_file(filename, condition):
+  reader = open(filename, 'r')
+  result = count_in_stream(reader)
+  reader.close()
+  return result</pre>
+<p>This is just like keeping a tally of the number of items that satisfy a condition as we write them into a list, except we're never storing the items: we just keep the tally.</p>
+<h2>What if I'm counting the number of items of each of a set of fixed types?</h2>
+<p>Reading from a disk is tens of thousands of times slower than reading from memory, and if my data stream is coming live from a satellite or some other piece of experimental apparatus, I may not actually be able to read it a second time.  If I want to count multiple things, I therefore have to count them all at once.  If I know what they are in advance, I can do this:</p>
+<pre>def count_in_stream(stream, conditions):
+  results = [0] * len(conditions)
+  for value in stream:
+      for i in range(len(conditions)):
+          c = conditions[i]
+          if c(value):
+              results[i] += 1
+  return results</pre>
+<p>Here, <code>conditions</code> is a list of functions, each of which tests for one thing.  <code>len(conditions) is the number of conditions we're given, so <code>results</code> is initialized to a list of that many zeroes.  Each time we read a new value from the stream, we pass it to each checking function in turn, and increment the corresponding count if the checking function says "yes".  Here's an example of how we'd use it:</code></p>
+<pre>def is_odd(v): return (v % 2) == 1
+
+def is_greater_than_100(v): return v &gt; 100
+
+def is_negative(v): return v &lt; 0
+
+tests = [is_odd, is_greater_than_100, is_negative]
+
+reader = space_probe_reader('XR211') # connect to space probe data stream
+odds, greaters, negatives = count_in_stream(reader, tests)</pre>
+<p>If we have written this, should we keep the earlier version (that only handles one test at a time) in our program?  It's redundant: for any given test function, we can get the same effect with:</p>
+<pre>num = count_in_stream(reader, [some_single_test])[0]</pre>
+<p>Or should we keep it around as a convenience, like this:</p>
+<pre>num = count_in_stream_single(reader, some_single_test)</pre>
+<p>If we do the latter (which I would, because it's a common case that's more readable in its original form), it's really important to write the function's body so that it's just a wrapper around the general case:</p>
+<pre>def count_in_stream_single(reader, single_test):
+  return count_in_stream(reader, [single_test])[0]</pre>
+<p>Remember, duplicated code is bad code: anything that appears in two or more places in a program will eventually be wrong in at least one.</p>
+<p>Note for nerds: in Python, Ruby, and other dynamically-typed languages, we don't actually have to write a separate function to handle the special case.  Instead, we can test the type of the function's second parameter and wrap it up if necessary:</p>
+<pre>def count_in_stream(reader, test_or_tests):
+
+  # We have been passed a single function.
+  if is_callable(test_or_tests):
+      return count_in_stream(reader, [test_or_tests])[0]
+
+  # We have been passed a list, so do exactly what we did before.
+  elif is_list(test_or_tests):
+      results = [0] * len(test_or_tests)
+      for value in stream:
+          for i in range(len(test_or_tests)):
+              c = test_or_tests[i]
+              if c(value):
+                  results[i] += 1
+      return results
+
+  # Shouldn't ever get here.
+  else:
+      assert False, "Don't know what to do with test_or_tests"</pre>
+<p>If <code>test_or_tests</code> is a single function, we wrap it up in a list, pass that list to <code>count_in_stream</code>, and return the zero'th element of the result to our caller.  If it's already a list, we do what we did in the previous version: create a list of counts, then loop over the conditions for each value we read.  And if it's any other type, we complain.</p>
+<p>And yes, this means that <code>count_in_stream</code> is calling <code>count_in_stream</code>.  It's called <em>recursion</em>, and it's really a lot simpler than some people make it out to be.  What we've done is squeeze two logically separate things&mdash;handling a single test, and handling multiple tests at once&mdash;into a single function.  If we're asked to do the special case, we just ask another runtime copy of ourself to treat it like the general case.  We <em>could</em> do this:</p>
+<pre>def count_in_stream(reader, test_or_tests):
+
+  # Do we have a single function?
+  if is_callable(test_or_tests):
+      wrapped_up = [test_or_tests]
+      unwrap = True
+  # Or do we have a list of functions?
+  else:
+      wrapped_up = test_or_tests # already a list!
+      unwrap = False
+
+  intermediate_result = ...all the general-case code goes here...
+
+  if unwrap:
+      return intermediate_result[0] # extract single value from list
+  else:
+      return intermediate_result    # give back all results</pre>
+<p>This works, but I think the recursive version is a lot easier to read.  It's certainly a lot less fragile: setting a condition at the start of the function in order to do something at the end requires us to keep long-distance interactions straight in our head while we're programming, and human beings are really bad at that...</p>
+<p>There are still lots of interesting common cases to discuss&mdash;counting up to a marker, only counting within regions, counting in trees and graphs, counting in databases&mdash;but this seems like a good point to wind down what has turned into a rather long post.  We'll come back and look at those other cases next time.</p>
+<hr />
+<p>The first part of this series on counting looked at:</p>
+<ol>
+<li>lists in memory,</li>
+<li>things that satisfy some condition,</li>
+<li>things in files,</li>
+<li>streams, and</li>
+<li>counting by type.</li>
+</ol>
+<p>Let's explore a few more complicated cases.</p>
+<h2>What if I only want to count things up to some stop sign?</h2>
+<p>Suppose you want to count how many people you talked to before you found one who was left-handed.  The first (inefficient) version practically writes itself:</p>
+<pre>def count_before(values):
+  num = 0
+  before = True
+  for v in values:
+      if v == THE_STOP_SIGN:
+          before = False
+      elif before:
+          num += 1
+  return num</pre>
+<p>The variable <code>before</code> is a <em>one-way switch</em>.  It starts in one state (<code>True</code>), and its value is only ever changed once.  While it is true, we're counting; when it's not, we're not.</p>
+<p>This code does the right thing, but there are two things wrong with it.  First, it only looks for one stop sign (the one with the value <code>THE_STOP_SIGN</code>).  We can generalize this function by passing in the value that signals the end of interesting data&mdash;the change is highlighted below:</p>
+<pre>def count_before(values, <strong><em>stop_at</em></strong>):
+  num = 0
+  before = True
+  for v in values:
+      if v == <strong><em>stop_at</em></strong>:
+          before = False
+      elif before:
+          num += 1
+  return num</pre>
+<p>Second, this function is inefficient: if the stop sign happens to be the third value out of a million, it will still look at the other 999,996.  A purist would solve this by changing the loop condition so that we only keep looking at values while we haven't seen the stop sign.  Let's do that in stages.  First, we'll change the <code>for</code> loop to a <code>while</code> loop:</p>
+<pre>def count_before(values, stop_at):
+  num = 0
+  before = True
+<strong><em>    i = 0
+  while i &lt; len(values):
+      v = values[i]</em></strong>
+      if v == stop_at:
+          before = False
+      elif before:
+          num += 1
+      <strong><em>i += 1</em></strong>
+  return num</pre>
+<p>Next, we'll change the condition on the loop so that the loop will stop executing once we have seen the stop sign:</p>
+<pre>def count_before(values, stop_at):
+  num = 0
+  before = True
+  i = 0
+  while <strong><em>before and</em></strong> i &lt; len(values):
+      v = values[i]
+      if v == stop_at:
+          before = False
+      elif before:
+          num += 1
+      i += 1
+  return num</pre>
+<p>All right, the function isn't doing any unnecessary work.  But can we have the best of both worlds?  Can we use a <code>for</code> loop (which is easier to read, and also stop at the right time?  The answer is "yes", and here's the code:</p>
+<pre>def count_before(values, <strong><em>stop_at</em></strong>):
+  num = 0
+  for v in values:
+      if v == stop_at:
+          <strong><em>break</em></strong>
+
+      elif before:
+          num += 1
+  return num</pre>
+<p>The trick is to use <code>break</code> to jump out of the loop at the right time.  If we do this, we don't need the <code>before</code> variable any longer: as soon as we see the stop sign, we jump out of the loop and go down to the <code>return</code> statement.  It's an elegant solution...</p>
+<p>...but it can easily be abused.  When someone reads a program, the condition that controls a loop is obvious: it's right there at the start of the loop.  If it's a <code>while</code> loop, the condition is some logical expression; if it's a <code>for</code> loop, the control is "for every value in some collection".  If there are <code>break</code> statements inside the loop, though, those conditions are only part of the story: there are other ways for the loop to stop, or equivalently, the data that's actually processed may only be a subset of the data that's apparently processed looking only at the loop control.  The larger the body of the loop, and the more deeply nested the <code>break</code> is, the easier it will be for people (including you) to misunderstand what the code actually does.</p>
+<p>In this case, I think that using <code>break</code> actually makes the program easier to understand.  In other cases, I would use something like the <code>before</code> variable, and change its value inside the loop body, so that the entire stopping condition was stated explicitly in the loop control.</p>
+<h2>What if my test depends on context?</h2>
+<p>An obvious generalization of the problem above is to count the number of things that occur in regions of the data when the data may contain any number of regions.  (The case above is just a single region running from the start of data to the stop sign.)  We'll assume for the moment that the regions of interest do not overlap, i.e., any item is either in a single region or not, and no item can ever be in two or more regions.  We'll also assume that there are explicit "start of region" and "end of region" markers.  In the case above, the region implicitly started at the beginning of the data, and ended either when we saw an explicit stop sign, or implicitly when we ran out of data and there hadn't been a stop sign at all.  (I almost always forget to test for the second case.)  Here's some code:</p>
+<pre>def count_within(values, start, stop):
+  num = 0
+  counting = False
+  for v in values:
+      if v == start:
+          assert not counting, 'Saw a start marker while already counting'
+          counting = True
+      elif v == stop:
+          assert counting, 'Saw a stop marker outside a region'
+          counting = False
+      elif counting:
+          num += 1
+  return num</pre>
+<p>Here, <code>counting</code> can switch back and forth between <code>True</code> and <code>False</code> any number of times.  When it's <code>True</code>, the only legal possibilities are something to be counted, or the end-of-region marker.  When it's <code>False</code>, all we can legally see is a start-of-region marker or something we don't care about (which is why the <code>if</code> has three branches rather than four: since we don't care about it, we don't need to include an <code>elif</code> or <code>else</code> to handle it).</p>
+<p>Here's a variation on the same function that contains a common bug:</p>
+<pre>def wrong_bad_buggy_count_within(values, start, stop):
+  num = 0
+  counting = False
+  for v in values:
+<strong><em>        if counting:
+          num += 1</em></strong>
+      elif v == start:
+          assert not counting, 'Saw a start marker while already counting'
+          counting = True
+      elif v == stop:
+          assert counting, 'Saw a stop marker outside a region'
+          counting = False
+  return num</pre>
+<p>All we've done is move the check to see if we're in the region to the front of the <code>if</code>/<code>elif</code> tests.  It seems innocuous, but look at what happens when we count values between "start" and "stop" in a list of strings:</p>
+<pre><strong>&gt;&gt;&gt; </strong>test = ["no", "no", "start", "yes", "yes", "yes", "stop", "no"]
+<strong>&gt;&gt;&gt; </strong>print wrong_bad_buggy_count_within(test, "start", "stop")
+<em>5</em></pre>
+<p>Why did we get 5 instead of 3?  Because we never stop counting: on the seventh trip around the loop, <code>counting</code> is <code>True</code>, so we increment <code>num</code> without checking to see if the value <code>v</code> is our stop sign.</p>
+<h2>What if my things are nested?</h2>
+<p>Let's back up a bit and go down a different rabbit hole.  Suppose we want to represent the following files and directories inside a program (where a trailing "/" indicates that something is a directory):</p>
+<pre>/home/aturing/
++- myparams.cfg
++- program.py
++- data/
+ +- sample_1.dat
+ +- sample_2.dat
++- papers/
+ +- nature/
+    +- nature.doc
+    +- fig1.png
+ +- science/
+    +- science.doc
+    +- fig1.png
+    +- fig1.png</pre>
+<p>We could do it with a list of lists (of lists, of lists...) like this:</p>
+<pre>file_tree = [
+  "/home/aturing/",
+  "myparams.cfg",
+  "program.py",
+  ["data/",
+   "sample_1.dat",
+   "sample_2.dat"],
+  ["papers/",
+   ["nature/",
+    "nature.doc",
+    "fig1.png"],
+   ["science/",
+    "science.doc",
+    "fig1.png",
+    "fig2.png"]
+  ]
+]</pre>
+<p>Directories are represented as lists, with the directory's name as the first item, and files are represented as strings.  Given this, how can we count the number of DOC or PNG files to be found at all levels?  Here's a simple solution:</p>
+<pre>def count_files(files_and_directories, suffix):
+  count = 0
+  for entry in files_and_directories:
+
+      # If this is a file...
+      if is_string(entry):
+
+          # ...check whether it ends with the right thing.
+          if entry.endswith(suffix):
+              count += 1
+
+      # Otherwise, if this is a directory...
+      elif is_list(entry):
+
+          # FIXME: figure out what to do
+
+      # If it's neither a string or a list, something has gone wrong.
+      else:
+          assert False, 'Unrecognized entry'
+
+  # Report
+  return count</pre>
+<p>Files are easy enough: we just check to see if they have the right ending (like <code>'.doc'</code> or <code>'.png'</code>).  But what about lists?  Wouldn't it be nice if we had a function that could process them.</p>
+<p>Well, we do: it's called <code>count_files</code>.  When we find a sub-list inside <code>files_and_directories</code>, we can call <code>count_files</code> again <code>count_files</code>.  It doesn't matter that we're calling it from within <code>count_files</code>: that is no weirder than sending yourself email.  Here's the modified code:</p>
+<pre>def count_files(files_and_directories, suffix):
+  count = 0
+  for entry in files_and_directories:
+
+      # If this is a file...
+      if is_string(entry):
+
+          # ...check whether it ends with the right thing.
+          if entry.endswith(suffix):
+              count += 1
+
+      # Otherwise, if this is a directory...
+      elif is_list(entry):
+
+<strong><em>            # ...recurse.
+          temp = count_files(entry, suffix)
+          count += temp</em></strong>
+
+      # If it's neither a string or a list, something has gone wrong.
+      else:
+          assert False, 'Unrecognized entry'
+
+  # Report
+  return count</pre>
+<p>That's it: we're done.  Or almost done&mdash;as it's written right now, this function checks the first element of each list it looks at to see if it matches <code>suffix</code>, even though the first element is always the name of a directory rather than the name of a file.  We'll leave it as an exercise to modify this function so that it skips the first element of each list it looks at, but you might also want to think about what <code>count_files([...], '/')</code> does, and whether it's (a) useful and (b) morally defensible.</p>
+<h2>What if my data is in an irregular structure?</h2>
+<p>Via Wikipedia, here's a genealogical chart showing the ancestry of Charles II of Spain:</p>
+<p><img src="http://upload.wikimedia.org/wikipedia/commons/4/4c/Carlos_segundo80.png" alt="Ancestry of Charles II of Spain" /></p>
+<p>Here's one of many ways to represent this in a program:</p>
+<pre>parentage = {
+  'Charles II of Spain' : ('Mariana of Austria',
+                           'Philip IV of Spain'),
+
+  'Mariana of Austria'  : ('Maria Anna of Spain',
+                           'Ferdinand III'),
+
+  'Philip IV of Spain'  : ('Margarita of Austria',
+                           'Philip III of Spain'),
+
+  'Maria Ana of Spain'  : ('Margarita of Austria',
+                           'Philip III of Spain'),
+
+  ...
+}</pre>
+<p>This is a dictionary: the keys are people's names, and the values are the names of their mothers and fathers.  How many distinct male ancestors does Ferdinand II have?  (The word "distinct" is important because Ferdinand I is both his grandfather and his great-grandfather.)  Here's our first pass:</p>
+<pre>to_search = {'Ferdinand II'}
+seen = {}
+num = 0
+while to_search:
+  current = to_search.pop()
+  mother, father = parentage[current]
+
+  if mother not in seen:
+      to_search.add(mother)
+  seen.add(mother)
+
+  if father not in seen:
+      to_search.add(father)
+      num += 1
+  seen.add(father)</pre>
+<p>This code maintains two sets: one of people that haven't been looked at yet (<code>to_search</code>), and another of people that have been looked at (<code>seen</code>).  Each time around the loop, it takes one person at random from <code>to_search</code> (that's the <code>pop</code> call at the start of the loop body) and fetches that person's mother and father from the <code>parentage</code> dictionary.  If the mother's ancestry hasn't already been examined, she goes into <code>to_search</code>; if it has, we don't add her, because we don't want to over-count.  We treat fathers the same way, except the first time we see one, we increment our count of the number of distinct males we've encountered.</p>
+<h2>How else could we count?</h2>
+<p>We've really only just scratched the surface in this essay.  We could look at counting things in a database using <code>WHERE</code>, <code>GROUP BY</code>, and <code>COUNT</code>, or using the Iterator and Visitor patterns to count things, but we'll stop here and save those for later.</p>
+

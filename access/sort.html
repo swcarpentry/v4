@@ -1,0 +1,21 @@
+---
+layout: v4_topic
+title: Sorting
+lesson_title: Using Access
+prev: v4/access/filter.html
+next: v4/access/aggregation.html
+uplink: v4/access/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "33333333", "time": "00:03:36.27"}
+---
+<div>
+  <p>Welcome to the Software Carpentry screencast on Databases. This screencast is on sorting results from a database.</p>
+  <p>As we've seen in a previous screencast, we can use a query to pull out columns from a table&hellip;but the results of our queries are returned in an arbitrary order &mdash; they are not sorted by default.</p>
+  <p>If we wanted to sort them then we use the Sort option for the field we want to sort by. So, if we want to sort by Project we click on the dropdown in Sort and select Ascending, which specifies that we want the results to be sorted in ascending order. When we run the query you see that the results are now sorted in ascending order by the Project field. If we wanted the sorting to be done in descending order, we would select Descending instead.</p>
+  <p>If we want to sort the results by the Project, and then by the Hours, we select the desired sort order for each column. This will sort the data based on the left most sorted column first, then the next sorted column to the right and so on.</p>
+  <p>If we want to display columns in a different order than this sort priority then we need to take advantage of the fact that we do not have to display a column in order for us to sort by it. For instance, we are can chose to not display the ExperimentDate by unselecting the Show checkbox. And we can use this to sort by the ExperimentDate without displaying it. We are able to do this because ExperimentDate /is/ in the table we are reading from, we just chose not to return it's value in the results.</p>
+  <p>We can also use this to present the columns of the results in an order different from from the order in which they are sorted by, by specifying the sort columns on the right side of the query and not displaying them. For example, if we wanted to write a query that display the Project, Hours, and ExperimentDate from left to right, but was sorted first by ExperimentDate and then by Hours, we would first add the columns we wanted to display, then the columns we wanted to sort by in the appropriate order, select the desired sort order, and then uncheck the Show box for the sort columns.</p>
+  <p>In previous screencasts we've seen how you can select columns, append new calculated columns, and filter the results. All of these operations can be combined into one query. We first select the columns we want to retrieve (i.e. <code>[Project, Experiment, Hours, ExperimentDate]</code>), and we'll also add an expression that calculates 10% of each hour. Then using the Criteria row we specify the conditions the records have to meet in order to be included in the results, i.e <code>[Hours &gt;= 3]</code>. And, finally, the we use the Sort row to specify how the results should be sorted, i.e. <code>[ExperimentDate DESC]</code>.</p>
+  <p>In this screencast we've seen that you can select data from a table, and sort the results by fields in your tables, and we've seen that the selecting, filtering, and sorting operations can all be combined into a single query.</p>
+</div>

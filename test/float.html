@@ -1,0 +1,281 @@
+---
+layout: v4_topic
+title: Floating Point
+lesson_title: Testing
+prev: v4/test/interface.html
+next: v4/test/fixture.html
+uplink: v4/test/index.html
+pdf: v4/test/float.pdf
+ppt: v4/test/float.ppt
+youtube: {"slug": "Qoam964M_6Y", "time": "00:09:03.60"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="float/001.png" alt="media 01" />
+   <p class="media-body">Hello, and welcome to the fifth episode of the Software Carpentry lecture on testing.  In this episode, we&#8217;ll take a look at how computers represent real numbers, and some of the traps waiting for anyone who uses them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/002.png" alt="media 02" />
+    <p class="media-body">Let&#8217;s go back to the fields of Saskatchewan.  Instead of working directly with pixels in photographs&#8230;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/003.png" alt="media 03" />
+    <p class="media-body">&#8230;we would probably actually work with some kind of geographic information system that would store each field&#8217;s coordinates and ground cover.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/004.png" alt="media 04" />
+    <p class="media-body">Those coordinates would probably be recorded as latitude and longitude.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/005.png" alt="media 05" />
+    <p class="media-body">Which the computer would store as floating point numbers rather than integers.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/006.png" alt="media 06" />
+    <p class="media-body">And that&#8217;s where our problems start.  To understand, we have to step back and look at how computers store numbers.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/007.png" alt="media 07" />
+    <p class="media-body">Finding a good representation for floating point numbers is hard.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/008.png" alt="media 07" />
+    <p class="media-body">The root of the problem is that we cannot represent an infinite number of real values with a finite set of bit patterns.  And unlike integers, no matter what values we <em>do</em> represent, there will be an infinite number of values between each of them that we can&#8217;t.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/009.png" alt="media 09" />
+    <p class="media-body">The explanation that follows is simplified&#8212;possibly over-simplified&#8212;to keep it manageable.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/010.png" alt="media 10" />
+    <p class="media-body">Please, if you&#8217;re doing any calculation on a computer at all, take half an hour to read Goldberg&#8217;s excellent paper, &#8220;What Every Computer Scientist Should Know About Floating-Point Arithmetic&#8221;.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/011.png" alt="media 11" />
+    <p class="media-body">So: floating point numbers are usually represented using sign, magnitude, and an exponent.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/012.png" alt="media 12" />
+    <p class="media-body">In a 32-bit word, the IEEE 754 standard calls for 1 bit of sign, 23 bits for the magnitude (or <em>mantissa</em>), and 8 bits for the exponent.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/013.png" alt="media 13" />
+    <p class="media-body">To illustrate the problems with floating point, we&#8217;ll use a much dumber representation.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/014.png" alt="media 14" />
+    <p class="media-body">We&#8217;ll only worry about positive values without fractional parts.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/015.png" alt="media 15" />
+    <p class="media-body">And to make it all fit on our medias, we&#8217;ll only use 5 bits: 3 for the magnitude, and 2 for the exponent.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/016.png" alt="media 16" />
+    <p class="media-body">Here are the possible values (in decimal) that we can represent this way.  Each one is the mantissa times two to the exponent.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/017.png" alt="media 17" />
+    <p class="media-body">For example, the decimal values 48 is binary 110 times 2 to the binary 11 power.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/018.png" alt="media 18" />
+    <p class="media-body">Which is 6 times 2 to the third&#8230;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/019.png" alt="media 19" />
+    <p class="media-body">&#8230;or 6 times 8.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/020.png" alt="media 20" />
+    <p class="media-body">Of course, real floating point representations like the IEEE 754 standard don&#8217;t have all the redundancy that you see in this table.  Again, if you&#8217;d like to know how they get rid of it, and what implications this has, please read Goldberg&#8217;s paper.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/021.png" alt="media 21" />
+    <p class="media-body">Here&#8217;s a clearer view of the values our scheme can represent.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/022.png" alt="media 22" />
+    <p class="media-body">The first thing you should notice is that there are a lot of values we <em>can&#8217;t</em> store.  We can do 8 and 10, for example, but not 9.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/023.png" alt="media 23" />
+    <p class="media-body">This is exactly like the problems hand calculators have with fractions like 1/3: in decimal, we have to round that to 0.3333 or 0.3334.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/024.png" alt="media 24" />
+    <p class="media-body">But if this scheme has no representation for 9&#8230;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/025.png" alt="media 25" />
+    <p class="media-body">&#8230;then 8+1 must be stored as either 8 or 10.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/026.png" alt="media 26" />
+    <p class="media-body">Which raises an interesting question: if 8+1 is 8, what is 8+1+1?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/027.png" alt="media 27" />
+    <p class="media-body">If we add from the left, 8+1 is 8, plus another 1 is 8 again.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/028.png" alt="media 28" />
+    <p class="media-body">If we add from the right, though, 1+1 is 2, and 2+8 is 10.  Changing the order of operations can make the difference between right and wrong.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/029.png" alt="media 29" />
+    <p class="media-body">This is the sort of thing that numerical analysts spend their time on.  In this case, if we sort the values we&#8217;re adding, then add from smallest to largest, it gives us the best chance of getting the best possible answer.  In other situations, like inverting a matrix, the rules are much, much more complicated&#8212;so complicated that we&#8217;ll skip past them completely.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/030.png" alt="media 30" />
+    <p class="media-body">Instead, here&#8217;s another observation about our uneven number line:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/031.png" alt="media 31" />
+    <p class="media-body">The spacing between the values we can represent is uneven.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/032.png" alt="media 32" />
+    <p class="media-body">However, the relative spacing between each set of values stays the same, i.e., the first group is separated by 1, then the separation becomes 2, then 4, then 8, so that the ratio of the spacing to the values stays roughly constant.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/033.png" alt="media 33" />
+    <p class="media-body">This happens because we&#8217;re multiplying the same fixed set of mantissas by ever-larger exponents, and it points us at a couple of useful definitions.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/034.png" alt="media 34" />
+    <p class="media-body">The <em>absolute error</em> in some approximation to a value is simply the absolute value of the difference between the two.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/035.png" alt="media 35" />
+    <p class="media-body">The <em>relative error</em>, on the other hand, is the ratio of the absolute error to the value we&#8217;re approximating.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/037.png" alt="media 37" />
+    <p class="media-body">This example might help. If we&#8217;re off by 1 in approximating 8+1 and 56+1, that&#8217;s the same absolute error, but the relative error is much larger in the first case than in the second.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/038.png" alt="media 38" />
+    <p class="media-body">When we&#8217;re thinking about floating point numbers, relative error is almost always more useful than absolute&#8212;after all, it makes little sense to say that we&#8217;re off by a hundredth when the value in question is a billionth.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/039.png" alt="media 39" />
+    <p class="media-body">What does this have to do with testing?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/040.png" alt="media 40" />
+    <p class="media-body">Well, let&#8217;s have a look at a little program</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/041.png" alt="media 41" />
+    <p class="media-body">The loop runs over the integers from 1 to 9 inclusive.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/042.png" alt="media 42" />
+    <p class="media-body">Using those values, we create the numbers 0.9, 0.09, 0.009, and so on, and put them in the list <code>vals</code>.  (Remember, the double star means &#8220;raised to the power&#8221; in Python.)</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/043.png" alt="media 43" />
+    <p class="media-body">We then calculate the sum of those numbers.  Clearly, this should be 0.9, 0.99, 0.999, and so on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/044.png" alt="media 44" />
+    <p class="media-body">But is it?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/045.png" alt="media 45" />
+    <p class="media-body">Let&#8217;s calculate the same value a different way, by subtracting .1 from 1, then subtracting .01 from 1, and so on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/046.png" alt="media 46" />
+    <p class="media-body">This should create exactly the same sequence of numbers.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/047.png" alt="media 47" />
+    <p class="media-body">Let&#8217;s check by finding the difference and printing it out.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/048.png" alt="media 48" />
+    <p class="media-body">Here&#8217;s our answer.  The first column is the loop index; the second, what we got by totaling up 0.9, 0.99, and so on, and the third is the difference between that number and what we got by subtracting from 1.0.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/049.png" alt="media 49" />
+    <p class="media-body">The first thing you should notice is that the very first value contributing to our sum is already slightly off.  Even with 23 bits for a mantissa, we cannot exactly represent 0.9 in base 2, any more than we can exactly represent 1/3 in base 10.  Doubling the size of the mantissa would reduce the error, but we can&#8217;t ever eliminate it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/050.png" alt="media 50" />
+    <p class="media-body">The good news is, 9 times 10<sup>-1</sup> and 1 minus 0.1 are exactly the same&#8212;it might not be precisely right, but at least it&#8217;s consistent.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/051.png" alt="media 51" />
+    <p class="media-body">The same cannot be said for some of the later values, though: at some points, there actually is a small difference between what we get from our two different formulas.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/052.png" alt="media 52" />
+    <p class="media-body">And if you weren&#8217;t confused enough, sometimes the accumulation of addition errors actually makes the result <em>more</em> accurate once again.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/053.png" alt="media 53" />
+    <p class="media-body">So what does this have to do with testing?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/054.png" alt="media 54" />
+    <p class="media-body">Well, if the function you&#8217;re testing uses floating point numbers, what do you compare its result to?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/055.png" alt="media 55" />
+    <p class="media-body">If we compared the sum of the first few numbers in <code>vals</code> to what it&#8217;s supposed to be, the answer could be <code>False</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/056.png" alt="media 56" />
+    <p class="media-body">Even if we&#8217;re initializing the list with the right values&#8230;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/057.png" alt="media 57" />
+    <p class="media-body">&#8230;and calculating the sum correctly.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/058.png" alt="media 58" />
+    <p class="media-body">This is a hard problem&#8212;a very hard problem.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/059.png" alt="media 59" />
+    <p class="media-body">No one has a good generic answer, because the root of our problem is that we&#8217;re using approximations, and each approximation has to be judged on its own merits.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/060.png" alt="media 60" />
+    <p class="media-body">So what can you do to test your programs?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/061.png" alt="media 61" />
+    <p class="media-body">The first rule is, compare what you get to analytic solutions whenever you can.  For example, if you&#8217;re looking at the behavior of drops of liquid helium, start by checking your program&#8217;s output on a stationary spherical drop in zero gravity.  You should be able to calculate the right answer in that case, and if your program doesn&#8217;t work for it, it probably won&#8217;t work for anything else.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/062.png" alt="media 62" />
+    <p class="media-body">The second rule is to compare more complex versions of your code to simpler ones.  If you&#8217;re about to replace a simple algorithm for calculating heat transfer with one that&#8217;s more complex, but hopefully faster, don&#8217;t throw the old code away: use its output as a check on the correctness of the new code.  And if you bump into someone at a conference who has a program that can calculate some of the same results as yours, swap data sets: it&#8217;ll help you both.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/063.png" alt="media 63" />
+    <p class="media-body">The third rule is, never use <code>==</code> (or <code>!=</code>) on floating point numbers, because two numbers calculated in different ways will probably not have exactly the same bits.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/064.png" alt="media 64" />
+    <p class="media-body">(It&#8217;s OK to use less than, greater than or equals, and other orderings, though&#8212;we&#8217;ll explore why in the exercises.)</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/065.png" alt="media 65" />
+    <p class="media-body">If you want to compare floating point numbers, use a function like <code>nose.assert_almost_equals</code>.  As its documentation says:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/066.png" alt="media 66" />
+    <p class="media-body">This checks whether two numbers are within some tolerance of each other.  If they are, it declares them equal.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/067.png" alt="media 67" />
+    <p class="media-body">And if you thought to wonder whether that tolerance is absolute or relative, you&#8217;re ready to start testing floating-point code.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="float/068.png" alt="media 68" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

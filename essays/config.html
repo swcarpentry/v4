@@ -1,0 +1,167 @@
+---
+layout: v4_topic
+title: Handling Configuration Files
+lesson_title: Essays
+prev: null
+next: v4/essays/provenance.html
+uplink: v4/essays/index.html
+pdf: null
+ppt: null
+---
+<p>A grad student who is part of the University of Wisconsin &ndash; Madison's excellent <a href="http://hackerwithin.org/thw/">Hacker Within</a> group asked a question last week that deserves a longer answer than I gave at the time.  The question was, "How should I pass configuration parameters into my program?"  (Actually, her original question was, "How do I write a configuration file parser in C++?", but that presupposes an answer to the one I'm going to discuss here.)  Scientists often need to do this&mdash;to run a simulation for different reactant concentrations, or experiment with the effects of different clustering thresholds on phylogenetic tree reconstruction&mdash;so lets have a look at some of the options.</p>
+<p>Method #1: <em>change the constant or variable definitions in the program, and recompile it for each run.</em> For example, if youre using C++, you can define constants in a header file like this:</p>
+<pre>//
+// params.h : control parameters for simulation
+//
+
+#define T_QUENCH 300.0
+#define T_EXCITE 450.0</pre>
+<p>or even better, use proper constants like this:</p>
+<pre>//
+// params.h : control parameters for simulation (definitions)
+//
+
+extern const float T_QUENCH;
+extern const float Q_EXCITE;</pre>
+<pre>//
+// params.cpp : control parameters for simulation (values)
+//
+
+#include "params.h"
+
+const float T_QUENCH = 300.0;
+const float Q_EXCITE = 450.0;</pre>
+<p>Each time you want to change the values, you edit <code>params.cpp</code>, run <a href="{{page.root}}/v4/make/index.html">Make</a> to recompile, and then run your program.  If you're really clever, you'll put the command to re-run the program in the Makefile, and arrange your dependencies so that it recompiles the program if necessary.</p>
+<p>Software engineering purists will recoil in horror at this, but if you only need to change the programs parameters a few times, it may actually be the simplest choice, since you dont have to write (or test, or debug) any kind of configuration code.  The main drawback is that anyone else who wants to use your program has to set up a complete build environment.</p>
+<p>Method #2: <em>pass parameters as command-line arguments.</em> If you only have a handful of scalar parameters (i.e., parameters that consist of a single value, like the two in the example above, as opposed to parameters comprised of lists of values, like wave forms), then command-line parameters may be the easiest way to go.  In C++, these are passed as strings to your <code>main</code> function via <code>argc</code> and <code>argv</code>.  If your program is run like this:</p>
+<pre>$ ./anneal 300.0 450.0</pre>
+<p>then the following will work:</p>
+<pre>int main(
+  int argc,           // number of command-line arguments
+  char ** argv        // array of pointers to command-line arguments
+){
+  const char * program_name = argv[0];
+  const float t_quench = atof(argv[1]);
+  const float t_excite = atof(argv[2]);
+  run_simulation(t_quench, t_float);
+  return 0;
+}</pre>
+<p>Of course, purists are spluttering again right now.  First, <code>atof</code> returns 0 both when it gets the string "0", and when it fails, so its never safe to use&mdash;you should use <code>sscanf</code> or <code>strtol</code> instead.  Second, this program doesnt check that parameters have been passed in the right order: someone could pass <code>450.0 300.0</code> by mistake.  (Its unlikely in this case, since the quenching temperature is always less than the excitement temperature, but in other cases, where the parameters dont have a natural order, transposition mistakes are very easy to make.)</p>
+<p>The right way to do this is to use something like the <code><a href="http://www.gnu.org/s/libc/manual/html_node/Example-of-Getopt.html">getopt</a></code> library so that the command line is:</p>
+<pre>$ ./anneal -q 300.0 -e 450.0</pre>
+<p>or even better:</p>
+<pre>$ ./anneal --quench 300.0 --excite 450.0</pre>
+<p>This provides a little bit of documentation (if you use <code>history</code> to look at recently-run commands, you can easily read off the parameters youve been using).  It also means that you can run the program like this:</p>
+<pre>$ ./anneal --excite 450.0 --quench 300.0</pre>
+<p>with no ill effects: parameters are picked off by name, not position, which is a lot safer when there are more than two or three.</p>
+<p>OK, so why <em>wouldnt</em> you do this?  For one, you might have so many parameters that this becomes cumbersome.  (As a rule of thumb based solely on personal taste, if there are more than half a dozen, you should be thinking about doing it some other way.)  Second, if some of those parameters are multi-valued, this approach starts to break down as well.  To come back to the example alluded to above, if one of the parameters to your program is a sampled wave form thats used to filter signals, you dont really want to type:</p>
+<pre>$ ./throttle --waveform 0.0000105 0.0000209 0.0000410 ... 0.0152720</pre>
+<p>Method #3: <em>put parameters in a plain text file.</em> Almost everyone gets here eventually.  Put your parameters in a file like this:</p>
+<pre>quench 300.0
+anneal 450.0</pre>
+<p>and read it with code like this (written in Python for the sake of brevity and readability):</p>
+<pre>import sys
+
+# The parameter file name is the program's sole argument.
+reader = open(sys.argv[1], 'r')
+for line in reader:
+  name, value = line.split()
+  if name == 'quench':
+      t_quench = float(value)
+  elif name == 'anneal':
+      t_anneal = float(value)
+  else:
+      print &gt;&gt; sys.stderr, 'Bad parameter name "%s"' % name
+      sys.exit(1)
+
+run_simulation(t_quench, t_float)</pre>
+<p>It works, but we can do better: much better.  First, lets allow blank lines and comments beginning with '#':</p>
+<pre>for line in reader:
+<strong>    line = line.split('#')[0].strip()
+  if not line:
+      continue</strong>
+
+  name, value = line.split()
+  ...as before...</pre>
+<p>The three lines in bold face take everything that was before the first '#' on the line and strip off any leading and trailing whitespace.  If the result is the empty string, the line was blank, or consisted solely of a comment.  Either way, the program continues on to the next line without trying to get a parameter name and value.</p>
+<p>This version still doesnt handle multi-valued parameters, but its pretty easy to change the <code>line.split()</code> call and what follows it to do so.  Well leave that as an exercise for the reader, though, and look at something else instead.  Suppose that some values are floats, but others are integers or strings (such as an output file name).  Heres a much cleaner way to take care of parsing:</p>
+<pre>Handlers = {
+  'border' : int,
+  'excite' : float,
+  'output' : str,
+  'quench' : float
+}
+
+reader = open(sys.argv[1], 'r')
+params = {}
+for line in reader:
+  line = line.split('#')[0].strip()
+  if not line:
+      continue
+
+  name, value = line.split()
+  if name not in Handlers:
+      print &gt;&gt; sys.stderr, 'Bad parameter name "%s"' % name
+      sys.exit(1)
+  if name in params:
+      print &gt;&gt; sys.stderr, 'Duplicate parameter name "%s"' % name
+      sys.exit(1)
+
+  conversion_func = Handlers[name]
+  params[name] = conversion_func(value)</pre>
+<p>run_simulation(params)</p>
+<p><code>Handlers</code> is a dictionary that maps parameter names to functions that know how to convert string representations of those functions to&mdash;well, to whatever type theyre supposed to be.  Each time a name/value pair is read from the file, this program checks that there is a conversion function (which doubles as a check that the parameters name is one we recognize), then checks that we dont already have a value for that parameter (i.e., that the file doesnt mistakenly include duplicates).  It then applies the conversion function to the values string representation, and stores the result.  All the parameter values are then passed into the simulation in one tidy dictionary.</p>
+<p>This approach is nice because all the logic for parsing parameters can be re-used in other programs&mdash;including future versions of this program.  For example, if we want to add &alpha; and &beta; for controlling crystallization speed, the only thing we have to change is the "table" of parameter names and conversion unctions stored in <code>Handlers</code>:</p>
+<pre>Handlers = {
+
+<strong>    'alpha'  : float,
+  'beta'   : float,</strong>
+  'border' : int,
+  'excite' : float,
+  'output' : str,
+  'quench' : float
+}</pre>
+<p>This also gives us a natural place to put in error checking&mdash;we just write our own conversion functions, like this:</p>
+<pre>def convert_alpha(text):
+  raw = float(text)
+  if (raw &lt; 0.0) or (raw &gt; 1.0):
+      print &gt;&gt; sys.stderr, 'alpha out of range: "%f"' % raw
+  return raw</pre>
+<p>Yes, we can be smarter so that we dont have to write a separate function for each parameter, but lets not go down that path.  In fact, lets not go down <em>this</em> path, because there are already lots of configuration file syntaxes and parsers out there.  Writing one of our own may be fun, but its busy-work: if we really need configuration files, we should grab a library and use that.  Which brings us to...</p>
+<p>Method #4: <em>put parameters in a structured text file</em> that can be parsed by an existing libraries.  Whatever your needs, the odds are good that someone else has met them before, along with others that you havent yet (but probably will).  The odds are also pretty good that code in your favorite languages standard library will be less buggy right off the bat than anything you could write yourself.</p>
+<p>But what syntax to use?  One option is <a href="http://docs.python.org/library/configparser.html">Windows INI files</a>; another is <a href="http://docs.python.org/library/xml.dom.html">XML</a>, and of course theres the new hipster on the block, <a href="http://docs.python.org/library/json.html">JSON</a>.  Of these, INI is the only one designed first and foremost to be written and read by human beings; XML and JSON both defer more to machines needs, which makes typing them in more painful.</p>
+<p>Method #5: <em>put parameters in a dynamically-loaded code module.</em> This is the nerdiest option, and to understand it, we have to step back for a moment and look at how computers run programs.  If I type:</p>
+<pre>import blarg</pre>
+<p>in a Python program, the Python interpreter:</p>
+<ol>
+<li>find a file called <code>blarg.py</code>;</li>
+<li>reads the text it contains into a string in memory;</li>
+<li>parses that string according to Pythons syntax rules to create byte code instructions;</li>
+<li>executes those instructions (which are typically value and function definitions);</li>
+<li>stores the results in an object thats a lot like a dictionary; and</li>
+<li>assigns that object to a variable called <code>blarg</code>.</li>
+</ol>
+<p>OK, so suppose I create a Python file called <code>config.py</code> that contains:</p>
+<pre>t_quench = 300.0
+t_excite = 450.0</pre>
+<p>If my program contains:</p>
+<pre>import config</pre>
+<p>then <code>config.t_quench</code> has the value 300.0, and <code>config.t_excite</code> has the value 450.0.  We didnt have to parse anything: Python did it for us.  And hey, we can now use expressions and conditionals in our "configuration file" for free:</p>
+<pre>t_quench = 300.0
+t_excite = 4.0 * t_quench / 5.0
+if t_excite &lt; 500.0:
+  alpha = 0.0
+  beta = 1.0
+else:
+  alpha = 0.2
+  beta = 0.8</pre>
+<p>But wait: isnt this just method #1 all over again?  Dont we have to edit <code>config.py</code> each time we want to change parameter values?  Well, no: if you use the <code>importlib</code> librarys <code>import_module</code> function, you can specify what you want to import dynamically, i.e., provide a name like "config_low_alpha_binding" as a command-line parameter, and have Python load parameters from <code>config_low_alpha_binding.py</code>.</p>
+<p>Nerds like me tend to like this option a lot: simple things remain simple, but we have the full power of a programming language when we need it (i.e., we dont have to invent our own clumsy syntax for expressions and conditionals in configuration files).  The downsides are:</p>
+<ol>
+<li>Its hard for non-nerds to understand whats going on&mdash;dynamic code loading is a pretty advanced concept;</li>
+<li>its a lot harder to do in compiled languages like Fortran, C++, Java, and C# than it is in dynamic languages like Python, Perl, and Ruby (for historical reasons, MATLAB lies somewhere in between); and</li>
+<li>its not portable between different languages: C++, Java, Fortran, MATLAB, and Python all agree on the syntax of XML, but only one of them can read Python.</li>
+</ol>
+<p>In practice, #1 and #2 matter most: if speed is important, youve probably written your code in a compiled language, which means that loading other bits of code on the fly and pulling out values is hard both technically and intellectually.  Some people try to get around this by writing the configuration and control parts of their program in a dynamic language, while leaving the computational core in a compiled language, but thats just trading one problem for another: building, debugging, and maintaining multi-language programs is not something to be undertaken lightly.</p>
+<p>Method #6: <em>build a configuration GUI</em>.  Ive included this option for the sake of completeness, and because its usually essential if you want your program to be widely used.  Building a desktop or web-based user GUI takes a lot of time, but if done well, can make your program much more accessible&mdash;particularly if the same GUI allows people to visualize the programs output.  Be warned, though: GUI construction is a very easy way to procrastinate...</p>
+<p>No matter how you get parameters into your program, theres one rule you should never break: always (always!) include those values in your programs output, so that when you come back and re-examine old output files a year later, you know exactly what parameters were used.  This practice is a small but crucial part of tracking the <a href="{{page.root}}/book/glossary.html#process"><em>provenance</em></a> of your data, a topic well return to in a future post.</p>

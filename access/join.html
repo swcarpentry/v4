@@ -1,0 +1,19 @@
+---
+layout: v4_topic
+title: Combining Data with Microsoft Access
+lesson_title: Using Access
+prev: v4/access/aggregation.html
+next: v4/access/nested.html
+uplink: v4/access/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "5BSHAlmlcss", "time": "00:03:31.00"}
+---
+<div>
+  <p>Welcome to another episode of the Software Carpentry lecture on databases using Microsoft Access. In this episode, we'll show you how to combine data from multiple tables.</p>
+  <p>The database we'll use in this screencast has two tables: the "Experiment" table you are familiar with from previous lectures, and the "Person" table you see here. This table describes each scientist: it contains their first name, last name, and login ID.</p>
+  <p>Suppose we wanted to get the experiment date and the scientist's first and last name on each row&mdash;not just their login names. We do this by using a <em>join</em>, which we construct by clicking and holding on the name of the field we want to join in one table, and then dragging and dropping this field onto the field we want to join it to in the other table. So in this case, we click on "login ID" in the "Person" table, and drag and drop it onto "login ID" in the "Experiment" table.</p>
+  <p>This returns the combinations of rows from the "Person" table and the "Experiment" table where the login IDs are the same. Access knows which fields to check are the same between the two tables based on which fields we joined to one another. These two fields don't have to have the same name, but the structure of our database will typically be easier to understand if they do.</p>
+  <p>You can join more than two tables simply by adding more tables to the query and adding additional joins. Let's add another table to our query called "ExperimentDetails". For each project and experiment ID, this table lists the name of the experiment and the location where it was conducted. So, say we wanted the date of the experiment, the full name of the scientist who conducted it, and the name and location of the expriment. These fields are coming from three tables&mdash;"Person", "Experiment", and "ExperimentDetail"&mdash;so we'll need to join all of these tables together. First, the "Person" table is joined to the "Experiment" table as before by dragging and dropping the "LoginID" field from the "Person" table onto the "LoginID" field in the "Experiment" table. We then join the "ExperimentDetail" table to the "Experiment" table by specifying the condition that both the project and experiment must be the same between rows of the "Experiment" table and the "ExperimentDetail" table. We do this by first joining two of the tables based on one of the fields&mdash;we'll start with "Project"&mdash;and then the other&mdash;"ExperimentID".</p>
+  <p>In this screencast we've shown how to mix data from different tables using joins. We've seen that we can join two or more tables by dragging the join field from one table onto the field it is joined to in another table. This returns the combination of rows from the two tables where the joined fields are the same.</p>
+</div>

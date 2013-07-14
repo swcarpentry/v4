@@ -1,0 +1,221 @@
+---
+layout: v4_topic
+title: Aliasing
+lesson_title: Python
+prev: v4/python/strings.html
+next: v4/python/debugger.html
+uplink: v4/python/index.html
+pdf: alias.pdf
+ppt: alias.ppt
+youtube: {"slug": "7m_cw30tyr0", "time": "00:04:51.60"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="alias/001.png" />
+    <p class="media-body">Hello, and welcome to the seventh episode of the Software Carpentry lecture on Python.  In this episode, we'll take a break from introducing new features of the language, and talk a bit about what happens when one piece of data has two or more names.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/002.png" />
+    <p class="media-body">An <em>alias</em> is a a second name for a piece of data.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/003.png" />
+    <p class="media-body">Programmers create aliases because it's often easier (or more useful) to have a second way to refer to data than to copy it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/004.png" />
+    <p class="media-body">If the data in question is immutable&mdash;i.e., if it cannot be modified in place&mdash;then aliasing doesn't matter&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/005.png" />
+    <p class="media-body">&hellip;because if the data can't change, it doesn't make a difference how many times it's referred to.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/006.png" />
+    <p class="media-body">But if data <em>can</em> change in place, then aliasing can lead to some hard-to-find bugs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/007.png" />
+    <p class="media-body">In Python, aliasing happens whenever one variable's value is assigned to another variable, because variables are just names that store references to values.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/008.png" />
+    <p class="media-body">For example, if <code>first</code> refers to the string <code>'isaac'</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/009.png" />
+    <p class="media-body">&hellip;then <code>second = first</code> copies the reference in <code>first</code> to <code>second</code>, after which <code>second</code> refers to the same string in memory as <code>first</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/010.png" />
+    <p class="media-body">This can't cause problems, because as we've already seen&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/011.png" />
+    <p class="media-body">&hellip;whenever we appear to change a string, Python actually creates a new string behind the scenes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/012.png" />
+    <p class="media-body">However, this doesn't happen with lists: they can be changed in place.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/013.png" />
+    <p class="media-body">Let's assign a list containing the string <code>'isaac'</code> to the variable <code>first</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/014.png" />
+    <p class="media-body">and then assign <code>first</code> to <code>second</code>.  The two variables are now referring to the same thing in memory as before.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/015.png" />
+    <p class="media-body">If we now append another string to the list that <code>first</code> is pointing at&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/016.png" />
+    <p class="media-body">&hellip;the change is also visible when we look at <code>second</code>'s value, because it's the same value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/017.png" />
+    <p class="media-body">We didn't explicitly modify <code>second</code>&mdash;there's nothing in the expression <code>first.append('newton')</code> to indicate that the value of <code>second</code> will change&mdash;but the change happens nonetheless.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/018.png" />
+    <p class="media-body">This is called a <em>side effect</em>, and as we said at the start of this episode, side effects can lead to some hard-to-find bugs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/019.png" />
+    <p class="media-body">As an example, let's look at how we might use lists of lists to implement a two-dimensional grid.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/020.png" />
+    <p class="media-body">A single outer list serves as the "spine" of the structure, while each row of values is stored in a sublist.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/021.png" />
+    <p class="media-body">If the variable <code>grid</code> refers to the outer list&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/022.png" />
+    <p class="media-body">&hellip;then <code>grid[0]</code> selects the first sublist&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/023.png" />
+    <p class="media-body">&hellip;and <code>grid[0][1]</code> selects the sublist's second element.  This lists-of-lists therefore gives us the two-dimensional indexing we want.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/024.png" />
+    <p class="media-body">Here's some code to create an N&times;N grid of 1's.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/025.png" />
+    <p class="media-body">The first statement creates the outer list&mdash;the "spine" of the structure.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/026.png" />
+    <p class="media-body">Each of the N iterations of the main loop adds another row to this.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/027.png" />
+    <p class="media-body">Inside the outer loop, another loop creates a sublist of N 1's to be appended to the outer list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/028.png" />
+    <p class="media-body">Here's the same code with a small optimization:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/029.png" />
+    <p class="media-body">instead of temporarily storing the sublist being created in a variable called <code>temp</code>, this code just appends an empty sublist to the outer spine and then starts filling it in place, using <code>grid[-1]</code> to refer to it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/030.png" />
+    <p class="media-body">Here's another version that looks almost the same, but which contains a bug due to aliasing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/031.png" />
+    <p class="media-body">If we highlight the changes, you can see that the buggy code is just giving the empty list a name.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/032.png" />
+    <p class="media-body">How can this be a bug?  Aren't meaningful variable names supposed to be a good thing?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/033.png" />
+    <p class="media-body">To see what's going on, let's watch this code execute.  At the start of the outer loop, <code>grid</code> and <code>EMPTY</code> both refer to empty lists.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/034.png" />
+    <p class="media-body">The first thing the loop does is append the list pointed to by <code>EMPTY</code> to the outer list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/035.png" />
+    <p class="media-body">When the inner loop runs for the first time&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/036.png" />
+    <p class="media-body">&hellip;it appends a 1 to that inner list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/037.png" />
+    <p class="media-body">After two more iterations, our structure looks like this.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/038.png" />
+    <p class="media-body">Assuming N is 3, the program now goes back around the outer loop, and appends <code>EMPTY</code> to <code>grid</code> again.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/039.png" />
+    <p class="media-body">Whoops: we've just created an alias for our sublist of three 1's, rather than appending a new empty list for filling in.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/040.png" />
+    <p class="media-body">The root of the problem is that empty square brackets always means a <em>new</em> empty list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/041.png" />
+    <p class="media-body">But if we assign one variable's value to another variable, we're telling Python to create an alias for whatever the first variable was pointing at.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/042.png" />
+    <p class="media-body">Let's try that again without the variable <code>EMPTY</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/043.png" />
+    <p class="media-body">We append a new empty list&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/044.png" />
+    <p class="media-body">&hellip;then fill that sublist with 1s.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/045.png" />
+    <p class="media-body">On the second pass through the outer loop, we append a <em>new</em> empty sublist&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/046.png" />
+    <p class="media-body">&hellip;which we can then start filling.  This time, everything is as we want it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/047.png" />
+    <p class="media-body">So if aliasing can cause bugs, why does Python allow it?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/048.png" />
+    <p class="media-body">The first answer is that some languages don't&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/049.png" />
+    <p class="media-body">&hellip;or at least go to great lengths to make it appear as if they don't.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/050.png" />
+    <p class="media-body">Python, like C++ and Java, does allow aliasing because having multiple references to a million-element list is a lot more efficient than copying it over and over again.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/051.png" />
+    <p class="media-body">And sometimes we really do want to update structures in place via different routes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="alias/052.png" />
+    <p class="media-body">We'll see examples of that in the next episode.</p>
+  </div>
+</div>

@@ -1,0 +1,141 @@
+---
+layout: v4_topic
+title: Recommendations
+lesson_title: Matrix Programming
+prev: v4/matrix/linalg.html
+next: null
+uplink: v4/matrix/index.html
+pdf: v4/matrix/recommend.pdf
+ppt: v4/matrix/recommend.ppt
+youtube: {"slug": "vpKuysxZOVI", "time": "00:10:03.40"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/001.png" />
+    <p class="media-body">Hello, and welcome to the another episode of the Software Carpentry lecture on matrix programming.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/002.png" />
+    <p class="media-body">We have already seen how NumPy can simplify numerical programming  by providing a data parallel approach.  In the next few minutes, we'll show you a working example that incorporates NumPy into a paper recommendation system.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/003.png" />
+    <p class="media-body">Every year, scientists produce several hundred thousand papers.  An important question for every scientist is which papers they should read.  Typically, one should read papers that their colleagues read and found useful. We will build a recommendation tool that generates a list of papers that an individual should read based on their previous ratings and the ratings of other people in the field.  The basic idea behind our tool is the same as a movie recommendation example that was introduced in Toby Segaran's book, <cite>Programming Collective Intelligence</cite>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/004.png" />
+    <p class="media-body">The first step is to decide on recommendation criteria.  It would seem that we want to take into account how highly the paper was rated by other people, but we also want to consider ratings that are from people with similar backgrounds to the user of the system. This leads to another criteria: the similarity between ratings across papers that both users have already rated.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/005.png" />
+    <p class="media-body">We will divide the code into three pieces. First, we will take a list of previous ratings and store them in a NumPy array. Next, we will introduce two measures of the similarity between two papers or between two people's ratings. Last, we will use those measures to generate recommendations for a user.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/006.png" />
+    <p class="media-body">Of all the millions of papers out there, most people have only read a few.  Since almost everyone has no opinion on almost every paper, the data is very sparse. A good way to store sparse data is in a dictionary for each user, where each ratings is stored as a unique paper identifier and a rating.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/007.png" />
+    <p class="media-body">We want to turn this data into an array. In the real world, this array contains almost all zeros for all the papers that an individual didn't rank.  SciPy contains a sparse array class that doesn't store those zeros, but we will stick with NumPy for this example.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/008.png" />
+    <p class="media-body">Let's look at our code.  Since the input data is sparse, and we want to store it in a full array, we need to get a list of all unique people and a list of all unique papers.  We use a set to construct the paper list because all elements of a set are guaranteed to be unique.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/009.png" />
+    <p class="media-body">Now that we have a list of all people and a list of all papers, we assign each rating to the row and column corresponding to the person making the rating and the paper they rated.  Note that we use enumerate on the list <code>people</code> get a set of tuples that contain the index and the person's name.  This lets us translate the dictionary to an array.  Finally, we return a tuple containing the people, the papers, and the array of all ratings.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/010.png" />
+    <p class="media-body">Now that we have all of our data in a numpy array, we need a metric to judge similarity.  Obviously, there are dozens of similarity metrics for different classes of problems.  We only consider two: the inverse sum of squares and Pearson's correlation coefficient.  An important point to consider is how we treat a 0.  Since a 0 specifies no ranking rather than a very poor ranking, we want to use a mask on our array to only define our metrics over papers that have been rated by both individuals.  Now, let's look at our metrics.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/011.png" />
+    <p class="media-body">The inverse sum of squares metric uses the distance between two N-dimensional vectors, where N is the number of comparable ratings. In two dimensions, the distance is just the Pythagorean theorem.  In higher dimensions, we add more terms like (<em>x<sub>a</sub>-x<sub>b</sub>)<sup>2</sup></em>. A small sum of squares means the ratings are all nearly the same.  Since we want a 1 to correspond to perfect agreement and a 0 to correspond to complete disagreement, we invert the sum of squares.  We add 1 the denominator to achieve the desired range and to avoid division by zero.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/012.png" />
+    <p class="media-body">Let's look at the code.  First, we note that left_index and right_index are rows of the data to compare. Since we only want to compare rankings if two people have both rated a paper, the first thing we do is create a mask that has a <code>True</code> each column where both rows are nonzero.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/013.png" />
+    <p class="media-body">If no papers were rated by both people, then we return a zero.  Finally, we compute the norm of the difference of the ratings, and we return the similarity score.  Note that we can use a library function numpy.linalg.norm to compute the actual difference, but we need to square it to get the sum of squares.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/014.png" />
+    <p class="media-body">One problem with the inverse sum of squares is that it penalizes people for using a different scale.  We are really interested in how papers are ranked relative to other rankings, not whether someone is generally harsher than another person. Pearson's Correlation score normalizes the data and reports the amount of correlation between scores.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/015.png" />
+    <p class="media-body">Pearson's correlation is related to the line of best fit.  In this example, we see high correlation because most papers that were rated highly by Greg were also rated highly by Tommy.  If the points were randomly scattered, we would call that low correlation and want to report a low score.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/016.png" />
+    <p class="media-body">Pearson's correlation requires that we know the standard deviation and the covariance of two vectors of measurements. Standard deviation is the average amount that a rating deviates from the mean rating.  Covariance is a measure of how two variables change together.  It will be positive and large if higher values of X correspond to higher values of Y.  It will be negative and large if higher values of X correspond to lower values of Y, and it will be zero if there is no pattern.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/017.png" />
+    <p class="media-body">Pearson's Correlation score is given by the covariance normalized by both standard deviations.  In the code, we want to use numpy routines to do as much of the calculation as possible.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/018.png" />
+    <p class="media-body">According to the documentation, numpy.cov can take two n by 1 arrays and produce a matrix that contains all variances and covariances.  Since the square root of variance is the standard deviation, it looks like one call will be all we need.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/019.png" />
+    <p class="media-body">In our code, the first thing we do is create a mask so that we only use our metric on elements of the two arrays that are nonzero.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/020.png" />
+    <p class="media-body">Now we can start computing the Pearson score.  The variance of the left rating is stored in position [0,0] of the matrix varcovar, and the variance of the right rating is stored in position [1,1].  Either off diagonal element is the covariance.  After a quick check for division by zero, we return the score as the quotient of the covariance and the product of standard deviations.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/021.png" />
+    <p class="media-body">It turns out there are several ways to examine our data set.  We can look at how similarly two researchers view the literature, how similarly two papers are rated, or our original problem: what papers should someone read based on their ratings and the other ratings in the data set?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/022.png" />
+    <p class="media-body">If we want to find which individuals are most similar to a given person, we can apply either similarity metric to the rows of the array, since each row is a single person.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/023.png" />
+    <p class="media-body">In code, the variable person lists the person for whom we want a list of similar individuals.  For every other person, we compute the similarity score and append it to the list.  Different similarity functions can be used by passing a different function into the method.  Finally, we sort the list, which will use the first position in each tuple by default.  We reverse since the highest scores should be first.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/024.png" />
+    <p class="media-body">If we transpose our data set, each row becomes a list of all the ratings for a single paper.  We can use the same code to find similar papers, but we need to be careful to list paper names rather than person names.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/025.png" />
+    <p class="media-body">In code, we assign the transposed data matrix to the variable ratings_by_paper.  Next, we compute the top matches for each paper.  Finally, we clean up the output by assigning paper names to the data indices using the paper_ids variable.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/026.png" />
+    <p class="media-body">Finally, we can solve our original problem.  We will return a list of papers that a person might find interesting based on a weighted average of the ratings of other people.  In our average, each rating is weighted based on the degree of similarity between the person doing the rating and the person for whom we are making recommendations.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/027.png" />
+    <p class="media-body">Our code will use two loops.  The outer loop indexes over people.  As long as other_id is not the person that we are generating recommendations for, we want to compute the similarity score between the two people.  This tells us how much the person's opinion of a paper might matter to the person we are making recommendations for.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/028.png" />
+    <p class="media-body">In the inner loop, which loops over papers, we identify papers that were rated by the other person, but not by the person for whom we are generating recommendations.  We then add the rating times the similarity measure.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/029.png" />
+    <p class="media-body">We also keep track of the total set of similarities so we can compute the weighted average.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/030.png" />
+    <p class="media-body">Outside of both loops, we normalize the rankings by dividing by the correct sum of similarity measures.  We then sort and reverse the ratings, so that highly recommended papers are displayed first.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/031.png" />
+    <p class="media-body">Now that we are rating papers, we could easily rate other things like professors, schools, or conferences. The most important takeaways are first, that we left all the number crunching to NumPy, but second, that meant *we* had to do the *data* crunching to get everything into the right format so that the library could do its job.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="recommend/032.png" />
+    <p class="media-body">The Software Carpentry lectures on regular expressions, XML, databases, and binary data handling will show you more about how to crunch your own data.</p>
+  </div>
+</div>

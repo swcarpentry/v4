@@ -1,0 +1,173 @@
+---
+layout: v4_topic
+title: Introduction
+lesson_title: Object-Oriented Programming
+prev: null
+next: v4/oop/basics.html
+uplink: v4/oop/index.html
+pdf: intro.pdf
+ppt: intro.ppt
+youtube: {"slug": "YsFUP0mfaLI", "time": "00:04:22.40"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="intro/001.png" />
+    <p class="media-body">Hello, and welcome to the Software Carpentry lecture on object-oriented programming.  In the next few episodes, we'll explain what classes and objects are, and show you how they can make big programming projects easier to manage.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/002.png" />
+    <p class="media-body">Computer science is many things, but at its heart, it is the study of algorithms.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/003.png" />
+    <p class="media-body">Computer programming is also many things, but when everything else is cleared away, it is about creating and composing abstractions.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/004.png" />
+    <p class="media-body">An abstraction is something that hides details</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/005.png" />
+    <p class="media-body">or makes one thing act like another, so that we can use them interchangeably.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/006.png" />
+    <p class="media-body">We have already met functions, which turn many steps into one larger logical step.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/007.png" />
+    <p class="media-body">And libraries, which group functions together to make them more manageable.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/008.png" />
+    <p class="media-body">In this lecture, we'll look at classes and objects, which combine functions with data to make both easier to manage.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/009.png" />
+    <p class="media-body">As we'll see, if they're used properly, they can do much, much more than that.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/010.png" />
+    <p class="media-body">To understand the problems object-oriented programming is meant to solve, think about writing a program to simulate an aquarium containing</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/011.png" />
+    <p class="media-body">plants</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/012.png" />
+    <p class="media-body">snails</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/013.png" />
+    <p class="media-body">and fish.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/014.png" />
+    <p class="media-body">Plants don't move around, and nourish themselves through photosynthesis.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/015.png" />
+    <p class="media-body">Snails crawl around on the floor or walls of the tank, and scavenge food.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/016.png" />
+    <p class="media-body">While fish swim in three dimensions, and hunt for food (including each other)</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/017.png" />
+    <p class="media-body">Conceptually, the algorithm for simulating all of this is simple:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/018.png" />
+    <p class="media-body">For each time step in the simulation, everything in the world moves (if it moves) and eats (if it eats). Once that's done, we re-display everything that hasn't been eaten.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/019.png" />
+    <p class="media-body">The program that implements this is more complicated.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/020.png" />
+    <p class="media-body">Let's start with the function that moves things. For each "thing" we have, we check to see if it's a plant, a snail, or a fish. If it's a plant, we don't do anything; if it's a snail or a fish, we call a function that knows how to move something of that type.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/021.png" />
+    <p class="media-body">So far, this is pretty simple.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/022.png" />
+    <p class="media-body">What about eating? Again, we loop over all the things in the aquarium. If the thing is a plant, we call our 'photosynthesize' function. If it's a snail, we give it to 'scavenge', and if it's a fish, we call 'hunt' to see if it catches anything, and if it does, we call 'devour' to handle the details.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/023.png" />
+    <p class="media-body">This will work, but an experienced programmer would be feeling uneasy by now.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/024.png" />
+    <p class="media-body">To understand why, let's look at our third main function, 'show'. Sure enough, it has a loop that uses the types of the things in the aquarium to decide what specialized functions to give those things to.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/025.png" />
+    <p class="media-body">This is starting to look familiar...</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/026.png" />
+    <p class="media-body">As we've said before, code that's repeated in two or more places will eventually be wrong in at least one.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/027.png" />
+    <p class="media-body">In this particular case, imagine what happens if we want to add starfish to our aquarium. We have to modify three functions in three different places.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/028.png" />
+    <p class="media-body">Remembering those three places is a burden on us, and even more of a burden on someone who's new to the code but wants to extend it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/029.png" />
+    <p class="media-body">And what about fish that eats plants? Or scavenge like snails instead of hunting one another? If we have to add if's and elif's to our functions for each of these cases, our program will quickly become a tangled mess.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/030.png" />
+    <p class="media-body">Now, if you're an optimist, you'll look at this and say, "Every pattern in a program is an opportunity to shorten that program."</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/031.png" />
+    <p class="media-body">Object-oriented programming was invented to handle exactly this situation.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/032.png" />
+    <p class="media-body">It lets us connect data and functions together so that we can write code like this, where each thing in our simulation knows how to move itself, how to eat, that it's supposed to tell us what it ate if it ate something else, and so on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/033.png" />
+    <p class="media-body">Contrary to some people's claims, there's no evidence that this is somehow more "natural" than any other kind of programming. However, it is easier to understand programs that are written this way, particularly large ones.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/034.png" />
+    <p class="media-body">And it's much easier for those programs to grow piece by piece over time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/035.png" />
+    <p class="media-body">The next few episodes will show you how to work with classes and objects in Python, but before we do that, a word of caution. Nothing is free.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/036.png" />
+    <p class="media-body">Object-oriented programming actually does make very simple programs slightly more complex.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/037.png" />
+    <p class="media-body">And if classes and objects are used too enthusiastically, they can create just as big a mental burden as no abstraction at all.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/038.png" />
+    <p class="media-body">It's easy to see why too little abstraction makes things hard: people reading the code have to put the little steps together in their head to construct the "big picture" of what the code is doing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/039.png" />
+    <p class="media-body">If there's too much abstraction, though, it will be just as hard for readers to translate those abstractions back into concrete actions in their mind to figure out what the program actually does.  This becomes easier with practice, but be wary of trying to do too much too quickly.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/040.png" />
+    <p class="media-body">With that warning out of the way, let's have a look at some simple classes.</p>
+  </div>
+</div>

@@ -1,0 +1,37 @@
+---
+layout: base
+root: ..
+title: Lessons (Version 4.0)
+children : [
+    {"path" : "vc/index.html", "title" : "Version Control"},
+    {"path" : "shell/index.html", "title" : "The Unix Shell"},
+    {"path" : "python/index.html", "title" : "Python"},
+    {"path" : "test/index.html", "title" : "Testing"},
+    {"path" : "setdict/index.html", "title" : "Sets and Dictionaries"},
+    {"path" : "regexp/index.html", "title" : "Regular Expressions"},
+    {"path" : "databases/index.html", "title" : "Databases"},
+    {"path" : "access/index.html", "title" : "Using Access"},
+    {"path" : "data/index.html", "title" : "Data Management"},
+    {"path" : "oop/index.html", "title" : "Object-Oriented Programming"},
+    {"path" : "invperc/index.html", "title" : "Program Design"},
+    {"path" : "make/index.html", "title" : "Make"},
+    {"path" : "sysprog/index.html", "title" : "Systems Programming"},
+    {"path" : "spreadsheets/index.html", "title" : "Spreadsheets"},
+    {"path" : "matrix/index.html", "title" : "Matrix Programming"},
+    {"path" : "matlab/index.html", "title" : "MATLAB"},
+    {"path" : "media/index.html", "title" : "Multimedia Programming"},
+    {"path" : "softeng/index.html", "title" : "Software Engineering"},
+    {"path" : "essays/index.html", "title" : "Essays"}
+]
+---
+<div align="center">
+  <img src="{{page.root}}/img/bootcamps/2012-11-scripps.png" alt="Boot Camp at the Scripps Institute, 2012" />
+</div>
+
+<ul>
+{% for lesson in page.children %}
+  <li><a href="{{lesson.path}}">{{lesson.title}}</a></li>
+{% endfor %}
+</ul>
+
+<p>Material from <a href="{{page.root}}/v3/index.html">Version 3</a> is also available.</p>

@@ -1,0 +1,121 @@
+---
+layout: v4_topic
+title: Aggregation
+lesson_title: Databases
+prev: v4/databases/sort.html
+next: v4/databases/join.html
+uplink: v4/databases/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "ZjuL-pfkUOA", "time": "00:06:16.74"}
+---
+<div>
+
+  <p>Welcome to the Software Carpentry screencast on Databases.</p>
+  <p>In this screencast, we will show you how to combine values from multiple rows.</p>
+  <p>This is called "aggregation"</p>
+  <p>Suppose we wanted to know how many hours were spent on all experiments so far</p>
+  <p>First, we need to fetch all the hours in the table, which can write like this:</p>
+
+  <p>To add up all the hours, all we need to do is apply the SUM function to the Hours column. So we write,</p>
+
+<pre>SELECT SUM(Hours) FROM Experiment;</pre>
+
+  <p>SUM is one of the aggregation functions in SQL</p>
+  <p>In their simplest form, aggregation functions are applied to all rows fetched by a query and they reduce the result to a single row</p>
+  <p>MAX, MIN and AVG are also aggregation functions</p>
+
+<pre>SELECT SUM(Hours), MAX(Hours), MIN(Hours), AVG(Hours) FROM Experiment;</pre>
+
+  <p>You can use them like SUM and they'll do what you expect: compute the maximum, minimum, and average of your query results.</p>
+  <p>Another handy aggregation function is COUNT. If you would like to know how many records are returned by a query,</p>
+
+<pre>SELECT COUNT(*) FROM Experiment;</pre>
+
+  <p>The use of the asterisk, or *, here is an idiom that is used because we are interested in counting the number of records, not of counting anything in a particular column.</p>
+  <p>What if we want the total number of hours each scientist has worked so far?</p>
+  <p>One way is to use a WHERE clause to single out specific scientists. We would write,</p>
+
+<pre>SELECT SUM(Hours) FROM Experiment WHERE LoginID = 'mlom';</pre>
+
+  <p>The problem with this approach is that we have to write one query for each scientist. We only have a few scientists in our table, but imagine if we had hundreds.</p>
+  <p>What we want to be able to is have the database return a row for each scientist, and include a sum of the hours they have worked, like so:</p>
+
+<pre>SELECT LoginID, SUM(Hours) FROM Experiment;</pre>
+
+  <p>But this query returns a single row, not one for each scientist. And why does it return that particular LoginID?</p>
+  <p>Let's take a look at the same query without the SUM aggregate function:</p>
+
+<pre>SELECT LoginID, Hours FROM Experiment;</pre>
+
+  <p>When we used SUM, the database was collapsing these rows by summing the Hours column, but since we haven't specified a aggregation function for LoginID, the database just picks an arbitrary LoginID and returns it.</p>
+  <p>If your query selects fields directly from a table and aggregates at the same time, the values for unaggregated fields can be any value in the records being aggregated.</p>
+  <p>So, if we want the total number of hours each scientist has worked so far we need to tell the database to aggregate the hours for each scientist separately.</p>
+  <p>We do this by using the GROUP BY clause.</p>
+
+<pre>SELECT LoginID, Hours FROM Experiment
+GROUP BY;</pre>
+
+  <p>We want our aggregation done for each scientist, so we group by the LoginID,</p>
+
+<pre>SELECT LoginID, Hours FROM Experiment
+GROUP BY LoginID;</pre>
+
+  <p>and for each group we display the loginID and the SUM of the hours of that group:</p>
+
+<pre>SELECT LoginID, SUM(hours) FROM Experiment
+GROUP BY LoginID;</pre>
+
+  <p>So, this query tells the database to group all of the rows that have the same LoginID together, and then do the aggregation for each of those groups separately.</p>
+  <p>Since we're grouping by LoginID, we know that the rows in each group have the same LoginID, so it's safe to select the LoginID column here without getting unexpected results.</p>
+  <p>If we want, we can group by multiple criteria at once. So, for example, if we wanted the number of hours each scientist had spent on each project, we would group by both loginID and Project:</p>
+
+<pre>...
+GROUP BY LoginID, Project;</pre>
+
+  <p>And then add the ProjectID to the SELECT clause so that we know which project the hours belong to:</p>
+
+<pre>SELECT LoginID, Project, SUM(Hours) FROM Experiment
+...</pre>
+
+  <p>The GROUP BY clause here specifies that all of the rows that have the same LoginID and Project name are grouped together, and then the sum is done for each of those groups.</p>
+  <p>The other aggregation functions work in the same way. So, for instance, to calculate how many experiments each scientist has done for each project, we add COUNT to our SELECT clause,</p>
+
+<pre>SELECT LoginID, Project, SUM(Hours), COUNT(*) FROM Experiment
+GROUP BY LoginID, Project;</pre>
+
+  <p>Sorting and filtering can also be done on queries that aggregate data.</p>
+  <p>For example, If we want the total time spent on each project sorted by project name, we would write:</p>
+
+<pre>SELECT Project, SUM(Hours) FROM Experiment</pre>
+
+  <p>to select the project name and total number of hours worked, and we want this for each project,</p>
+
+<pre>GROUP BY Project</pre>
+
+  <p>and we want to sort the results by the project name</p>
+
+<pre>ORDER BY Project ASC;</pre>
+
+  <p>The ORDER BY clause always goes after the GROUP BY clause, because we are ordering /the results/ of aggregation &mdash; it wouldn't make any difference to order the data before it was aggregated.</p>
+  <p>What if we wanted to sort the results by the number of hours spent?</p>
+  <p>Instead of using a plain field to sort on, like Project, we can use an aggregate function as our sorting criterion.</p>
+
+<pre>ORDER BY SUM(Hours) ASC;</pre>
+
+  <p>So, here we are sorting the results, not by a field from the Experiments table &mdash; the raw data &mdash; but by the results of an aggregation function computed on the data from the Experiments table.</p>
+  <p>What if you want to remove the negative hours, and only add up the positive values?</p>
+  <p>You can do this by adding a WHERE clause to our query to filter out values you don't want before they are grouped and aggregated</p>
+  <p>In this case, the query is:</p>
+
+<pre>SELECT Project, SUM(Hours) FROM Experiment
+WHERE Hours &gt;= 0
+GROUP BY LoginID, Project
+ORDER BY SUM(Hours) ASC;</pre>
+
+  <p>Notice that we can read the query as a series steps in the same order they are written. First, the data is selected from the table, those results are filtered by the WHERE clause, then what is left over is aggregated, and finally the aggregated results are sorted.</p>
+
+  <p>This query nicely summarises everything we've covered in this lecture.</p>
+  <p>In this screencast we've demonstrated how aggregation functions, like SUM and COUNT, can be used to perform calculations on multiple rows; how to group your data and aggregate over those groups using the GROUP BY clause; and how filtering and sorting can also be used in conjunction with aggregation.</p>
+
+</div>

@@ -1,0 +1,257 @@
+---
+layout: v4_topic
+title: Counting Stars
+lesson_title: Multimedia Programming
+prev: v4/media/image.html
+next: v4/media/imageops.html
+uplink: v4/media/index.html
+pdf: stars.pdf
+ppt: stars.ppt
+youtube: {"slug": "_lEG36Oz-CA", "time": "00:06:03.83"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="stars/001.png" />
+    <p class="media-body">Hello, and welcome to the second episode of the Software Carpentry lecture on multimedia programming. In this episode, we'll look at how to count how many stars there are in a picture of the night sky.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/002.png" />
+    <p class="media-body">As we saw in the previous episode, we can use the Python Imaging Library, or PIL, to convert a color image like this&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/003.png" />
+    <p class="media-body">&hellip;into a monochrome image like this, where black represents bright pixels and white represents background.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/004.png" />
+    <p class="media-body">Our question is, how many stars are there? Counting the number of black pixels would be easy, but we want to know how many joined-up blobs of black pixels we have.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/005.png" />
+    <p class="media-body">A blob is just a set of pixels that are adjacent to one another.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/006.png" />
+    <p class="media-body">We could use several rules to determine what "adjacent" means, but the simplest is 4-way connectivity: pixels are adjacent if they are directly above, below, left, or right from each other, not if they are touching diagonally.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/007.png" />
+    <p class="media-body">We want to count each such blob once.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/008.png" />
+    <p class="media-body">So we'll scan the image left to right, top to bottom</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/009.png" />
+    <p class="media-body">Each time we find a new blob, we'll increment our count.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/010.png" />
+    <p class="media-body">But how do we tell whether the pixel we're looking at is part of a new blob or not?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/011.png" />
+    <p class="media-body">One way is to mark the pixels we've already seen by turning them red.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/012.png" />
+    <p class="media-body">If the pixel we're looking at touches one that has already been turned red, then it's part of a blob we have already counted. We'll turn it red to show that we have looked at it, but we won't count it as a star, since it belongs to a star we've already counted.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/013.png" />
+    <p class="media-body">A picture will make this clearer. We scan the image until we find a black pixel&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/014.png" />
+    <p class="media-body">&hellip;and mark it as seen by turning it red.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/015.png" />
+    <p class="media-body">Nothing above it or to its left is already red. It must be the first pixel in a new blob, so we increment our star counter.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/016.png" />
+    <p class="media-body">And keep scanning.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/017.png" />
+    <p class="media-body">This pixel does have a red predecessor (the one we just colored in), so it's not the start of a new star.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/018.png" />
+    <p class="media-body">Eventually, we have colored in all of this star, and we move on to the next.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/019.png" />
+    <p class="media-body">But there's a problem: the pixel shown here is definitely part of our second star, but neither of the pixels above it or to its left has already been colored in&mdash;the pixel that connects it to the rest of its star is to its right.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/020.png" />
+    <p class="media-body">We can fix this by looking in more directions, as shown here: if there are any colored pixels in the row above this one, or to its right, it isn't the start of a new star.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/021.png" />
+    <p class="media-body">But our new rule still gives the wrong answer in cases like this one, where two stars touch on a diagonal corner.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/022.png" />
+    <p class="media-body">We could try to patch our algorithm again by changing our rule and considering blobs that are connected on diagonals as part of a single star&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/023.png" />
+    <p class="media-body">But this still gives the wrong answer in cases like this.  In fact, any algorithm that only looks at the immediate neighbors of a pixel will give the wrong answer in some cases: we have to back up and reconsider our approach entirely.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/024.png" />
+    <p class="media-body">Instead of trying to decide whether pixels are connected one by one, let's use flood fill to color in all the pixels in a star when it is first encountered.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/025.png" />
+    <p class="media-body">As before, we scan the image until we find a black pixel, then mark it red.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/026.png" />
+    <p class="media-body">Instead of continuing our scan right away, we look at the newly-filled pixel's four neighbors.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/027.png" />
+    <p class="media-body">For each one that is currently black&mdash;i.e., that is part of this star, but hasn't yet been colored in&mdash;we fill it in&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/028.png" />
+    <p class="media-body">&hellip;then immediately look at its neighbors to find other pixels that need coloring in.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/029.png" />
+    <p class="media-body">We keep doing this until the whole star is colored&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/030.png" />
+    <p class="media-body">&hellip;and only then re-start our scan to find other blobs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/031.png" />
+    <p class="media-body">Here's our main function. As before, it scans the image top to bottom and left to right using a nested loop.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/032.png" />
+    <p class="media-body">When it finds a black pixel&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/033.png" />
+    <p class="media-body">&hellip;it increments the count of the number of stars seen&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/034.png" />
+    <p class="media-body">&hellip;then calls 'fill' to fill in all the pixels connected to that one.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/035.png" />
+    <p class="media-body">The 'fill' function works by keeping a list of pixels that need to be looked at, but haven't yet been filled in.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/036.png" />
+    <p class="media-body">It is simply a list of the (x,y) coordinates of pixels that are neighbors of ones we have already examined.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/037.png" />
+    <p class="media-body">The 'fill' function keeps looping until there's nothing left in this list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/038.png" />
+    <p class="media-body">On each pass through the loop, it takes the (x,y) coordinates of a pixel from the queue&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/039.png" />
+    <p class="media-body">If that pixel is black, 'fill' colors it red and adds its neighbors to the queue.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/040.png" />
+    <p class="media-body">Here's what the function looks like.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/041.png" />
+    <p class="media-body">It begins by putting the (x,y) coordinates of the first pixel into the queue.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/042.png" />
+    <p class="media-body">While there are still pixels to process&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/043.png" />
+    <p class="media-body">&hellip;it gets the (x,y) coordinates of the next pixel in the queue and removes that pair from the queue.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/044.png" />
+    <p class="media-body">If the pixel is currently black, 'fill' turns it red to mark it as having been seen.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/045.png" />
+    <p class="media-body">Then adds the pixel to its left to the work queue (unless this pixel is on the left border of the image).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/046.png" />
+    <p class="media-body">'fill' then does the same for the pixel to the right, above, and below the current one. This ensures that everything next to this pixel will eventually be looked at.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/047.png" />
+    <p class="media-body">Here's the 'fill' algorithm in action. Our initial pixel is (1, 2). We turn it red&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/048.png" />
+    <p class="media-body">&hellip;and put its four neighbors in the queue.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/049.png" />
+    <p class="media-body">The next three loops aren't very interesting, since the pixels left, above, and right of our starting point aren't black. On the fourth pass, though, when our queue only contains one lonely pixel, we find that it is black, so we fill it in&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/050.png" />
+    <p class="media-body">&hellip;and put its neighbors in the queue.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/051.png" />
+    <p class="media-body">The next time around the loop, we will look at our starting point (1, 2) a second time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/052.png" />
+    <p class="media-body">This is wasteful, so as an exercise, rewrite 'fill' so that it never examines a pixel twice. There are at least two ways to do this; see if you can find and implement both.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/053.png" />
+    <p class="media-body">Another way to write flood fill is to use a recursive algorithm.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/054.png" />
+    <p class="media-body">This keeps the work to be done on the call stack, instead of maintaining an explicit work queue.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/055.png" />
+    <p class="media-body">Here's the recursive version of fill.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/056.png" />
+    <p class="media-body">It starts by checking the pixel it has been asked to look at. If that pixel is not black, this 'fill' returns immediately: there is nothing for it to do.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/057.png" />
+    <p class="media-body">If the pixel is black, 'fill' turns it red&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/058.png" />
+    <p class="media-body">&hellip;and then calls 'fill' on its left-hand neighbor (if it has one).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/059.png" />
+    <p class="media-body">It then goes on to call 'fill' for the right-hand, top, and bottom neighbors as well.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/060.png" />
+    <p class="media-body">This has the same effect as using an explicit work queue; each call to 'fill' takes care of one pixel, then calls 'fill' again to take care of the neighbors. While novices find the work queue approach more intuitive, experienced programmers tend to prefer recursion, since it is usually simpler to reason about. We'll have a closer look at recursive algorithms in future episodes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="stars/061.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

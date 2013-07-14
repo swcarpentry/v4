@@ -1,0 +1,273 @@
+---
+layout: v4_topic
+title: Empirical Results
+lesson_title: Software Engineering
+prev: v4/softeng/intro.html
+next: v4/softeng/agile.html
+uplink: v4/softeng/index.html
+pdf: v4/softeng/ebse.pdf
+ppt: v4/softeng/ebse.ppt
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/001.png" />
+    <p class="media-body">Hello, and welcome to the second episode of the Software Carpentry lecture on software engineering. In this episode, we'll have a look at the science behind some of the claims we make in this course.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/002.png" />
+    <p class="media-body">Our story starts with the Seven Years War</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/003.png" />
+    <p class="media-body">Which was actually nine years long (proving that it's not just programmers who have trouble counting).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/004.png" />
+    <p class="media-body">During that war, the British lost about 1500 sailors to enemy action</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/005.png" />
+    <p class="media-body">And almost 100,000&mdash;the population of a small city&mdash;to scurvy.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/006.png" />
+    <p class="media-body">The irony is, they didn't need to lose any.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/007.png" />
+    <p class="media-body">Before the war even started, a Scottish surgeon named James Lind had done the first controlled medical experiment in history. He was intrigued by the fact that vegetables don't go bad if they're pickled, and he wondered: could the same thing somehow be done for people?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/008.png" />
+    <p class="media-body">So he took twelve sailors, divided them into six pairs, and gave each pair something different: cider, sea water, vitriol (which is a weak solution of sulfuric acid&mdash;bad day to be those guys), oranges, vinegar, and barley water.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/009.png" />
+    <p class="media-body">Lo and behold, the sailors who were given oranges were back on their feet in just a few days, while the others continued to sicken.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/010.png" />
+    <p class="media-body">It was a long time before the British Admiralty paid attention to his results, but when they finally did, it allowed British ships to stay at sea for months, which may have turned the tide of history during the Napoleonic Wars.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/011.png" />
+    <p class="media-body">It took even longer for the medical profession to start paying attention, but they finally did too. One of the turning points was Hill and Doll's landmark study in 1950 that compared cancer rates in smokers and non-smokers. Their study proved two things:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/012.png" />
+    <p class="media-body">First, smoking causes lung cancer.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/013.png" />
+    <p class="media-body">Second, many people would rather fail than change. Even when confronted with overwhelming evidence, many people will cling to creationism, refuse to acknowledge that human beings are at least partly responsible for global climate change, or insist that vaccines cause autism.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/014.png" />
+    <p class="media-body">Unfortunately, this is still largely true in software engineering, where many people act as if a few pints and a quotation from some self-appointed guru constitute "proof" of claims that X is better than Y.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/015.png" />
+    <p class="media-body">The good news is, things are finally changing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/016.png" />
+    <p class="media-body">Empirical studies of real programmers and real software were a rarity in software engineering before the mid 1990s.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/017.png" />
+    <p class="media-body">Today, though, papers describing new tools or working practices routinely include results from some kind of empirical study to back up their claims.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/018.png" />
+    <p class="media-body">Particularly papers written by younger researchers, which bodes well for the future.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/019.png" />
+    <p class="media-body">Many of these studies are still flawed or incomplete, but the standards of major journals and conferences are constantly improving.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/020.png" />
+    <p class="media-body">Here's an example of the kind of question researchers are tackling.  Does it matter if your developers are sitting together&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/021.png" />
+    <p class="media-body">&hellip;or can they be spread out all over the globe?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/022.png" />
+    <p class="media-body">Two scientists at Microsoft Research tried to find out by looking at data collected during the construction of Windows Vista.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/023.png" />
+    <p class="media-body">It turns out that geographical separation didn't have much of an impact on software quality.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/024.png" />
+    <p class="media-body">What did was how far apart team members were in the org chart: basically, the higher up you had to go to find a common boss, the more bugs there would be in the software they built.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/025.png" />
+    <p class="media-body">In retrospect, this result isn't actually surprising: if programmers have different bosses, the odds are that they'll also have conflicting orders.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/026.png" />
+    <p class="media-body">The beauty of this result is that it's actionable: all other things being equal, you can improve the quality of a piece of software by restructuring the team. (I would have said "by simply restructuring the team", but of course, that kind of thing is never simple&hellip;)</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/027.png" />
+    <p class="media-body">Here's another neat result, also from Microsoft: what goes wrong for developers in their first job?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/028.png" />
+    <p class="media-body">A detailed qualitative study of eight new hires, none of whom had previous industry experience, found that technology was never the biggest problem.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/029.png" />
+    <p class="media-body">Where everyone actually stumbled was group dynamics: when to ask for help, how to ask, how to contribute to meetings, and so on. These skills are usually not part of a technical education, but in every case, this was what hurt new hires' productivity the most.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/030.png" />
+    <p class="media-body">Again, in retrospect this finding isn't surprising, but it's also actionable: by investing a little in team skills early on, companies (and presumably research labs as well) can reduce both their hidden costs and their new hires' frustrations.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/031.png" />
+    <p class="media-body">This second study highlights something important about empirical studies in software engineering: a lot of the best ones are not statistical in nature.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/032.png" />
+    <p class="media-body">Instead, a lot of first-rate work draws on techniques from anthropology&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/033.png" />
+    <p class="media-body">&hellip;and business studies.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/034.png" />
+    <p class="media-body">This is partly because controlled experiments large enough to be statistically significant are very expensive to run.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/035.png" />
+    <p class="media-body">The real reason, though, is that qualitative techniques are often the right ones to use, because controlled laboratory studies would all too often eliminate the real-world effects that we actually want to study.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/036.png" />
+    <p class="media-body">In fact, one of the biggest obstacles to wider adoption of evidence-based software engineering is the resistance of scientists and programmers, many of whom dismiss qualitative methods as "soft" without actually knowing anything about them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/037.png" />
+    <p class="media-body">Another reason for resistance is that people don't like finding out that their cherished beliefs might be wrong. One example is test-driven development: the practice of writing tests before writing code.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/038.png" />
+    <p class="media-body">Many programmers believe quite strongly that this is the "right" way to program, and that it leads to better code in less time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/039.png" />
+    <p class="media-body">However, a meta-analysis of over thirty studies found no consistent effect.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/040.png" />
+    <p class="media-body">Some of the studies reported benefits&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/041.png" />
+    <p class="media-body">&hellip;some found that it made things worse&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/042.png" />
+    <p class="media-body">&hellip;and some were inconclusive.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/043.png" />
+    <p class="media-body">One clear finding, though, was that the better the study, the weaker the signal.  This result may be disappointing to some people (it certainly was to me), but progress sometimes is. And even if these studies are wrong, figuring out why, and doing better studies, will advance our understanding.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/044.png" />
+    <p class="media-body">Here's another useful result, one that dates all the way back to the 1970s&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/045.png" />
+    <p class="media-body">&hellip;and has been replicated many times since.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/046.png" />
+    <p class="media-body">First, most errors in software are introduced during requirements analysis and design, not during coding.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/047.png" />
+    <p class="media-body">Second, the later a bug is removed, the more expensive the fix is. What's more, that curve actually is exponential: as we move from analysis to design to coding to testing to deployment, fixing a bug is five to ten times more expensive at each successive stage, and these costs are multiplicative.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/048.png" />
+    <p class="media-body">The beauty of this result is that it explains why programmers disagree about how to run projects.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/049.png" />
+    <p class="media-body">Pessimists look at these curves and say, let's tackle the hump in the bug creation curve by doing more analysis and design up front.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/050.png" />
+    <p class="media-body">Meanwhile, optimists say, if we do many short iterations instead of a few long ones, the total cost of fixing bugs will go down&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/051.png" />
+    <p class="media-body">&hellip;because the total area under the sawtooth curve is less than the area under the original curve. Both sides are right: they're just looking at different aspects of the problem.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/052.png" />
+    <p class="media-body">Here's another classic result, also from the mid-1970s.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/053.png" />
+    <p class="media-body">It turns out that reading code carefully is the most effective way to find bugs&mdash;and the most cost-effective as well. In fact, reading code carefully can find 60-90% of all the bugs in it before it's run for the first time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/054.png" />
+    <p class="media-body">Thirty years on, Cohen and others refined this result by looking at data collected at Cisco. They found that almost all of the value of code reviews came from the first reviewer, and the first hour they were reviewing code. Basically, having more than one person review the code doesn't find enough bugs to make it worthwhile, and if someone spends more than an hour reading code, they become fatigued and stop finding anything except trivial formatting errors.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/055.png" />
+    <p class="media-body">In light of this, it's not surprising that code review has become a common practice in most open source projects: given the freedom to work any way they want, most top-notch developers have discovered for themselves that having someone else look over a piece of code before it's committed to version control makes development faster, not slower.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/056.png" />
+    <p class="media-body">Books like Robert Glass's Facts and Fallacies of Software Engineering, and a recent collection from O'Reilly called Making Software, present these results and many more in a digestible way.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/057.png" />
+    <p class="media-body">Does your choice of programming language affect your productivity?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/058.png" />
+    <p class="media-body">Does using design patterns make your code better?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/059.png" />
+    <p class="media-body">Can data mining techniques help us predict how many bugs are in a piece of software, and where they're likely to occur?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/060.png" />
+    <p class="media-body">Is up-front design cost-effective, or should software evolve week by week in response to immediate needs?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/061.png" />
+    <p class="media-body">Why do so many people find it so hard to learn how to program?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/062.png" />
+    <p class="media-body">Is open source software actually higher quality than closed source alternatives?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/063.png" />
+    <p class="media-body">And are some programmers ten times more productive than others (or 28 times, or a hundred times&mdash;you'll see all these numbers quoted on the web, and more).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/064.png" />
+    <p class="media-body">We actually have answers to some of these questions now, and if you're going to spend any significant time programming, or arguing about programming, it's easier than ever to find out what we know and why we believe it's true.</p>
+  </div>
+
+  <div class="media">
+    <img class="media-object pull-left" src="ebse/065.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

@@ -1,0 +1,169 @@
+---
+layout: v4_topic
+title: Introduction
+lesson_title: Make
+prev: null
+next: v4/make/basics.html
+uplink: v4/make/index.html
+pdf: v4/make/intro.pdf
+ppt: v4/make/intro.ppt
+youtube: {"slug": "djPWVqn7vjY", "time": "00:04:17.50"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="intro/001.png" />
+    <p class="media-body">Hello, and welcome to the first episode of the Software Carpentry lecture on Make.  In this episode, we'll explain the basic concepts behind Make, and why you should use a tool like it to automate repetitive tasks.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/002.png" />
+    <p class="media-body">Here's a typical working day for our robot.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/003.png" />
+    <p class="media-body">The first thing it wants to do when it sits down in the morning is re-draw Figure 8 for the paper it's writing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/004.png" />
+    <p class="media-body">In order to do that, it needs to re-calculate the data (since it has some new numbers from a colleague back home).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/005.png" />
+    <p class="media-body">In order to do <em>that</em>, it needs to recompile its statistics program, because it found and fixed a bug yesterday afternoon.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/006.png" />
+    <p class="media-body">Oh, and it needs to update the version of Java installed on the machine it's using: it has the right one on its laptop, but not on the machine it's using in the lab.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/007.png" />
+    <p class="media-body">And it needs to re-install the graph-drawing tool that turns its data into a nicely-formatted chart suitable for publication.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/008.png" />
+    <p class="media-body">That also requires a Java update&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/009.png" />
+    <p class="media-body">&hellip;and it'll have to free up some disk space, too, since <em>someone</em>'s MP3 collection is taking up 99.8% of available space.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/010.png" />
+    <p class="media-body">And so it goes: everything it wants to do seems to require something else to be done first.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/011.png" />
+    <p class="media-body">Until eventually, it finds himiself saying, "Right, so I need to shave the yak&hellip;"  We won't go that far with him, though&mdash;not today.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/012.png" />
+    <p class="media-body">Instead, here's that set of jobs once again.  We can think of this set as a graph.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/013.png" />
+    <p class="media-body">The things he needs to do&mdash;the <em>tasks</em>&mdash;are the graph's nodes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/014.png" />
+    <p class="media-body">The <em>dependencies</em> between the tasks are the graph's edges.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/015.png" />
+    <p class="media-body">Since the robot can only do one thing at a time, it needs to find an ordering on these tasks such that everything a given task depends on is done before it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/016.png" />
+    <p class="media-body">This pattern arises over and over again.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/017.png" />
+    <p class="media-body">Each time we collect new data, we need to recalculate our summary statistics.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/018.png" />
+    <p class="media-body">Each time our source files change, we need to recompile our program (if, that is, we're using a compiled language like Java, C++, or Fortran).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/019.png" />
+    <p class="media-body">And when someone writes a new paper, or receives an award, we need to update our research group's web site.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/020.png" />
+    <p class="media-body">If there are more than a dozen or so tasks, it can be hard or impossible to manually keep track of:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/021.png" />
+    <p class="media-body">what depends on what, and</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/022.png" />
+    <p class="media-body">what is up-to-date and what isn't, i.e., what's been done and what still needs to be done.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/023.png" />
+    <p class="media-body">This is where tools like Make come in.  One of the fundametal rules of computing is that anything worth repeating is worth automating.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/024.png" />
+    <p class="media-body">If we need to do the same tasks over and over again, we should use a <em>build manager</em> to handle the details.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/025.png" />
+    <p class="media-body">We describe dependencies in a <em>build file</em>&mdash;usually just a plain text file in some specialized format.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/026.png" />
+    <p class="media-body">We also describe how to update things, i.e., what commands to run when something's dependencies have been satisfied and it's ready to be refreshed itself.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/027.png" />
+    <p class="media-body">And that's all: the build manager handles everything else.  In particular, it keeps track of what's up to date, and what's ready to be updated.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/028.png" />
+    <p class="media-body">The most widely used build manager on Unix and its derivatives is called Make.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/029.png" />
+    <p class="media-body">And note that we said "most widely used", not "most popular".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/030.png" />
+    <p class="media-body">Make was invented by a summer intern at Bell Labs in 1975.  (He went on to become a vice president at IBM, which shows you how far a good program can take you.)</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/031.png" />
+    <p class="media-body">Over 35 years, Make has grown into a little programming language.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/032.png" />
+    <p class="media-body">A very cryptic little language, without a debugger&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/033.png" />
+    <p class="media-body">&hellip;whose conventions and rules only make sense if you understand the Unix shell.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/034.png" />
+    <p class="media-body">The good news is, GNU Make (the de facto standard version of Make) is fast, free, and well-documented.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/035.png" />
+    <p class="media-body">And many other tools know how to work with Make.  In particular, many integrated development environments can manage Make's build files more or less automatically, shielding users from the ugly details.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/036.png" />
+    <p class="media-body">In this lecture, we'll look at Make's basic features, and a few of its advanced facilities as well.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/037.png" />
+    <p class="media-body">A companion lecture to this one explores a newer build manager called SCons.  It is more powerful and more flexible than Make, but isn't nearly as widely used&mdash;at least, not yet.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/038.png" />
+    <p class="media-body">And Java users should also look at Apache Ant, the standard build manager for Java.  It hides many of the platform-specific details that bedevil Make, but requires users to write XML files to get things done.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/039.png" />
+    <p class="media-body">And now&mdash;on to Make.</p>
+  </div>
+</div>

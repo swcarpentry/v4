@@ -1,0 +1,25 @@
+---
+layout: v4_topic
+title: Aggregating Data with Microsoft Access
+lesson_title: Using Access
+prev: v4/access/sort.html
+next: v4/access/join.html
+uplink: v4/access/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "MnXNtULtloQ", "time": "00:06:17.00"}
+---
+<div>
+  <p>Welcome to another episode of the Software Carpentry lecture on databases using Microsoft Access. In this episode, we will show you how to combine values from multiple rows. This is called <em>aggregation</em>.</p>
+  <p>Suppose we want to know how many hours were spent on all experiments so far. First, we need to fetch all of the hours in the table, which can be done using a basic query.</p>
+  <p>Now, to add up all of the hours, all we need to do is apply the "sum" function to the hours column. We do this by first clicking on the "totals" button in the query design view, and then selecting "sum" from the totals drop-down menu.</p>
+  <p>In their simplest form, aggregation functions are applied to all rows fetched by a query, and they reduce the result to a single row. "max", "min", and "average" are also aggregate functions. You can use them like "sum", and they'll do what you expect: compute the maximum, minimum, and average of your query results.</p>
+  <p>Another handy aggregation function is "count". If you would like to know how many records are returned by a query, use the "count" function on a column. In Access, we have to count a particular column, even if we are interested in counting the number of records in general.</p>
+  <p>Now, what if we want the total number of hours each scientist has worked so far? One way is to use a "where" clause to single out specific scientists. The problem with this approach is that we have to write one query for each scientist. We only have a few scientists in our table, but imagine if we had hundreds. What we want to be able to do is have the database return a row for each scientist and include a sum of the hours they have worked. So, if we want the total number of hours each scientist has worked so far, we need to tell the database to aggregate the hours for each scientist separately.</p>
+  <p>We do this by using the "group by" option in the "totals" row. We want our aggregation done for each scientist, so we group by the login ID, and for each group we display the login ID and the sum of the hours for that group. So, this query tells the database to group all of the rows that have the same login ID together, and then do the aggregation for each of those groups separately.</p>
+  <p>If we want, we can group by multiple criteria at once. For example, if we wanted the number of hours each scientist had spent on each project, we would group by both login ID and project. The "group by" clause here specifies that all of the rows that have the same login ID and project name are grouped together, and then the sum is done for each of those groups. The other aggregation functions work in the same way. So for instance, to calculate how many experiments each scientist has done for each project, we add a "count" to our query.</p>
+  <p>Sorting and filtering can also be done on queries that aggregate data. For example, if we want the total time spent on each project, sorted by project name, we would choose "project" and "hours" from the "experiment" table, then group by project, and sum the hours, and finally sort the results by the project name.</p>
+  <p>It is worth noting that we are ordering the results of aggregation. It wouldn't make any difference to order the data before it was aggregated. If we wanted to sort the results by an aggregated field, like the number of hours spent, we would just choose to sort that field instead.</p>
+  <p>What if we want to remove the negative hours, and only add up the positive values? You can do this by adding a "where" clause to your query to filter out values you don't want before they are grouped and aggregated. Unlike with non-aggregated queries, we can't simply add this to the criteria row for "hours": that filter would apply to the values that are returned <em>after</em> aggregation, not the values that to into the aggregation. Instead, we add another "hours" column, choose "where" from the "total" drop-down menu, and then add the "&gt;= 0" criteria to this column. When we run this query, the data is selected from the table first, then the results are filtered by the "where" clause. What is left over is aggregated, and finally the aggregated results are sorted.</p>
+  <p>In this episode, we've demonstrated how aggregation functions like "sum" and "count" can be used to perform calculations on multiple rows, how to group your data and aggregate over those groups using the "group by" option, and how filtering and sorting can be used in conjunction with aggregation.</p>
+</div>

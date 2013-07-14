@@ -1,0 +1,109 @@
+---
+layout: v4_topic
+title: Basic I/O
+lesson_title: MATLAB
+prev: v4/matlab/flowmore.html
+next: v4/matlab/iomore.html
+uplink: v4/matlab/index.html
+pdf: v4/matlab/iobasic.pdf
+ppt: v4/matlab/iobasic.ppt
+youtube: {"slug": "rXqkbyTCK9I", "time": "00:04:35.41"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/001.png" />
+    <p class="media-body">Hello, and welcome to another episode of the Software Carpentry lecture on MATLAB programming. In this episode, we'll have a look at file input and output.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/002.png" />
+    <p class="media-body">Scientists use a lot of data, and it takes many forms.  Almost all of the data that we use can be interpreted as an array, and MATLAB has the tools to convert many common data formats into array structures.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/003.png" />
+    <p class="media-body">In this lecture, we investigate MATLAB's data input and output mechanisms.  We cover three topics. First, we look at a few functions that open files and translate their file format to a MATLAB data structure. We also investigate functions to print formatted output to the screen. Last, we investigate functions to write arrays and other data structures in common file formats.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/004.png" />
+    <p class="media-body">Importing data can be done in two ways.  The easiest is to use the graphical interface directly.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/005.png" />
+    <p class="media-body">The graphical interface is easiest for quickly loading a single file, but it isn't really feasible if you have to load a lot of files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/006.png" />
+    <p class="media-body">The alternative is to call import functions directly.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/007.png" />
+    <p class="media-body">Command line functions can be automated in scripts and functions. Usually, MATLAB can figure out what to do with a file based on its format, but if it is unclear how to interpret your file, you can provide hints to the import functions when you use the command line.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/008.png" />
+    <p class="media-body">The graphical interface has a box that displays the contents of the working directory.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/009.png" />
+    <p class="media-body">One of the files in this folder is named satellite.mat.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/010.png" />
+    <p class="media-body">Files with the "dot mat" extension are MATLAB storage files that store data in a binary format.  Since they are designed for use in MATLAB, MAT files can store multiple variables, which makes it easy to save an entire work session in one file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/011.png" />
+    <p class="media-body">Double clicking on the satellite.mat imports all of the variables into the workspace.  In this case, there was only one variable called HRImage.  When variables are stored in a .mat file, they keep their original names.  Be careful about opening multiple files that contain variables with the same names, as this can overwrite old data.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/012.png" />
+    <p class="media-body">Here is an example of a common file format.  Each row of this file contains three numbers separated by a space.  Text files are not the most efficient way to store data, but they are nice because humans can quickly check what is in the file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/013.png" />
+    <p class="media-body">There are several commands that can handle data from text files, but the most flexible is the command importdata.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/014.png" />
+    <p class="media-body">Importdata is a wrapper function, which means its job is to figure out what format the file is using and identify the correct function to read the data.  Sometimes, importdata may have trouble identifying the correct format of a file.  This is especially true if the file uses an unexpected column delimiter or has multiple header lines.  Type "help importdata" to see more information about the optional arguments.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/015.png" />
+    <p class="media-body">Wrapper functions help hide internal details from the end user.  In this case, importdata will call a function like load, xmlread, or imread depending on the file.  Users do not have to remember which function to use in every situation.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/016.png" />
+    <p class="media-body">Importdata returns the input as a structure.  If you haven't done so already, it would be a good idea to look at the Software Carpentry episode on MATLAB data structures, including the episode on cell arrays.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/017.png" />
+    <p class="media-body">When we inspect the elements of the structure, we see that the file's information was broken into a large, 3 column matrix called data&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/018.png" />
+    <p class="media-body">&hellip;a cell array of strings called colheaders that are the column headers for each column in our matrix&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/019.png" />
+    <p class="media-body">&hellip;and a third item called textdata that contains a copy of the column headers.  If we had more lines of text at the start of our file, these would have been stored in a nested cell array in textdata.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/020.png" />
+    <p class="media-body">The structure's format depends on the type of file that is imported.  For instance, we can read this spreadsheet using the same importdata function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/021.png" />
+    <p class="media-body">The result is a structure, and each element of the structure is a sheet in the spreadsheet.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/022.png" />
+    <p class="media-body">The other half of file IO is retrieving results from MATLAB.  There are multiple ways to save data.  We can save a plot or image of our data, we can save printed output such as a series of commands and their results, or we can export variables to a file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/023.png" />
+    <p class="media-body">Visualization is a large topic that deserves its own episode&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="iobasic/024.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

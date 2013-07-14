@@ -1,0 +1,83 @@
+---
+layout: v4_topic
+title: Missing Data
+lesson_title: Databases
+prev: v4/databases/join.html
+next: v4/databases/nested.html
+uplink: v4/databases/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "KLugfNdGNFw", "time": "00:04:43.84"}
+---
+<div>
+
+  <p>Welcome to the Software Carpentry lectures on Databases. Today's topic is NULL values.</p>
+  <p>Here is a table from a previous lecture. It tracks the work done on experiments broken down by the project and scientist.</p>
+  <p>Notice that we've modified the data slightly for this lecture, so that for some data is missing &mdash; that's what the red coloured cells are.</p>
+  <p>In the real world data is not always complete &mdash; there are always holes.</p>
+  <p>A database uses a special value for these holes: NULL</p>
+  <p>NULL is not zero, False, or the empty String, it is simply just a different kind of value.</p>
+  <p>So, for these rows where the hours have a NULL value, does this mean that the hours for these experiments is missing?</p>
+  <p>Or does it mean that the value is not known?</p>
+  <p>Or maybe it means something else?</p>
+  <p>These are questions that we cannot answer just by looking at the data, but instead we have to understand how the data is supposed to be interpreted.</p>
+  <p>We tackle this question in our lecture on data modeling.</p>
+  <p>In this lecture we will discuss how to work with NULL values in our queries.</p>
+  <p>Suppose you wanted to know which experiments are missing Hours data.</p>
+  <p>You might try to filter the values like so:</p>
+
+<pre>SELECT * FROM Experiement
+WHERE Hours = NULL ;</pre>
+
+  <p>We get no results, why?</p>
+  <p>For many database systems, NULL is a special value that isn't comparable to anything else using the usual equality operators (e.g. =, !=, , &hellip;).</p>
+  <p>Comparing NULL to any other value using these operators always return False.</p>
+  <p>So, In our query the condition Hours = NULL is always false, so no records returned.</p>
+  <p>To write a condition that returns true on rows that contain NULL values you must use the IS operator:</p>
+
+<pre>SELECT * FROM Experiment
+WHERE Hours IS NULL;</pre>
+
+  <p>IS is used to compare fields to NULL.</p>
+  <p>It behaves like the = operator, except that it returns True when comparing two NULL values.</p>
+  <p>Here you can see that the entries in the experiments table with missing Hours fields are returned.</p>
+  <p>To find all of the rows that do not have a NULL Value, you can use the IS NOT operator for nulls in place of the != operator</p>
+
+<pre>SELECT * FROM Experiment
+WHERE Hours IS NOT NULL;</pre>
+
+  <p>Because NULL is a different type of value all together, if your data may have NULL values in it, your queries must take this into account.</p>
+  <p>For example, suppose you wanted to find the all of the Experiments which did not take 7 hours. You might write:</p>
+
+<pre>SELECT * FROM Experiment
+WHERE Hours != 7;</pre>
+
+  <p>Notice that the results are missing the records with NULL values in the Hours field. Those records were filtered out because, as we've said, only the IS and IS NOT operator will return True when comparing a NULL to another value.</p>
+  <p>If we mean for these rows to be included, we need to add to the WHERE clause to explicitly check for NULL values:</p>
+
+<pre>SELECT * FROM Experiment
+WHERE Hours != 7 OR Hours IS NULL;</pre>
+
+  <p>Now when we run our query we get back those records with NULL Hours values along with the other records where the Hours field doesn't equal 7.</p>
+  <p>NULL values are also handled differently by aggregation functions.</p>
+  <p>Most aggregation functions ignore NULL values in their calculations.</p>
+  <p>So, for instance, let's look at the SUM function. To calculate the total number of hours spent on experiments we'd start with a query like this,</p>
+
+<pre>SELECT Hours FROM Experiment;</pre>
+
+  <p>add SUM to total the values&hellip;</p>
+
+<pre>SELECT Sum(Hours) FROM Experiment;</pre>
+
+  <p>&hellip; but this total is actually just the sum of all of the numeric values. The NULL values are skipped.</p>
+  <p>This more important for functions like AVG, which depend on the total number of records in the aggregation.</p>
+
+<pre>SELECT AVG(Hours) FROM Experiment;</pre>
+
+  <p>NULL values are skipped, and so they don't count towards the average.</p>
+  <p>the NULL values are not treated as zero, the average function just skips over them as if they weren't in the dataset.</p>
+  <p>This is also true for Max, Min, and COUNT in SQLite.</p>
+  <p>In this lecture we've seen that databases use a special value for empty or missing information, NULL. This value has to be taken into account, and handled in a unique way, when you are writing queries.</p>
+  <p>We will see ways of working with NULL values pop up in many future lectures.</p>
+
+</div>

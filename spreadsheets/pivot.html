@@ -1,0 +1,25 @@
+---
+layout: v4_topic
+title: Pivot Tables
+lesson_title: Spreadsheets
+prev: v4/spreadsheets/charting.html
+next: v4/spreadsheets/named.html
+uplink: v4/spreadsheets/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "y_8288JM9Mw", "time": "00:02:15.97"}
+---
+<div>
+  <p>Hello, and welcome to episode eight of the Software Carpentry lecture on spreadsheets.  In this episode, we'll show you what a <em>pivot table</em> is.</p>
+  <p>Suppose we want to see how many provinces and territories in each geographical region fell into each CO2 emission category from minimal to excessive.  With five regions and four categories, we would have to write 20 SUMIF formulas, but we can get the answers we want with a single pivot table.</p>
+  <p>To start, select all of the data that we want to include in the table.</p>
+  <p>Then go to "Insert" and choose "Pivot Table".  As the popup says, pivot tables make it easy to arrange and summarize complicated data and drill down on details.</p>
+  <p>When we click, the dialog asks us what data we want to include in the table.  Since we have already selected a range of cells, Excel fills this in automatically.  We can also choose whether to put the pivot table in a new worksheet, or add it to an existing one.</p>
+  <p>When we click "OK", Excel creates a new workshop and inserts a placeholder for our table.  It also creates a list of the titles in our columns.</p>
+  <p>Let's drag the "Region" title to the "Column Labels" field&hellip;</p>
+  <p>&hellip;and then drag "Rating" to "Row Labels".  As you can see on the left, our pivot table now has one column for each of the unique regions, and a row for each of the ratings that actually appear in the data.  Since no province or territory has an "excessive" rating at the moment, there isn't a row for it.</p>
+  <p>Now we drag the "Province/Territory" heading to the "Values" field.  As soon as we drop it, Excel fills in the pivot table.  The value for column "North" and row "Low" is the number of cells with "North" in the "Region" column of the original data, and "Low" in the "Rating" column.  In other words, Excel has treated each row of the original data as a record, and figured out how many records belong in each cell of the pivot table.</p>
+  <p>Let's go back to the original data and change the thresholds for the ratings back to their pre-politicized values.  Several of the ratings change&hellip;</p>
+  <p>&hellip;but if we flip to the pivot table, it hasn't been updated.  When we right-click on the overall title and select "Refresh", though, the table's row and column headings are automatically adjusted&mdash;"Minimal" disappears, and "Excessive" appears&mdash;and the counts are updated as well.</p>
+  <p>Pivot tables can do a lot more than just summarize data.  We hope that this brief introduction will encourage you to learn more.</p>
+</div>

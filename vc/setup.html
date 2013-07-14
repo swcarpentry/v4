@@ -1,0 +1,50 @@
+---
+layout: v4_topic
+title: Setup
+lesson_title: Version Control
+prev: v4/vc/commandline.html
+next: null
+uplink: v4/vc/index.html
+pdf: null
+ppt: null
+---
+<div>
+  <p>Hello, and welcome to the fifth episode of the Software Carpentry lecture on version control.  In this episode, we will show you how to set up a repository of your own.  A word of warning: you will need to know a little bit about using a Unix shell to do this.  If you've never used the shell, you should probably ask someone else to create your repository.</p>
+  <p>Here's the simplified picture from our first episode of what we're trying to achieve.  We want to keep the master copy of our work in a repository on a server that we can access from other machines on the internet.</p>
+  <p>That master copy is a bunch of files and directories.  Nobody ever edits them directly.</p>
+  <p>Instead, a copy of Subversion runs on that machine, managing updates for us and watching for conflicts.</p>
+  <p>Our working copy is a mirror image of the master sitting on our computer.  When our Subversion client needs to communicate with the master, it connects to the copy of Subversion running on the server to move data back and forth.</p>
+  <p>In order for all of this to work, we need four things.  First, we need the repository itself.  It's not enough to create an empty directory and start filling it with files: Subversion needs to create a lot of other structure in order to keep track of old revisions, who made what changes, and so on.</p>
+  <p>Second, we need to know the web address---the URL---of the server.  In fact, we need even more than that: we need the full URL of the repository on that server, since a single server could host any number of Subversion repositories.</p>
+  <p>The third thing we need is permission to read or write the master copy.  Many open source projects give the whole world permission to read from their repository, but very few allow strangers to write to it: there are just too many possibilities for abuse.  Somehow, we have to set up a password or something like it so that users can prove who they are.</p>
+  <p>The fourth and final thing we need is a working copy of the repository on our computer.  We saw how to create that in the second episode of this lecture by checking out a copy of the repository; please review that episode if you need a refresher.</p>
+  <p>To keep things simple, we'll start by creating the repository on the machine that we're working on.  This won't let us share the repository with other people, but it <em>will</em> allow us to save the history of our work as we go along.</p>
+  <p>The command to create a repository is <code>svnadmin create</code>, followed by the path to the repository.  If we want to create a repository called <code>lair_repo</code> directly under our home directory, we can just <code>cd</code> to that directory and run <code>svnadmin create lair_repo</code>.</p>
+  <p>This command creates a directory called <code>lair_repo</code> to hold our repository.  We should <em>never</em> edit anything in this repository directly: doing so probably won't tear our sanity to shreds and leave us gibbering mindlessly in horror, but it will almost certainly make the repository unusable.</p>
+  <p>To get a working copy of this repository, we use Subversion's <code>checkout</code> command.  If the path to our home directory is <code>/Users/mummy</code>, then the full path to the repository we just created is <code>/Users/mummy/lair_repo</code>, so we use <code>svn checkout file:///Users/mummy/lair_repo lair_working</code>.</p>
+  <p>The first argument is the URL of our repository.  <code>file://</code> says that it's part of the local machine's filesystem, and <code>/Users/mummy/lair_repo</code> is the path to repository directory.</p>
+  <p>Notice that the protocol ends in two slashes, while the absolute path to the repository starts with a slash, making three in total.  A very common mistake is to type only two, since that's what web URLs normally have.</p>
+  <p>When we're doing a checkout, it is <em>very</em> important that we provide the second argument, which specifies the name of the directory we want the working copy to be put in.  Without it, Subversion will try to use the name of the repository, <code>lair_repo</code>, as the name of the working copy.  This means that Subversion will try to overwrite the repository with the working copy, since they have the same name.  Again, there isn't much risk of our sanity being torn to shreds, but this would ruin our repository.</p>
+  <p>To avoid these problems, most people create a sub-directory in their account called something like <code>repositories</code> or <code>repos</code>, and then create their repositories in that.  For example, we could create our repository in <code>/Users/mummy/repos/lair</code>, then check out a working copy as <code>/Users/mummy/lair</code>.</p>
+  <p>Now let's see how to create a repository on a server.  Let's assume we have a Unix shell account on a server called <code>monstrous.monsters.org</code>, and that our home directory is <code>/u/mummy</code>.</p>
+  <p>To create a repository called <code>lair</code>, we log into that computer, then run the command <code>svnadmin create lair</code>.</p>
+  <p>(Once again, we would probably actually create a sub-directory called something like <code>repos</code> and put our repository in there, but we'll skip that step here to keep our URLs short.)</p>
+  <p>The URL for the repository we just created is <code>monstrous.monsters.org/u/mummy/lair</code>---except that's not a complete URL, because it doesn't specify the <em>protocol</em> we are going to use to connect to the repository.</p>
+  <p>A protocol like HTTP or FTP defines how communication takes place between two computers: who talks first, how each party identifies itself, what data should be sent when, and so on.</p>
+  <p>It's very common to use the HTTP protocol to communicate with Subversion, but setting that up requires some knowledge of how web servers work.</p>
+  <p>We're going to use a combination of two protocols to access our repository.  The first is called SSH, which stands for "Secure Shell".  You probably used it to log in to the server to create the repository, though it might have been hidden inside a GUI client like Putty.  SSH specifies rules for connecting to remote computers, providing passwords to prove your identity, and so on.</p>
+  <p>The second protocol is SVN, which is a specialized protocol defined by Subversion for moving data back and forth, comparing different versions of files, and so on.</p>
+  <p>Putting these together, the full URL for our repository is <code>svn+ssh://mummy@monstrous.monsters.org/u/mummy/lair</code>.  Breaking this back into pieces:</p>
+  <p><code>svn+ssh</code> is the protocol.  (It has to be spelled exactly this way: "ssh+svn" should work, but doesn't.)</p>
+  <p><code>mummy@monstrous.monsters.org</code> specifies who we are and what machine we're connecting to.</p>
+  <p><code>/u/mummy/lair</code> is where our repository is located.</p>
+  <p>Every Subversion repository URL has these parts: a protocol, something to identify the server (which may optionally include a user ID if the repository isn't publicly readable), and a path.</p>
+  <p>Let's switch back to our local machine and check out a copy of the repository.</p>
+  <p>When we run Subversion's <code>checkout</code> command, our client makes a connection to the server <code>monstrous.monsters.org</code> and then prompts us for the password associated with the <code>mummy</code> account.  By entering this password, we are proving to the server that we are the user <code>mummy</code>, or at least that we have the right to read and write the files that belong to <code>mummy</code>.</p>
+  <p>Notice that our client gives us the option of saving our password locally, so that we don't have to re-enter it each time we update from or commit to this repository.  A lot of people think this is a bad idea, since anyone who stole that password from our local machine would then be able to log into the server as us and do horrible things.  We'll look more closely at the pros and cons of this in a future lecture.</p>
+  <p>A bigger question is how to give other people access to the repository we have just created so that they can start working with us.  Unfortunately, this really does require things that we are not going to cover in this course.  If you need to do this, you can:</p>
+  <p>ask your system administrator to set it up for you,</p>
+  <p>use an open source hosting service like <a href="http://www.sf.net">SourceForge</a> or <a href="http://code.google.com">Google Code</a>, or</p>
+  <p>spend a few dollars a month on a commercial hosting service like <a href="http://dreamhost.com">DreamHost</a> that provides web-based GUIs for creating and managing repositories.</p>
+</div>
+

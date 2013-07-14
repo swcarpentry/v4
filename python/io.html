@@ -1,0 +1,361 @@
+---
+layout: v4_topic
+title: Input and Output
+lesson_title: Python
+prev: v4/python/lists.html
+next: v4/python/strings.html
+uplink: v4/python/index.html
+pdf: io.pdf
+ppt: io.ppt
+youtube: {"slug": "RkyCFjr28f4", "time": "00:07:52.70"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="io/001.png" />
+    <p class="media-body">Hello, and welcome to the fifth episode of the Software Carpentry lecture on Python.  In this episode, we'll have a look at input and output.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/002.png" />
+    <p class="media-body">In the previous episodes, we've used <code>print</code> to see what our programs are doing.  This is fine for tutorials&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/003.png" />
+    <p class="media-body">&hellip;but in real programs, we'll want to save data to files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/004.png" />
+    <p class="media-body">And read data from them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/005.png" />
+    <p class="media-body">Python's tools for input and output are pretty simple, and owe a lot to those invented for C.  Basically:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/006.png" />
+    <p class="media-body">A file is a actually a sequence of bytes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/007.png" />
+    <p class="media-body">But it's often more useful to treat it as a sequence of lines.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/008.png" />
+    <p class="media-body">For our examples, we'll work with a file containing several haikus taken from an online competition run by <cite>Salon</cite> magazine in 1998.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/009.png" />
+    <p class="media-body">Let's start by asking, "How many characters are in the file?"</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/010.png" />
+    <p class="media-body">What we'll actually find out is how many <em>bytes</em> are in the file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/011.png" />
+    <p class="media-body">We'll assume right now that each character is stored in one byte.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/012.png" />
+    <p class="media-body">But we'll revisit the subject later.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/013.png" />
+    <p class="media-body">Here's our program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/014.png" />
+    <p class="media-body">It starts by opening the file using the built-in function <code>open</code>.  This creates a file object that keeps track of the program's connection to the file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/015.png" />
+    <p class="media-body">The first argument to <code>open</code> is the name of the file the program wants to work with.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/016.png" />
+    <p class="media-body">The second is the letter <code>'r'</code>, which signals that it wants to read from the file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/017.png" />
+    <p class="media-body">If all goes well, the program assigns the result of <code>open</code> to the variable <code>reader</code>, which will be the program's connection to the file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/018.png" />
+    <p class="media-body">The program can now call the method <code>read</code> to read in the entire content of the file&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/019.png" />
+    <p class="media-body">&hellip;and assign it to the variable <code>data</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/020.png" />
+    <p class="media-body">Since the program is done with the file, it calls <code>close</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/021.png" />
+    <p class="media-body">This isn't strictly necessary in small programs, but it's a good habit to get into, since most operating systems limit the number of files a program can have open at one time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/022.png" />
+    <p class="media-body">Finally, we use <code>len</code> to find out how many characters are in the variable <code>data</code>, and print that out.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/023.png" />
+    <p class="media-body">Again, what we're really reporting is the number of <em>bytes</em>, not the number of characters, but we'll assume for now that there's a one-to-one match.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/024.png" />
+    <p class="media-body">When we run our program, it tells us the file is 293 characters long.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/025.png" />
+    <p class="media-body">Our first program read the entire file into memory, then calculated its length.  If the file might be very large&mdash;say, a few terabytes&mdash;it would be better to read it in chunks, so that we don't overflow memory.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/026.png" />
+    <p class="media-body">Here's a program that does that.  After opening the file as before&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/027.png" />
+    <p class="media-body">&hellip;we pass the value 64 to the <code>read</code> method to indicate that we only want the next 64 bytes of data.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/028.png" />
+    <p class="media-body">This method will return an empty string if there is nothing left to read.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/029.png" />
+    <p class="media-body">The program then goes into a loop.  As long as its last attempt to read from the file returned some data&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/030.png" />
+    <p class="media-body">&hellip;it prints out how much data it read&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/031.png" />
+    <p class="media-body">&hellip;then tries to read some more data.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/032.png" />
+    <p class="media-body">As a check, we print the length of <code>data</code> after the loop is over.  This should be zero, since the program should stay in the loop as long as it's actually getting data from the file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/033.png" />
+    <p class="media-body">Sure enough, the output is four full blocks of 64 characters, one partial block of 37, and then 0 at the end of the file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/034.png" />
+    <p class="media-body">You might think from this example that reading in blocks is the right way to do it, but the extra complexity is really only warranted if&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/035.png" />
+    <p class="media-body">&hellip;the file really might be very large (or infinitely long, like a stream of readings from a lab instrument).  Remember, premature optimization is the root of much evil.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/036.png" />
+    <p class="media-body"><code>read</code> is the most fundamental way to get data from a file, but it's more common to read data a line at a time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/037.png" />
+    <p class="media-body">To show how this works, here's a program that calculates the average length of the lines in a file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/038.png" />
+    <p class="media-body">After opening the file, it uses <code>readline</code> to read the next line of text from the file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/039.png" />
+    <p class="media-body">As with <code>read</code>, this will return an empty string when there's nothing left in the file, so our program loops until it gets an empty string.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/040.png" />
+    <p class="media-body">And inside the loop, it uses another <code>readline</code> call to try to get that next line.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/041.png" />
+    <p class="media-body">When we run this program on our haiku file, it tells us that the average line is a little over nineteen and a half characters long.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/042.png" />
+    <p class="media-body">Memory permitting, it's often more convenient to read all the lines in the file at once.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/043.png" />
+    <p class="media-body">Here's a program that uses <code>readlines</code> (with an 's' on the end) to do that.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/044.png" />
+    <p class="media-body">It returns a list of strings, which the program assigns to the variable <code>contents</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/045.png" />
+    <p class="media-body">The program then loops over that list with <code>for</code>, instead of using a <code>while</code> to read from the file until it's exhausted.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/046.png" />
+    <p class="media-body">Again, the output is a little over nineteen and a half characters per line.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/047.png" />
+    <p class="media-body">Reading the file's contents as a list of lines, then looping over that list, is a very common idiom.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/048.png" />
+    <p class="media-body">So Python allows programs to just loop over a file line by line.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/049.png" />
+    <p class="media-body">Here's the average line length program done that way.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/050.png" />
+    <p class="media-body">The <code>for</code> loop assigns the lines in the file to the variable <code>line</code> one after another, halting automatically when the file is exhausted.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/051.png" />
+    <p class="media-body">And yes, it's output is 19.53333&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/052.png" />
+    <p class="media-body">Of course, we have to put data <em>in</em> files somehow.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/053.png" />
+    <p class="media-body">In Python, we can do this with two other file methods called <code>write</code> and <code>writelines</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/054.png" />
+    <p class="media-body">Here's a program that writes to <code>temp.txt</code> using these two methods.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/055.png" />
+    <p class="media-body">As before, we open the file with <code>open</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/056.png" />
+    <p class="media-body">The first argument is the file we want to write to.  Its previous content will be overwritten if it already exists&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/057.png" />
+    <p class="media-body">&hellip;and it will be created if it doesn't.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/058.png" />
+    <p class="media-body">The difference between this call and the ones we've seen before is that the second argument is the string <code>'w'</code> instead of the string <code>'r'</code>, which signals that we want to write to the file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/059.png" />
+    <p class="media-body">The program then uses the file object's <code>write</code> method to write a string to the file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/060.png" />
+    <p class="media-body">Alternatively, it can use <code>writelines</code> to write each string in a list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/061.png" />
+    <p class="media-body">But if we run the program, then look in <code>temp.txt</code>, the output is all crammed together.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/062.png" />
+    <p class="media-body">The reason is that Python only writes what we tell it to, and we didn't tell it to write any end-of-line characters.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/063.png" />
+    <p class="media-body">We have to modify the program to add a newline <code>'\n'</code> at the end of each line.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/064.png" />
+    <p class="media-body">When we run this program, we get the output we want.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/065.png" />
+    <p class="media-body">Rather than putting newline characters everywhere, many programmers find it simpler to write to files using <code>print</code> with a <em>redirect</em>, which is written as a double greater-than sign.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/066.png" />
+    <p class="media-body">Here's our program rewritten to use this idiom.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/067.png" />
+    <p class="media-body">The file we want to print to appears on the right of the <code>&gt;&gt;</code>; other than that, it looks like any other <code>print</code> statement.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/068.png" />
+    <p class="media-body">And just like a regular <code>print</code>, this automatically adds a newline after everything.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/069.png" />
+    <p class="media-body">So let's use what we've learned so far to copy one file's contents to another.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/070.png" />
+    <p class="media-body">Here's the first version:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/071.png" />
+    <p class="media-body">The first three lines read in everything from the source file&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/072.png" />
+    <p class="media-body">&hellip;while the second three write it all out to the destination file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/073.png" />
+    <p class="media-body">As before, this probably won't work with a terabyte of data&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/074.png" />
+    <p class="media-body">&hellip;but in almost all cases, that doesn't matter.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/075.png" />
+    <p class="media-body">Here's another version that <em>will</em> work for a terabyte, provided it's a terabyte of text.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/076.png" />
+    <p class="media-body">After opening both files, we read the input a line at a time, writing data out as we go, then close both files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/077.png" />
+    <p class="media-body">This does assume the file is text, though.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/078.png" />
+    <p class="media-body">Or at least that the end-of-line character appears fairly frequently.  If it doesn't, <code>readline</code> may be asked to read an enormous block of data into memory, which gets us back to our "can't read a terabyte" problem.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/079.png" />
+    <p class="media-body">This version looks similar to the previous one, but doesn't make an exact copy of the original file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/080.png" />
+    <p class="media-body">Instead of using <code>write</code>, it prints to the file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/081.png" />
+    <p class="media-body">The problem is that Python keeps the newline character at the end of the input line when it's reading.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/082.png" />
+    <p class="media-body">And <code>print</code> automatically adds a newline at the end of what it outputs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/083.png" />
+    <p class="media-body">So this program actually produces a double-spaced copy of the file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/084.png" />
+    <p class="media-body">Here's a better alternative.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/085.png" />
+    <p class="media-body">It defines <code>BLOCKSIZE</code> to be 1024.  (Python doesn't actually let us define constants, so by convention, any variable that we want to treat as a constant definition is spelled in all capitals.)  We then use the "read in a loop" idiom we saw earlier to read up to 1024 bytes at a time, writing them out as we go.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/086.png" />
+    <p class="media-body">This file copying program is efficient, and will handle files of any size, but it's harder to understand than our first two: needlessly so, unless we expect very large input files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="io/087.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

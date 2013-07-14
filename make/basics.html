@@ -1,0 +1,257 @@
+---
+layout: v4_topic
+title: Basics
+lesson_title: Make
+prev: v4/make/intro.html
+next: v4/make/patterns.html
+uplink: v4/make/index.html
+pdf: v4/make/basics.pdf
+ppt: v4/make/basics.ppt
+youtube: {"slug": "Kfv12q28bQM", "time": "00:09:41.70"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="basics/001.png" />
+    <p class="media-body">Hello, and welcome to the second episode of the Software Carpentry lecture on Make.  This episode will introduce you to Make's basic features.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/002.png" />
+    <p class="media-body">As we said in the opening episode, Make is tool to manage tasks and dependencies.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/003.png" />
+    <p class="media-body">To illustrate how it works, here's the dependency tree for the paper that the robot is working on.  <code>paper.pdf</code> depends on <code>paper.wdp</code> (the raw word processor file), and on <code>figure-1.svg</code> and <code>figure-2.svg</code>.  <code>figure-1.svg</code> depends on <code>summary-1.dat</code>, which in turn depends on <code>data-1-1.dat</code>, <code>data-1-2.dat</code>, and so on, while <code>figure-2.svg</code> depends on files with similar names.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/004.png" />
+    <p class="media-body">In order to create <code>paper.pdf</code>, we have to run the command <code>wdp2pdf paper.wdp</code>.  For the purpose of this lecture, it doesn't matter what <code>wdp2pdf</code> actually does; all we need to know is that if <code>paper.wdp</code> or either of the figure SVG's change, we need to re-run this command.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/005.png" />
+    <p class="media-body">To create <code>figure-1.svg</code>, we run <code>sgr -N -r summary-1.dat</code> and send the output to <code>figure-1.svg</code>.  (The backslash is not part of the command&mdash;it's just the standard Unix way to break a line into pieces.)  Again, it doesn't matter for now what the <code>sgr</code> command actually is; what matters is that we need to run it whenever <code>figure-1.svg</code> is out of date, i.e., whenever it is older than the <code>summary-1.dat</code> file it depends on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/006.png" />
+    <p class="media-body">Finally, in order to update <code>summary-1.dat</code>, we need to run our own little script, <code>stats.py</code>, with all the files named <code>data-1-something.dat</code> as input.  We don't know in advance how many of these there will be: we could conceivably have dozens or hundreds of raw data files to summarize.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/007.png" />
+    <p class="media-body">That little program <code>stats.py</code> adds one more wrinkle to our example problem.  We're constantly updating it as we think of new ways to process our raw data files.  We're also finding and fixing bugs more often than we'd like.  Each time it changes, we should probably update <code>summary-1.dat</code>, just in case a new feature or bug fix changes the summary values.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/008.png" />
+    <p class="media-body">We should therefore include <code>stats.py</code> in the list of things <code>summary-1.dat</code> depends on, so that changes to <code>stats.py</code> will trigger recalculation of <code>summary-1.dat</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/009.png" />
+    <p class="media-body">This is all a bit much to digest at once, so let's look at the simplest piece.  How can we get Make to re-create <code>figure-1.svg</code> automatically whenever <code>summary-1.dat</code> changes?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/010.png" />
+    <p class="media-body">Let's start by going into the directory containing the files we're using in the paper, and use the <code>ls</code> command to get a listing of what's there.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/011.png" />
+    <p class="media-body">The <code>-t</code> flag to <code>ls</code> tells it to list things by age, with the youngest file first and the oldest last.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/012.png" />
+    <p class="media-body">This listing tells us that our data file <code>summary-1.dat</code> is newer than the SVG file that depends on it, so the SVG file needs to be re-created.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/013.png" />
+    <p class="media-body">Using our favorite editor, let's create a file called <code>hello.mk</code> and put these three lines in it.  A configuration file for Make like this one is called a <em>Makefile</em>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/014.png" />
+    <p class="media-body">The first line, starting with <code>#</code>, is a comment.  Your comments should be more meaningful than just the name of the file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/015.png" />
+    <p class="media-body">The second and third lines are a <em>rule</em> that tell Make what we want to do.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/016.png" />
+    <p class="media-body">The filename on the left of the colon in the first line is the <em>target</em> of the rule.  The rule tells Make how to update or re-create this file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/017.png" />
+    <p class="media-body">The target's <em>prerequisites</em>&mdash;the things it depends on&mdash;are listed to the right of the colon.  In our case, <code>figure-1.svg</code> only has one prerequisite, <code>summary-1.dat</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/018.png" />
+    <p class="media-body">The second line of the rule is its <em>action</em>.  This tells Make what shell command or commands to run to bring the target up to date if it is older than any of its prerequisites.  This rule only has one command, but a rule can contain any number.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/019.png" />
+    <p class="media-body">One thing to note is that the actions in rules <em>must</em> be indented with a single tab character: Make will not accept spaces, or mixes of spaces and tabs.  As we said in the introduction, it was written by a summer intern in 1975, and sometimes that shows&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/020.png" />
+    <p class="media-body">Now that we've created our Makefile, we can tell Make to obey its instructions by running <code>gmake</code> from the command line.  Many systems make <code>make</code> an alias for <code>gmake</code>, so if the latter doesn't work for you, try the former name as well.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/021.png" />
+    <p class="media-body">The arguments <code>-f hello.mk</code> tell Make that we want it to use the commands in the file <code>hello.mk</code>.  If we don't tell it what file to look in, it looks for a file called <code>Makefile</code> in the current directory and uses that if it exists.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/022.png" />
+    <p class="media-body">And here's Make's output: it has run the command we wanted it to.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/023.png" />
+    <p class="media-body">This happened because at least one prerequisite for <code>figure-1.svg</code> was newer than <code>figure-1.svg</code> itself.  By default, Make uses the time a file was last modified as its age; opening a file in an editor to view it doesn't change this timestamp, but any change to its contents will.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/024.png" />
+    <p class="media-body">Since <code>summary-1.dat</code>'s timestamp was younger than <code>figure-1.svg</code>'s, Make ran the shell command we gave it and created a new version of <code>figure-1.svg</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/025.png" />
+    <p class="media-body">Now let's run Make again.  This time, it doesn't execute any commands.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/026.png" />
+    <p class="media-body">This happened&mdash;or rather, didn't happen&mdash;because the target is newer than its prerequisites.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/027.png" />
+    <p class="media-body">Since there's nothing to bring up to date, Make doesn't change anything.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/028.png" />
+    <p class="media-body">If we were only allowed one rule per file, Make wouldn't be any simpler than typing commands by hand, or putting them in little shell scripts.  Luckily, Make allows us to put any number of rules in a single configuration file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/029.png" />
+    <p class="media-body">Here, for example, is another Makefile called <code>double.mk</code> with rules to re-create both <code>figure-1.svg</code> and <code>figure-2.svg</code>.  These rules are identical except for the 1's and 2's in the filenames; we'll see later how to combine these rules into one.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/030.png" />
+    <p class="media-body">Let's pretend we've just updated our data files by running <code>touch *.dat</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/031.png" />
+    <p class="media-body">The Unix <code>touch</code> command doesn't change the contents of files, but updates their timestamps as if they had been modified.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/032.png" />
+    <p class="media-body">Now, when we run Make, it re-creates <code>figure-1.svg</code> again&mdash;and then stops.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/033.png" />
+    <p class="media-body">Why wasn't <code>figure-2.svg</code> re-created?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/034.png" />
+    <p class="media-body">The answer is that Make uses the first rule in the Makefile as its <em>default rule</em>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/035.png" />
+    <p class="media-body">Unless it's told otherwise, it only executes this rule.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/036.png" />
+    <p class="media-body">If we want Make to rebuild <code>figure-2.svg</code>, we have to tell it so explicitly.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/037.png" />
+    <p class="media-body">Here's the command: we use <code>-f double.mk</code> to tell Make what Makefile to use, and then give it the name of the target we want it to handle.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/038.png" />
+    <p class="media-body">Again, building things one at a time like this is slightly better than typing individual commands, but only slightly.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/039.png" />
+    <p class="media-body">To get Make to build everything at once, we have to introduce a <em>phony target</em>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/040.png" />
+    <p class="media-body">This is just a target name that doesn't correspond to any actual file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/041.png" />
+    <p class="media-body">Since it doesn't actually exist, it can't ever be up to date&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/042.png" />
+    <p class="media-body">&hellip;but other things can still depend on it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/043.png" />
+    <p class="media-body">Here's our third Makefile, <code>phony.mk</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/044.png" />
+    <p class="media-body">We've introduced a phony target called <code>all</code>, which depends on <code>figure-1.svg</code> and <code>figure-2.svg</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/045.png" />
+    <p class="media-body">If we type <code>make all</code>, Make will decide that the <code>all</code> target is out of date (since there's no file called <code>all</code> in the current directory).  And since <code>all</code> depends on <code>figure-1.svg</code> and <code>figure-2.svg</code>, Make will go and update them both, which is exactly what we want.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/046.png" />
+    <p class="media-body">Let's <code>touch</code> our data files again, and run <code>make -f phony.mk all</code>.  Sure enough, Make runs the <code>sgr</code> command twice to re-create both figures.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/047.png" />
+    <p class="media-body">One thing to note, though, is that the order in which commands are executed is arbitrary.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/048.png" />
+    <p class="media-body">Make could decide to update <code>figure-2.svg</code> first, rather than <code>figure-1.svg</code>, because there's no dependency to respect between the two.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/049.png" />
+    <p class="media-body">Make could also update them in parallel if it had more than one processor to use.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/050.png" />
+    <p class="media-body">We'll return to this idea later.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/051.png" />
+    <p class="media-body">Something else this example shows us is that a single thing can be a target in one rule, and a prerequisite in others.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/052.png" />
+    <p class="media-body">The dependencies between the files mentioned in the Makefile make up a <em>directed graph</em>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/053.png" />
+    <p class="media-body">In order for Make to run, this graph must not contain any cycles.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/054.png" />
+    <p class="media-body">For example, if X depends on Y, Y depends on Z, and Z depends on X, there is nothing Make can build first: everything it might build depends on something else.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/055.png" />
+    <p class="media-body">If it detects a cycle in a Makefile, Make will print an error message and stop.  Unfortunately, whether or not a cycle exists depends on which files exist, and Make's error message is usually not particularly informative.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/056.png" />
+    <p class="media-body">Let's go back to our paper and look at another part of our dependency graph.  <code>summary-1.dat</code> depends on all of the files <code>data-1-1.dat</code>, <code>data-1-2.dat</code>, and so on.  The number of files isn't fixed: there could be one, a dozen, or a thousand.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/057.png" />
+    <p class="media-body">Writing a rule for exactly three files is easy:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/058.png" />
+    <p class="media-body">we just have one target and multiple prerequisites on a single line.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/059.png" />
+    <p class="media-body">But how do we generalize that to any number of files?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/060.png" />
+    <p class="media-body">And can we get rid of the repeated filenames?  Writing <code>data-1-1.dat data-1-2.dat data-1-3.dat</code> twice is just asking for trouble: sooner or later, we'll add a file to one line but forget to update the other.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="basics/061.png" />
+    <p class="media-body">We'll solve both of these problems together in our next episode.</p>
+  </div>
+</div>

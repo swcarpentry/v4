@@ -1,0 +1,257 @@
+---
+layout: v4_topic
+title: Strings
+lesson_title: Python
+prev: v4/python/io.html
+next: v4/python/alias.html
+uplink: v4/python/index.html
+pdf: strings.pdf
+ppt: strings.ppt
+youtube: {"slug": "4fmCgIbscqw", "time": "00:07:17.30"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="strings/001.png" />
+    <p class="media-body">Hello, and welcome to the sixth episode of the Software Carpentry lecture on Python.  This episode will show you more about how to work with strings.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/002.png" />
+    <p class="media-body">We've been using strings since our very first episode, and as you've probably guessed by now, a string is just a sequence of characters.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/003.png" />
+    <p class="media-body">There is actually no separate data type for individual characters: a character is just a string of length 1.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/004.png" />
+    <p class="media-body">Strings are indexed exactly like lists.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/005.png" />
+    <p class="media-body">If <code>name</code> holds the string <code>'Darwin'</code>, then <code>name[0]</code> is the first character, 'D', and <code>name[-1]</code> is the last one, 'n'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/006.png" />
+    <p class="media-body"><code>for</code> loops work the same way they do for lists too.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/007.png" />
+    <p class="media-body">If the program contains <code>for c in name</code>, Python assigns each character to the variable <code>c</code> in turn.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/008.png" />
+    <p class="media-body">Strings can be wrapped in either single quotes or double quotes, as long as the quotes match.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/009.png" />
+    <p class="media-body">Here, the first string is in single quotes, and the second in double quotes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/010.png" />
+    <p class="media-body">It doesn't matter which form is used: the string's value is the same.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/011.png" />
+    <p class="media-body">We can use <code>==</code> to test this.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/012.png" />
+    <p class="media-body">And speaking of comparison, we can use "less than" or "greater than or equal to" to compare strings.  When Python compares strings, it works character by character from left to right.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/013.png" />
+    <p class="media-body">As you'd expect, 'a' is less than 'b'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/014.png" />
+    <p class="media-body">And 'ab' is less than 'abc' (since 'ab' runs out of characters first).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/015.png" />
+    <p class="media-body">The digit characters are ordered in the natural way too.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/016.png" />
+    <p class="media-body">But if you put these rules together, the string '100' is less than the string '9', because '1' is less than '9'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/017.png" />
+    <p class="media-body">It may also surprise you to discover that an upper-case 'A' is less than a lower-case 'a'.  In fact, every upper case letter comes before every lower case letter.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/018.png" />
+    <p class="media-body">One more surprise is that strings are <em>immutable</em>, i.e., they cannot be changed in place.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/019.png" />
+    <p class="media-body">For example, if we try to overwrite the 'D' in 'Darwin' with a 'C', Python gives us an error.  This is different from most languages, which allow strings to be changed in place.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/020.png" />
+    <p class="media-body">Python strings are immutable because it improves performance by allowing Python to do some internal optimization that wouldn't be possible if strings could be changed arbitrarily.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/021.png" />
+    <p class="media-body">It also helps make programmers more productive by making some kinds of errors impossible&mdash;we'll explore this in more detail in the next episode.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/022.png" />
+    <p class="media-body">But hang on a second: we've already seen that we can use + to concatenate strings.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/023.png" />
+    <p class="media-body">For example, we can "add" the strings 'Charles', space, and 'Darwin' to produce 'Charles Darwin'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/024.png" />
+    <p class="media-body">What happens is that concatenation always produces a new string.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/025.png" />
+    <p class="media-body">If the variable <code>original</code> refers to the string <code>'Charles'</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/026.png" />
+    <p class="media-body">&hellip;and the variable <code>name</code> refers to the same string&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/027.png" />
+    <p class="media-body">&hellip;then when we add "space 'Darwin'" to <code>name</code>, it actually creates a new string and assigns that to <code>name</code>, leaving <code>original</code> pointing at the original string.  It does <em>not</em> modify the string <code>'Charles'</code> in place.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/028.png" />
+    <p class="media-body">Novices often use string concatenation to format output.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/029.png" />
+    <p class="media-body">Here's an example: we concatenate three constants strings and the string representations of two numbers to produce a single string of output.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/030.png" />
+    <p class="media-body">It works, but there's a much better way.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/031.png" />
+    <p class="media-body">In Python, we can use the <code>%</code> operator to format output.  On the left, we have a <em>format string</em> with placeholders where we want to insert values.  On the right, we have the values we want to insert.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/032.png" />
+    <p class="media-body">Here's a simple example: the format string is <code>'reagant: %d'</code>, and the value we're inserting is 123.  The format specifier <code>'%d'</code> in the format string means "decimal integer", so Python creates a new string with the value 123 in place of the '%d'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/033.png" />
+    <p class="media-body">We can control the width and precision of values too: in this example, <code>'%6.2f'</code> means "floating point number, six characters wide, two digits after the decimal point".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/034.png" />
+    <p class="media-body">If we want to format multiple values at once, we have to put them in parentheses after the <code>%</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/035.png" />
+    <p class="media-body">Here's our earlier example re-done with string formatting: we have used <code>'%d'</code> to format an integer, <code>'%f'</code> to format a floating-point number&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/036.png" />
+    <p class="media-body">&hellip;and <code>'%%'</code> to format an actual percentage sign.  We have to do this because when Python applies <code>%</code> to a string, it expects something after every actual percentage sign in that string.  We'll come back to this idea in a few moments.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/037.png" />
+    <p class="media-body">Even without the percentage operator, we sometimes use two characters in a program to put one character into a string.  The most common example is probably <code>\n</code>, which means "a newline character".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/038.png" />
+    <p class="media-body">We can also use <code>\'</code> to insert a literal single quote, or <code>\&quot;</code> to insert a literal double quote.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/039.png" />
+    <p class="media-body">Here, for example, we have a single-quoted string that contains both a newline and a single quote.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/040.png" />
+    <p class="media-body">And here, we have a double-quoted string that contains a newline and a double quote.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/041.png" />
+    <p class="media-body">So if <code>\</code> is used to start special two-character sequences, how do we represent an actual backslash?  The answer is, with two backslashes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/042.png" />
+    <p class="media-body">Here, for example, is a string that includes a single literal backslash character.  It is <em>written</em> with two backslashes, but when Python reads the program, it only puts one in the string.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/043.png" />
+    <p class="media-body">This doubling up is a common pattern with so-called <em>escape sequences</em>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/044.png" />
+    <p class="media-body">We use some character to mean, "What follows is special."</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/045.png" />
+    <p class="media-body">And then double up that character to mean, "The character itself."</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/046.png" />
+    <p class="media-body">There's another way to get newline characters in strings.  If we use three quotes of either kind to start and end a string, it can span multiple lines.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/047.png" />
+    <p class="media-body">Here, for example, we have a four-line string.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/048.png" />
+    <p class="media-body">There's nothing magical about this: Python just puts the newline characters at the end of the first three lines into the string data it stores in memory.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/049.png" />
+    <p class="media-body">We could just as well write this as two "normal" strings, with embedded newline characters, and then concatenate them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/050.png" />
+    <p class="media-body">Like lists, strings have methods.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/051.png" />
+    <p class="media-body">For example, the <code>capitalize</code>, <code>upper</code>, and <code>lower</code> methods return new strings that translate some or all of the characters of the original.  These methods don't modify the original string, though, because strings are immutable.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/052.png" />
+    <p class="media-body">Another method, <code>count</code>, returns the number of times a character occurs in the string.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/053.png" />
+    <p class="media-body">And <code>find</code> returns the index of the first occurrence of a character, or -1 if the character can't be found.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/054.png" />
+    <p class="media-body">Another useful method is <code>replace</code>, which creates a new string with every occurrence of one character replaced with another.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/055.png" />
+    <p class="media-body">In fact, these will find or replace entire strings, not just single characters.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/056.png" />
+    <p class="media-body">One common idiom in Python and other languages is to chain method calls together.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/057.png" />
+    <p class="media-body">Here's a rather contrived example.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/058.png" />
+    <p class="media-body">The first method call&mdash;the one that is invoked directly on the variable <code>element</code>&mdash;returns a string that is the upper-case version of the string <code>'cesium'</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/059.png" />
+    <p class="media-body">We then call <code>center</code> on this string to create yet another one that has the upper-case copy of 'cesium' centered in a field 10 characters wide.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/060.png" />
+    <p class="media-body">The result is shown here; the technique is no different from a mathematician writing <em>f(g(x))</em>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="strings/061.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

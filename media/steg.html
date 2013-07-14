@@ -1,0 +1,297 @@
+---
+layout: v4_topic
+title: Steganography
+lesson_title: Multimedia Programming
+prev: v4/media/imageops.html
+next: v4/media/audio.html
+uplink: v4/media/index.html
+pdf: steg.pdf
+ppt: steg.ppt
+youtube: {"slug": "Ezkesitlccg", "time": "00:09:04.22"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="steg/001.png" />
+    <p class="media-body">Hello, and welcome to the fourth episode of the Software Carpentry lecture on multimedia programming. In this episode, we'll see how to hide secret messages in pictures, which will also give us a chance to talk about the differences between common image formats.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/002.png" />
+    <p class="media-body">It's commonplace to say that data is just 1's and 0's, but what does that actually mean?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/003.png" />
+    <p class="media-body">We normally think of those 1's and 0's as integers, characters, and so on&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/004.png" />
+    <p class="media-body">&hellip;but that's our interpretation: there's nothing intrinsic to a particular 1 or 0 that says, "I'm part of a character."</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/005.png" />
+    <p class="media-body">To show what this means in practice, we're going to write a program that hides a text message in an image.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/006.png" />
+    <p class="media-body">This is an example of steganography, which is the art of hiding messages in plain sight, and which is often used these days to put digital watermarks in audio and video files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/007.png" />
+    <p class="media-body">Let's start with this picture of the world's cutest child being kissed by her dad.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/008.png" />
+    <p class="media-body">If we pick a single pixel at random, its RGB color values will be something like 53, 64, 22.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/009.png" />
+    <p class="media-body">Each of those three values is stored in eight bits.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/010.png" />
+    <p class="media-body">And coincidentally, each character in the Latin alphabet is also usually stored in 8 bits: 56 for the digit '8', 32 for a space, 98 for a lower-case 'b', and so on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/011.png" />
+    <p class="media-body">So as a first step to hiding strings of text in images, let's replace some of the color bytes with character bytes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/012.png" />
+    <p class="media-body">The main driver for our program looks like this.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/013.png" />
+    <p class="media-body">If the first argument is '-e', then the second is the string we want to put in the image, the third is the image we're hiding it in, and the fourth is where to save the output. (Remember, the zero'th command-line argument is the name of the program itself.)</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/014.png" />
+    <p class="media-body">If the first argument is '-d', on the other hand, then there's only one other argument: the name of the image file containing the secret message that we're to extract.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/015.png" />
+    <p class="media-body">The real work is done by these two functions, encode and decode.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/016.png" />
+    <p class="media-body">Let's write 'encode' first. Its arguments are the message to hide, which is a string, and the picture to hide it in.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/017.png" />
+    <p class="media-body">To keep things simple, we'll only modify the red component of each pixel. We'll come back and write a function to update pixels' red values in a few moments.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/018.png" />
+    <p class="media-body">Since messages may be of different lengths, we'll store the number of characters in the message in the red component of the pixel at location (0, 0).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/019.png" />
+    <p class="media-body">Since each color value is only 8 bits large, this means that the longest message we can store is 256 characters, so we'd better check that our string's length is less than this.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/020.png" />
+    <p class="media-body">Once the length is stored, the main body of our function stores each character by overwriting the red component of successive pixels.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/021.png" />
+    <p class="media-body">Notice that we use the 'ord' function to turn a single-character string into the integer that represents that character's value. We'll use a corresponding function to turn integers back into characters in a moment.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/022.png" />
+    <p class="media-body">And as promised, here's the 'set_red' function that overwrites the red component of a pixel.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/023.png" />
+    <p class="media-body">It uses getpixel to get the RGB triple for the pixel, then setpixel to write a new triple with the value to store and the original green and blue values.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/024.png" />
+    <p class="media-body">That was easy enough: how about decoding?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/025.png" />
+    <p class="media-body">The first step is to get the message's length from the pixel at (0, 0).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/026.png" />
+    <p class="media-body">Once we have that, we loop that many times, getting the red component of each successive pixel, translating it from an integer into a single-character string, and appending that string to our message.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/027.png" />
+    <p class="media-body">As promised, we use the 'chr' function to turn the integer encoding of a character into a string.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/028.png" />
+    <p class="media-body">As an exercise, see if you can figure out why we have to use 'chr', and why we cannot use 'str' to do this conversion.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/029.png" />
+    <p class="media-body">Finally, here's the 'get_red' function. It grabs the pixel at (x, y), then returns the red component.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/030.png" />
+    <p class="media-body">Let's try it out. We'll take a white rectangle as our test image, and encode the message 'ABCDEF'. The result is an image with blue in the upper left corner. Hm&hellip; all right, blue makes sense: the characters' values are all less than 255, so we have effectively reduced the red in the white image, leaving blue-green.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/031.png" />
+    <p class="media-body">But if we expand that corner and look at it more closely&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/032.png" />
+    <p class="media-body">&hellip;something is very wrong. We should only have changed seven pixels:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/033.png" />
+    <p class="media-body">One for the message's size&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/034.png" />
+    <p class="media-body">&hellip;and six more for the characters.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/035.png" />
+    <p class="media-body">Why have all those other pixels changed color?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/036.png" />
+    <p class="media-body">The answer lies in the fact that JPEG is a lossy format.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/037.png" />
+    <p class="media-body">It changes or throws away information in order to improve compression.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/038.png" />
+    <p class="media-body">Human eyes can't tell the difference between the original and JPEG'd images&mdash;its algorithm is carefully designed to ensure that&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/039.png" />
+    <p class="media-body">&hellip;but it does mean that the values we get back after we save and re-load the image aren't exactly the ones we intended to write out.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/040.png" />
+    <p class="media-body">This makes JPEG a poor choice for hiding messages: after all, we'd like to get back exactly the message we stored.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/041.png" />
+    <p class="media-body">We should therefore use a lossless format like PNG instead, in which every pixel's value is always saved exactly.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/042.png" />
+    <p class="media-body">Given the way our program is written, it should work without any changes on PNGs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/043.png" />
+    <p class="media-body">But when we try it, we get this rather cryptic error message.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/044.png" />
+    <p class="media-body">When we run the program in the debugger, we see that the problem is on this line. For some reason, we can't unpack the result of getpixel into its component red, green, and blue values.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/045.png" />
+    <p class="media-body">The reason turns out to be that the pixel's value actually has four components, not three.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/046.png" />
+    <p class="media-body">The fourth is called alpha, and measures the transparency of the pixel. Alpha is used for blending images together to create effects like fog and glass. An alpha of 255 (the maximum possible value) means that the pixel isn't transparent at all, but that's not important right now.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/047.png" />
+    <p class="media-body">All that matters to us is that we need to unpack and repack four values instead of three.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/048.png" />
+    <p class="media-body">Sure enough, if we modify our program to use (r, g, b, a), our message is saved and restored exactly as it should be.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/049.png" />
+    <p class="media-body">However, it's not very well hidden: completely overwriting the red values of successive pixels is pretty obvious to the human eye.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/050.png" />
+    <p class="media-body">The solution is to only change the least significant bit of each byte instead of changing the whole value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/051.png" />
+    <p class="media-body">Even the best human eyes cannot see the difference between red=140 and red=141 when other things are going on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/052.png" />
+    <p class="media-body">To do this, we'll once again make use of the fact that each character in the Latin alphabet is encoded in a single byte of eight bits.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/053.png" />
+    <p class="media-body">With eight bits per character, and three bytes per pixel, we can encode each character of our message in three pixels</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/054.png" />
+    <p class="media-body">with one bit left over.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/055.png" />
+    <p class="media-body">Let's start by writing a function that turns a single character into a list of eight 1's and 0's.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/056.png" />
+    <p class="media-body">Once again, we use 'ord' to turn the character into an integer&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/057.png" />
+    <p class="media-body">&hellip;and then inside a loop, use remainder to check whether the number is odd or not. If it is, then its low bit is a 1; if it isn't, the low bit is a 0.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/058.png" />
+    <p class="media-body">Once we've checked, we divide the number by 2 to shift it down one place so that we can check the next bit.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/059.png" />
+    <p class="media-body">Let's watch that function in action. When our loop index is 0, we're checking to see whether 65 (the integer representation of an upper-case 'A') is odd. It is, which means the low bit is a 1, so we put 1 in our result.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/060.png" />
+    <p class="media-body">On the next loop, when i is 1, our number is 32 (the result of dividing 65 by 2 and rounding down). It is even, so the low bit must be 0.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/061.png" />
+    <p class="media-body">Next loop: our number is 16, which is another 0.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/062.png" />
+    <p class="media-body">We keep going like this, putting in 1s or 0s, until we've extracted all 8 bits.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/063.png" />
+    <p class="media-body">Now let's combine those bits with pixels. This function takes a single pixel and a list containing as many bits as there are values in the pixel. Remember, some pixels may contain three values for red/green/blue, while others may be four elements long: red, green, blue, and an alpha for transparency.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/064.png" />
+    <p class="media-body">We start by turning the pixel into a list, so that we can overwrite elements (something we can't do with tuples). We'll turn the list back into a tuple at the end when we return it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/065.png" />
+    <p class="media-body">For each of the bits, we figure out what value the corresponding color in the pixel should have if the bit is a zero. We do this using a trick: when we divide by 2, Python throws away the remainder, so when we multiply by 2, we get back either the original number if it was even, or that value rounded down by 1 if it was originally odd.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/066.png" />
+    <p class="media-body">If the bit we want to store is a 1, we then add 1 to the pixel to make sure its value is odd. If the bit is a 0, we leave the evened-off pixel value alone. It's a bit of a hack, but if you trace the calculation for a few values, you'll see that it does the right thing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/067.png" />
+    <p class="media-body">Here are some tests that combine pixels with different RGB values and bits with varying combinations of 1 and 0. Sure enough, the output is always even when the bit being saved is 0, and 1 when the bit being saved is odd.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/068.png" />
+    <p class="media-body">As an exercise, write the other functions needed to encode a message in an image bit by bit, and then write the inverse function that recovers the message.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/069.png" />
+    <p class="media-body">As you're doing this, keep in mind the real lesson of this episode. The bits that make up our data don't have any intrinsic meaning&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/070.png" />
+    <p class="media-body">Their meaning comes entirely from how we act on them and interpret them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="steg/071.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

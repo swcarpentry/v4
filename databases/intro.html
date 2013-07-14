@@ -1,0 +1,50 @@
+---
+layout: v4_topic
+title: Introduction
+lesson_title: Databases
+prev: null
+next: v4/databases/select.html
+uplink: v4/databases/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "kaKa6N9lEG8", "time": "00:03:48.73"}
+---
+<div>
+  <p>Welcome to the Software Carpentry screencast on Databases. This screencast is an introduction to databases.</p>
+  <p>In this screencast we'll try to give you a sense of what databases are and what you can do with them.</p>
+  <p>A database is a way to store and manipulate information that is arranged as tables.</p>
+  <p>Each table has columns (also known as fields) which describe the data, and rows (also known as records) which contain the data.</p>
+  <p>This table you see here is a log of all of the work done on experiments in a research lab, broken down by project and scientist</p>
+  <p>Each record in the table describes an Experiment. There is a field for loginID of the scientist running the experiment, the project, experiment name, hours spent on the experiment, and date the experiment was run.</p>
+  <p>In a spreadsheet, you insert formulas or new sheets to analyse your data.</p>
+  <p>In a database, you give commands, also known as Queries, the database does the analysis your query specifies, and returns the results in a tabular form.</p>
+  <p>Queries you give are written in a simple, english-like, language called SQL, which stands for "Structured Query Language"</p>
+  <p>SQL is a vast language that provides all sorts of ways of mixing and remixing your data.</p>
+  <p>In this lecture we'll assume you already have a database, and so we'll only be discussing queries that extract and analyse data.</p>
+  <p>Broadly speaking though, there are only six basic types of operations you can do with a database.</p>
+  <p>Each operation extracts or transforms data from a previous operation, to form a pipeline or flow of data that ends with the results you get back.</p>
+  <p>We're going to give you a preview of the basic database operations now in order to give you a flavour of what databases can do.</p>
+  <p>In the other database screencasts we'll show you this all in much more detail, along with showing you how to accomplish common analysis tasks.</p>
+  <p>So, let's begin with the data we saw in the first slide.</p>
+  <p>The SELECT operation simply extracts various fields from a table or from the results of other another query.</p>
+  <p>This is obviously a fundamental operation: if you want to get data out of the database you'll need to use the SELECT operator to tell the database where to find the data you're interested in.</p>
+  <p>The APPEND operation adds new, calculated fields to the results, like rounding the values in another column.</p>
+  <p>the SORT operation orders the results by the values in a field.</p>
+  <p>The FILTER operation chooses records to include based on TRUE or FALSE conditions</p>
+  <p>So, here is an illustration of a query that filters for records that have Hours values of 5 or greater.</p>
+  <p>the AGGREGATE operation summarises groups of records into new records.</p>
+  <p>This is useful for calculating the SUM, MAX, MIN, Average or a count of records that share a unique set of fields.</p>
+  <p>Here we see the Hours being totalled for each project.</p>
+  <p>Suppose we had a Person table that shows more details on each of the scientists.</p>
+  <p>The JOIN operation joins two (or more) tables together by combining records based on TRUE or FALSE conditions.</p>
+  <p>We could use this operation to return results from the Experiment table with the full names of the corresponding scientists from the Person table:</p>
+  <p>A database is the right tool for managing complex and structured data, that is spread over many different tables.</p>
+  <p>Databases are also designed to work quickly on very large data sets&mdash;much larger than can comfortably be managed with a spreadsheet.</p>
+  <p>Queries allow for great flexibility in how you are able to analyse your data. This makes databases a good choice for if you need to explore or mix and remixing it in many different ways.</p>
+  <p>Unlike spreadsheets, databases do not typically have built in charting and visualising tools. But, it's always possible to export the results of a query to be used in other tools.</p>
+  <p>So, summing up:</p>
+  <p>A database is a set of tables of data on which you can explore and manipulate using queries.</p>
+  <p>We've seen six basic kinds of operations that you can do on the data in a database: SELECT, APPEND, FILTER, AGGREGATE, JOIN, SORT.</p>
+  <p>In this screencast we've tried to give you a flavour of the sorts of remixing you can do by showing you the basic operations.</p>
+  <p>Databases are the right tool for managing large amounts of data, or data that is complex. They are useful when you need to remix and explore your data in different ways.</p>
+</div>

@@ -1,0 +1,401 @@
+---
+layout: v4_topic
+title: Lists
+lesson_title: Python
+prev: v4/python/flow.html
+next: v4/python/io.html
+uplink: v4/python/index.html
+pdf: lists.pdf
+ppt: lists.ppt
+youtube: {"slug": "SHTKzu1TGkU", "time": "00:10:00.30"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="lists/001.png" />
+    <p class="media-body">Hello, and welcome to the fourth episode of the Software Carpentry lecture on Python.  In this episode, we'll have a look at lists.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/002.png" />
+    <p class="media-body">While loops let us do things many times&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/003.png" />
+    <p class="media-body">&hellip;collections let us store many values together, so that we don't have to define new variables for each piece of data we want to work with.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/004.png" />
+    <p class="media-body">The most popular kind of collection in Python is the list, which takes the place of arrays in languages like C and Fortran.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/005.png" />
+    <p class="media-body">To create a list, just put some values in square brackets with commas in between.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/006.png" />
+    <p class="media-body">To fetch the element at a location, put the index of that location in square brackets.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/007.png" />
+    <p class="media-body">For example, we can create a list of the atomic symbols of the first four noble gases&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/008.png" />
+    <p class="media-body">&hellip;and then print out the list element at location 1.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/009.png" />
+    <p class="media-body">And yes, Python indexes lists starting at 0, not at 1.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/010.png" />
+    <p class="media-body">There actually was a reason for this back in 1970, when the language C was invented; today, we just have to put up with it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/011.png" />
+    <p class="media-body">And just as it's an error to try to get the value of a variable that hasn't been defined, it's an error to try to access a list element that doesn't exist.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/012.png" />
+    <p class="media-body">For example, if our list of noble gases has four elements, legal indices for the list are 0, 1, 2, and 3, so trying to access element 4 produces an error.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/013.png" />
+    <p class="media-body">If we don't know how long a list is, we can use the built-in function <code>len</code> to find out.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/014.png" />
+    <p class="media-body">As you'd expect, it returns 4 for our list of gases.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/015.png" />
+    <p class="media-body">And it returns 0 for the <em>empty list</em>, which is written as a pair of square brackets with nothing in between.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/016.png" />
+    <p class="media-body">We said earlier that list indices start at 0, but in fact, some negative indices work as well.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/017.png" />
+    <p class="media-body">In Python, <code>values[-1]</code> is the last element of the list, <code>values[-2]</code> is the next-to-last, and so on, counting backward from the end of the list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/018.png" />
+    <p class="media-body">For example, here's our list of gases again.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/019.png" />
+    <p class="media-body">As you can see, element -1 is krypton (the last in the list), and element -4 is helium.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/020.png" />
+    <p class="media-body">This notation is easier to read than the long-winded alternative&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/021.png" />
+    <p class="media-body">&hellip;which means programmers are less likely to make mistakes with it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/022.png" />
+    <p class="media-body">Lists have two important characteristics.  First, they are <em>mutable</em>, i.e., they can be changed after they are created.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/023.png" />
+    <p class="media-body">For example, suppose we misspell the last entry in our list of gases.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/024.png" />
+    <p class="media-body">We can correct our mistake by assigning to that element of the list as if it were any other variable.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/025.png" />
+    <p class="media-body">Sure enough, our list has been updated in place.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/026.png" />
+    <p class="media-body">As you probably expect by now, the location must exist before a value can be assigned to it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/027.png" />
+    <p class="media-body">If our list has four elements&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/028.png" />
+    <p class="media-body">&hellip;then assigning to index 4 produces an error, because the legal indices are 0 to 3 (or -1 to -4 if we're counting from the end).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/029.png" />
+    <p class="media-body">The second important characteristic of lists is that they are <em>heterogeneous</em>, i.e., they can store values of many different types.  This makes them different from arrays in C and Fortran, whose entries all have to be the same type.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/030.png" />
+    <p class="media-body">Here for example, we have created two lists&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/031.png" />
+    <p class="media-body">&hellip;each of which contains both a string and an integer.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/032.png" />
+    <p class="media-body">This picture shows what's in memory after the second list is created: each list stores a reference to a string, and a reference to an integer.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/033.png" />
+    <p class="media-body">Lists can even store references to other lists.  We can, for example, create a list <code>gases</code> whose two entries are references to the lists <code>helium</code> and <code>neon</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/034.png" />
+    <p class="media-body">There's nothing magical about this: if we update our picture of what's in memory, we simply have another two-element list that stores references to other things we've already created.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/035.png" />
+    <p class="media-body">Nesting data structures like this allows us to do some very powerful things.  It can also be a rich source of bugs, so we will delay discussion of the details to a later episode.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/036.png" />
+    <p class="media-body">Lists and loops naturally go together: we almost always use a loop of some kind to operate on all the list's elements.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/037.png" />
+    <p class="media-body">For example, we can use a <code>while</code> loop to step through the indices of a list to get each of its elements in turn.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/038.png" />
+    <p class="media-body">Here's a short program that prints the noble gases one by one.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/039.png" />
+    <p class="media-body">We start the loop variable <code>i</code> at 0, which is the first legal list index.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/040.png" />
+    <p class="media-body">Each time through the loop, we add 1 to it, so that we move through the set of legal list indices in order.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/041.png" />
+    <p class="media-body">We keep going as long as <code>i</code> is less than the length of the list, i.e., as long as it's a legal index.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/042.png" />
+    <p class="media-body">And sure enough, this loop prints out each list element in order.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/043.png" />
+    <p class="media-body">This works, but it's tedious to type it all in time after time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/044.png" />
+    <p class="media-body">And it's all too easy to forget to increment the loop index, or to get the loop control condition wrong.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/045.png" />
+    <p class="media-body">To make things simpler, Python provides a second kind of loop called a <code>for</code> loop that gives the program each list element in turn.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/046.png" />
+    <p class="media-body">Here, for example, we do in one line (<code>for gas in gases</code>) what took three lines in the previous program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/047.png" />
+    <p class="media-body">As you can see, the for loop variable is assigned each element of the list in turn&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/048.png" />
+    <p class="media-body">&hellip;<em>not</em> each index.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/049.png" />
+    <p class="media-body">Python does this because it's the most common case: most of the time that a program wants to do something with each list element, it doesn't care what that element's location is.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/050.png" />
+    <p class="media-body">As we said a few medias ago, lists are mutable: their elements can be changed in place.  We can also delete elements entirely, which shortens the list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/051.png" />
+    <p class="media-body">Let's set up our noble gas list again&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/052.png" />
+    <p class="media-body">..and then tell Python to delete element 0 using the <code>del</code> operator.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/053.png" />
+    <p class="media-body">If we print gases out afterward, it only has three elements.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/054.png" />
+    <p class="media-body">If we delete element 2 of this list (which is now the last element, since the list's length is 3)&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/055.png" />
+    <p class="media-body">&hellip;we're left with a two-element list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/056.png" />
+    <p class="media-body">And yes, deleting an index that doesn't exist is an error.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/057.png" />
+    <p class="media-body">We can lengthen lists, too, by appending new elements.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/058.png" />
+    <p class="media-body">Let's assign an empty list to <code>gases</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/059.png" />
+    <p class="media-body">&hellip;then append the string <code>'He'</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/060.png" />
+    <p class="media-body">&hellip;and the string <code>'Ne'</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/061.png" />
+    <p class="media-body">&hellip;and finally the string <code>'Ar'</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/062.png" />
+    <p class="media-body">Our list now has three elements.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/063.png" />
+    <p class="media-body">dot-append is an example of a <em>method</em>, and most operations on lists (and other things) are expressed this way.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/064.png" />
+    <p class="media-body">A method is a function that "belongs to" (and usually operates on) a specific chunk of data.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/065.png" />
+    <p class="media-body">If the data is stored in <code>thing</code>, then we call the method using the notation "thing dot methodname", passing in any arguments it takes inside parentheses.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/066.png" />
+    <p class="media-body">To show you how this works, here are a few useful list methods.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/067.png" />
+    <p class="media-body">Let's create the gases list again, but with <code>'He'</code> duplicated at the front.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/068.png" />
+    <p class="media-body"><code>gases.count('He')</code> tells us that <code>'He'</code> occurs twice in the list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/069.png" />
+    <p class="media-body"><code>gases.index('Ar')</code> tells us that the index of the first occurrence of <code>'Ar'</code> is 2.  (Remember indexing starts at zero, so element 2 is the third element of the list.)</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/070.png" />
+    <p class="media-body"><code>gases.insert</code> takes two arguments: the index where we want to insert something, and the something we want to insert.  It doesn't return any value&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/071.png" />
+    <p class="media-body">&hellip;but if we print out the list after calling it, we can see that <code>'Ne'</code> has been put at location 1, and everything above that has been bumped up to make room, leaving us with a list of five elements.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/072.png" />
+    <p class="media-body">Here are two methods that are often used incorrectly.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/073.png" />
+    <p class="media-body">Let's re-set the gases list&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/074.png" />
+    <p class="media-body">&hellip;and then print the result of <code>gases.sort()</code>.  As you can see, the <code>sort</code> method returns <code>None</code>, which is the special value Python uses for "nothing here".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/075.png" />
+    <p class="media-body">However, if we now print <code>gases</code>, it has been sorted alphabetically.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/076.png" />
+    <p class="media-body">Similarly, <code>gases.reverse()</code> returns nothing&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/077.png" />
+    <p class="media-body">&hellip;but reverses the list in place.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/078.png" />
+    <p class="media-body">People often expect <code>sort</code> and <code>reverse</code> to return the sorted or reversed list, which leads to a common bug:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/079.png" />
+    <p class="media-body"><code>gases = gases.sort()</code> does sort the list that <code>gases</code> refers to, but then assigns <code>None</code> to the variable <code>gases</code>, effectively throwing away the data that has just been sorted.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/080.png" />
+    <p class="media-body">List's <code>find</code> method tells us where something is in a list, but if we just want to know whether something is there or not, we can use the <code>in</code> operator.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/081.png" />
+    <p class="media-body">Here's our list of gases again.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/082.png" />
+    <p class="media-body">As expected, the expression <code>'He' in gases</code> is true.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/083.png" />
+    <p class="media-body"><code>in</code> is most often used in <code>if</code> statements, as in this example.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/084.png" />
+    <p class="media-body">Since <code>'Pu'</code> is not in the list <code>gases</code>, this tells us that the universe is well ordered.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/085.png" />
+    <p class="media-body">The last thing we will introduce in this episode is the <code>range</code> function, which constructs sequences of integers.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/086.png" />
+    <p class="media-body">The expression <code>range(5)</code> produces the list of numbers from 0 to 4&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/087.png" />
+    <p class="media-body">&hellip;while <code>range(2, 6)</code> produces 2, 3, 4, 5&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/088.png" />
+    <p class="media-body">&hellip;and <code>range(0, 10, 3)</code> produces 0, 3, 6, 9, i.e., starts at the first argument, and goes up to <em>but not including</em> the second argument, using the third argument as the step size.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/089.png" />
+    <p class="media-body"><code>range(10, 0)</code> does <em>not</em> produce a list in reverse order: instead, it starts at 10, and tries to go "up to" 0.  Since nothing fits that description, it produces the empty list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/090.png" />
+    <p class="media-body">Well, if <code>len(list)</code> is the length of a list, and <code>range(N)</code> is the integers from 0 to N-1, then <code>range(len(list))</code> is the integers from 0 to 1 less than the length of the list, i.e., all the legal indices of the list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/091.png" />
+    <p class="media-body">An example will make this clearer.  Here's our list of gases.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/092.png" />
+    <p class="media-body">Its length is 4.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/093.png" />
+    <p class="media-body">So <code>range(len(gases))</code>, or <code>range(4)</code>, is 0, 1, 2, and 3.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/094.png" />
+    <p class="media-body">If we use <code>range(len(gases))</code> in a <code>for</code> loop, it assigns each index of the list to the loop variable in turn&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/095.png" />
+    <p class="media-body">&hellip;so we can print out (index, element) pairs one by one.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/096.png" />
+    <p class="media-body">This is a very common idiom in Python for those cases where we really do want to know each element's location as well as its value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lists/097.png" />
+    <p class="media-body">We'll see an even better way to do it later.</p>
+  </div>
+</div>

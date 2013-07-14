@@ -1,0 +1,325 @@
+---
+layout: v4_topic
+title: Libraries
+lesson_title: Python
+prev: v4/python/funcobj.html
+next: v4/python/tuples.html
+uplink: v4/python/index.html
+pdf: lib.pdf
+ppt: lib.ppt
+youtube: {"slug": "Ks1qqpj-ApY", "time": "00:09:05.64"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="lib/001.png" />
+    <p class="media-body">Hello, and welcome to the tenth episode of the Software Carpentry lecture on Python.  This episode will explain how Python libraries work, and introduce you to a couple that you may find useful.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/002.png" />
+    <p class="media-body">As we saw in the previous episode, a function is a way to turn a bunch of related statements into a single "chunk" that can be re-used.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/003.png" />
+    <p class="media-body">Modularizing code this way eliminates duplication&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/004.png" />
+    <p class="media-body">&hellip;and makes code easier to read.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/005.png" />
+    <p class="media-body">A <em>library</em> does for functions what functions do for statements: group them together to create more usable chunks.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/006.png" />
+    <p class="media-body">This hierarchical organization is similar in spirit to that used in biology:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/007.png" />
+    <p class="media-body">instead of family, genus, and species, we have library, function, and statement.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/008.png" />
+    <p class="media-body">Every Python file can be used as a library by other programs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/009.png" />
+    <p class="media-body">To load it into memory, use the <code>import</code> statement.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/010.png" />
+    <p class="media-body">For example, suppose we have created a Python file called <code>halman.py</code> that defines a single function called <code>threshold</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/011.png" />
+    <p class="media-body">If we want to call this function in another file, we write <code>import halman</code> to load the contents of <code>halman.py</code>, and then call the function as <code>halman.threshold</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/012.png" />
+    <p class="media-body">When we run <code>program.py</code>, it does the right thing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/013.png" />
+    <p class="media-body">A file that has been imported into another program is called a <em>library</em> or <em>module</em>.  When a module is imported, Python:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/014.png" />
+    <p class="media-body">executes the statements it contains (which are usually, but not always, function defintions), and</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/015.png" />
+    <p class="media-body">creates an object to store references to all the items defined in that module, and assigns it to a variable with the same name as the module.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/016.png" />
+    <p class="media-body">For example, let's create a file called <code>noisy.py</code> that prints out a message and defines <code>NOISE_LEVEL</code> to be 1/3.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/017.png" />
+    <p class="media-body">When we <code>import noisy</code>, the first statement&mdash;the <code>print</code>&mdash;is executed, displaying a message on the screen&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/018.png" />
+    <p class="media-body">&hellip;and the variable <code>NOISE_LEVEL</code> is assigned a value, which we can access as <code>noisy.NOISE_LEVEL</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/019.png" />
+    <p class="media-body">One important feature of modules is that each one is a separate <em>namespace</em>, i.e., variable names defined inside a module belong to that module, and if the same name is used in two different modules, each module gets its own.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/020.png" />
+    <p class="media-body">When Python sees a reference to a variable, it looks in the current function call stack frame to find its definition.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/021.png" />
+    <p class="media-body">If it can't find it there, it looks in the module the function was defined in (assuming it was defined in a library).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/022.png" />
+    <p class="media-body">If it still can't find it, it looks in the global namespace belonging to the top-level program as a whole.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/023.png" />
+    <p class="media-body">For example, let's create a file called <code>module.py</code> that defines a variable called <code>NAME</code> and a function called <code>func</code> that prints it out.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/024.png" />
+    <p class="media-body">In our main program, we also define a variable called <code>NAME</code>&hellip;&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/025.png" />
+    <p class="media-body">&hellip;then import our module.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/026.png" />
+    <p class="media-body">When we call <code>module.func</code>, it sees the <code>NAME</code> variable that was defined inside the module, not the one that was defined globally.  This "module first" rule makes it safe to load libraries that were written independently, without worrying about whether their authors might have used the same names for things.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/027.png" />
+    <p class="media-body">Python comes with many standard libraries.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/028.png" />
+    <p class="media-body">One of the most useful is the <code>math</code> library&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/029.png" />
+    <p class="media-body">&hellip;which defines <code>sqrt</code> for square roots&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/030.png" />
+    <p class="media-body">&hellip;<code>hypot</code> for calculating x<sup>2</sup>+y<sup>2</sup>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/031.png" />
+    <p class="media-body">&hellip;and values for <em>e</em> and &pi; that are as accurate as the machine can make them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/032.png" />
+    <p class="media-body">To help you find your way around libraries, Python provides a <code>help</code> function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/033.png" />
+    <p class="media-body">If <code>math</code> has been imported, the call <code>help(math)</code> prints out the documentation embedded in the math library.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/034.png" />
+    <p class="media-body">Python also provides a few convenient alternatives for doing imports.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/035.png" />
+    <p class="media-body">For example, we can import specific functions from a library and then call them directly, rather than using the <code>modulename.functionname</code> syntax.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/036.png" />
+    <p class="media-body">We can also import a function under a different name, so that if two modules define functions with the same name, we can give one or the other a different name when we want to use them together.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/037.png" />
+    <p class="media-body">We can also use <code>import *</code> to bring everything in the module into the current namespace at once, which has the same effect as using <code>from module import a</code>, <code>from module import b</code>, and so on for every name in the module.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/038.png" />
+    <p class="media-body">This is almost always a bad idea, though.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/039.png" />
+    <p class="media-body">If someone adds a new function or variable to the next version of the module, that <code>import *</code> could silently overwrite something that you're importing from somewhere else, leading to a hard-to-find bug.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/040.png" />
+    <p class="media-body">While the <code>math</code> library is useful, the <code>sys</code> library is even more so.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/041.png" />
+    <p class="media-body">Once it's imported&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/042.png" />
+    <p class="media-body">&hellip;we can find out exactly what version of Python we're using&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/043.png" />
+    <p class="media-body">&hellip;what operating system we're running on&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/044.png" />
+    <p class="media-body">&hellip;and a few other things, like how large integers in this version.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/045.png" />
+    <p class="media-body">What may be more interesting is <code>sys.path</code>, which defines the list of directories Python searches in to find modules.  When a program executes <code>import X</code>, Python looks at each of these directories in turn to see if it contains a file called <code>X.py</code>, and loads the first one it finds.  If your program isn't finding the definitions you think it should, try printing out <code>sys.path</code> to see if the problem is a missing directory.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/046.png" />
+    <p class="media-body">The most commonly-used element of <code>sys</code> is probably <code>sys.argv</code>, which holds the <em>command-line arguments</em> of the currently-executing program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/047.png" />
+    <p class="media-body">In keeping with Unix conventions, the name of the script itself is put in <code>sys.argv[0]</code>; all the arguments given to the script when it was run are put in <code>sys.argv[1]</code>, <code>sys.argv[2]</code>, and so on..</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/048.png" />
+    <p class="media-body">For example, here's a program that does nothing except print out its command-line arguments.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/049.png" />
+    <p class="media-body">If it is run without any arguments, it just reports that <code>sys.argv[0]</code> is <code>echo.py</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/050.png" />
+    <p class="media-body">When it is run with arguments, though, it displays those as well.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/051.png" />
+    <p class="media-body"><code>sys</code> also creates variables to connect programs to standard I/O channels.  <code>sys.stdin</code> is <em>standard input</em> (which is usually connected to the keyboard).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/052.png" />
+    <p class="media-body"><code>sys.stdout</code> is <em>standard output</em>, which by default is connected to the screen.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/053.png" />
+    <p class="media-body">And <code>sys.stderr</code> is <em>standard error</em>, which is also usually connected to the screen.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/054.png" />
+    <p class="media-body">For more information on what these are for, and how to use them, please see the lecture on the Unix shell.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/055.png" />
+    <p class="media-body">Here's a typical example of how these variables are used together.  This little program looks at <code>sys.argv</code> to see if it was called with a filename as an argument or not.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/056.png" />
+    <p class="media-body">If there were no arguments, then <code>sys.argv</code> will only hold the name of the program, and its length will be 1.  In that case, the program reads data from standard input.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/057.png" />
+    <p class="media-body">Otherwise, the program assumes its first command-line argument is the name of an input file, opens it, and reads from it instead.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/058.png" />
+    <p class="media-body">Sure enough, if we run the program with no command-line arguments, and send it the contents of the file <code>a.txt</code> using redirection, it tell us that its standard input has 48 lines.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/059.png" />
+    <p class="media-body">If we run it with a filename as an argument, on the other hand, it reads from that file and tells us it has 227 lines.  Again, please see the lecture on the Unix shell for more information on standard input, standard output, and redirection.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/060.png" />
+    <p class="media-body">Here's a more polite way to write the program we just created.  The two significant changes are:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/061.png" />
+    <p class="media-body">the strings at the start of the module, and the start of the function <code>count_lines</code>, and</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/062.png" />
+    <p class="media-body">the funny-looking conditional <code>if __name__ == '__main__'</code>.  Let's look at them in that order.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/063.png" />
+    <p class="media-body">If the first thing in a module or function other than blank lines or comments is a string that isn't assigned to anything, Python saves it as the documentation string, or <em>docstring</em>, for that module or function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/064.png" />
+    <p class="media-body">These docstrings are what online (and offline) help display.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/065.png" />
+    <p class="media-body">For example, let's create a file <code>adder.py</code> with a single function <code>add</code>, and write docstrings for both the module and the function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/066.png" />
+    <p class="media-body">If we then import <code>adder</code>, <code>help(adder)</code> will print out all of its docstrings, i.e., the documentation for the module itself and for all of its functions.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/067.png" />
+    <p class="media-body">We can also be more selective, and only display the help for a particular function instead.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/068.png" />
+    <p class="media-body">The second part of our "more polite" program was that funny <code>if</code> statement.  The trick here is that when Python reads in a file, it assigns a value to a special top-level variable called <code>__name__</code> (with two underscores before and after).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/069.png" />
+    <p class="media-body">If the file is being run as the main program, <code>__name__</code> is assigned the string <code>'__main__'</code> (again with two underscores before and after).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/070.png" />
+    <p class="media-body">If the file is being loaded as a module by some other program, though, Python assigns the module's name to the variable <code>__name__</code> instead.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/071.png" />
+    <p class="media-body">So imagine the file contains some definitions, and then the conditional statement <code>if __name__ == '__main__'</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/072.png" />
+    <p class="media-body">The definitions will always be executed&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/073.png" />
+    <p class="media-body">&hellip;but the code inside the conditional will only run if the file is the main program.  Put another way, the statements inside the conditional will <em>not</em> be run if the file is being loaded as a library by some other program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/074.png" />
+    <p class="media-body">Let's see how this works.  Here's a file <code>stats.py</code> that defines a function <code>average</code>, and then runs three simple tests&mdash;but only if <code>__name__</code> has the value <code>'__main__'</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/075.png" />
+    <p class="media-body">And here's another file, <code>test-stats.py</code>, that imports <code>stats</code> and runs two more tests.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/076.png" />
+    <p class="media-body">If we run <code>stats.py</code> directly, the three tests inside it are executed.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/077.png" />
+    <p class="media-body">If we run <code>test-stats.py</code>, though, those three tests <em>aren't</em> executed&mdash;only the two in <code>test-stats.py</code> itself are run.  This happens (or doesn't happen) because the variable <code>__name__</code> inside <code>stats</code> is assigned the string <code>'stats'</code> instead of the string <code>'__main__'</code> when <code>stats</code> is loaded as a module.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="lib/078.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

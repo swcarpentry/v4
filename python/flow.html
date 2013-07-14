@@ -1,0 +1,329 @@
+---
+layout: v4_topic
+title: Control Flow
+lesson_title: Python
+prev: v4/python/basics.html
+next: v4/python/lists.html
+uplink: v4/python/index.html
+pdf: flow.pdf
+ppt: flow.ppt
+youtube: {"slug": "zw2Kf13aNcI", "time": "00:06:13.42"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="flow/001.png" />
+    <p class="media-body">Hello, and welcome to the third episode of the Software Carpentry lecture on Python.  This episode will introduce two forms of control flow: while loops, and if/else conditionals.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/002.png" />
+    <p class="media-body">Arithmetic and assignment statements are all very well, but the real power of programs come from:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/003.png" />
+    <p class="media-body">repetition,</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/004.png" />
+    <p class="media-body">which is the ability to do something many times, and</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/005.png" />
+    <p class="media-body">selection,</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/006.png" />
+    <p class="media-body">which is the ability to do one thing rather than another.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/007.png" />
+    <p class="media-body">The simplest form of repetition is the <em>while loop</em>, which does something as long as some condition is true.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/008.png" />
+    <p class="media-body">For example, here is a small program that prints out the numbers 3, 2, and 1 using a while loop.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/009.png" />
+    <p class="media-body">The loop opens with the keyword <code>while</code>, followed by the loop's controlling test.  Since this test is true&mdash;i.e., since <code>num_moons</code> is currently greater than 3&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/010.png" />
+    <p class="media-body">&hellip;Python executes the statements in the <em>loop body</em>, which is the indented statements under the loop control.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/011.png" />
+    <p class="media-body">This prints out '3' and subtracts 1 from <code>num_moons</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/012.png" />
+    <p class="media-body">Python then re-checks the condition.  It's still true&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/013.png" />
+    <p class="media-body">&hellip;so the program prints '2' and subtracts 1 from <code>num_moons</code> again.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/014.png" />
+    <p class="media-body">Another check, another print statement: the program prints '1', then decrements <code>num_moons</code> again.  Since the loop's controlling condition is now false, the program is done.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/015.png" />
+    <p class="media-body">A while loop may execute any number of times, including zero.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/016.png" />
+    <p class="media-body">Here, for example, <code>num_moons</code> is initially -3&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/017.png" />
+    <p class="media-body">&hellip;so the loop condition is false the first time it is tested&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/018.png" />
+    <p class="media-body">&hellip;and the loop body doesn't execute at all.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/019.png" />
+    <p class="media-body">The output is therefore the two lines 'before' and 'after', with nothing in between.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/020.png" />
+    <p class="media-body">It's important to keep this "zero pass" condition in mind when designing and testing code.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/021.png" />
+    <p class="media-body">A while loop may also execute forever.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/022.png" />
+    <p class="media-body">Here's another copy of the program that doesn't subtract 1 from <code>num_moons</code> inside the loop body.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/023.png" />
+    <p class="media-body">It prints 'before'&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/024.png" />
+    <p class="media-body">&hellip;then 3&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/025.png" />
+    <p class="media-body">&hellip;then 3 again&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/026.png" />
+    <p class="media-body">&hellip;then another 3&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/027.png" />
+    <p class="media-body">and so on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/028.png" />
+    <p class="media-body">Since the loop's control condition was true when the loop started, and nothing happens inside the loop to change it, the loop will run until the user gets bored enough to halt it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/029.png" />
+    <p class="media-body">This is usually not the desired behavior&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/030.png" />
+    <p class="media-body">&hellip;but there <em>are</em> cases we'll see later where an apparently infinite loop is useful.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/031.png" />
+    <p class="media-body">Why does Python use indentation to show which statements are in the loop body, when other languages use <code>begin...end</code> or curly braces?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/032.png" />
+    <p class="media-body">Because studies have shown that's what people actually pay attention to.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/033.png" />
+    <p class="media-body">Every textbook on C or Java has examples where indentation and bracing don't match, which makes it harder to see the errors in programs.  Python simply avoids the problem.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/034.png" />
+    <p class="media-body">It doesn't matter how much indentation you use, but the whole block must be consistent, i.e., if the first statement is indented by four spaces, the rest of the block must be indented by the same amount.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/035.png" />
+    <p class="media-body">The Python style guide (known as PEP-8) recommends 4-space indentation.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/036.png" />
+    <p class="media-body">And please use spaces, rather than tabs, since different editors display tab characters with different widths.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/037.png" />
+    <p class="media-body"><code>while</code> loops allow programs to repeat things; <code>if</code>, <code>elif</code>, and <code>else</code> allow them to make choices.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/038.png" />
+    <p class="media-body">Here's an example:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/039.png" />
+    <p class="media-body">Since <code>moons</code> is not less than zero&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/040.png" />
+    <p class="media-body">&hellip;the program does not execute the first block of code (which would print 'less').</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/041.png" />
+    <p class="media-body">Similarly, <code>moons</code> isn't zero&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/042.png" />
+    <p class="media-body">&hellip;so the second block isn't executed, either.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/043.png" />
+    <p class="media-body">Finally, since no other choice was taken&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/044.png" />
+    <p class="media-body">&hellip;the statements under the <code>else</code> <em>are</em> executed&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/045.png" />
+    <p class="media-body">&hellip;and the program prints 'greater'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/046.png" />
+    <p class="media-body">A set of choices like this always starts with <code>if</code> and a condition&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/047.png" />
+    <p class="media-body">It can have zero or more <code>elif</code> clauses, each with its own test&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/048.png" />
+    <p class="media-body">And optionally an <code>else</code> with no test to execute if nothing else is done.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/049.png" />
+    <p class="media-body">Tests are always tried in order; as soon as one test is true, its block of statements is executed, and no other branch is tested.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/050.png" />
+    <p class="media-body">Of course, blocks of code may contain other blocks.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/051.png" />
+    <p class="media-body">For example, in this program an <code>if</code> is nested inside a <code>while</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/052.png" />
+    <p class="media-body">The <code>while</code> counts from 0 to 10.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/053.png" />
+    <p class="media-body">And the <code>if</code> prints out odd numbers.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/054.png" />
+    <p class="media-body">The combination prints out all the odd numbers between 0 and 10.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/055.png" />
+    <p class="media-body">Here's a better way to do the same thing:</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/056.png" />
+    <p class="media-body">start <code>num</code> at 1, and add 2 to it each time through the loop.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/057.png" />
+    <p class="media-body">The loop runs half as many times, but the output is the same.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/058.png" />
+    <p class="media-body">Writing a simple program that works, then tweaking it to make it more efficient, is a common pattern in programming.  Another is to write programs top-down, solving one problem at a time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/059.png" />
+    <p class="media-body">To see how this works, let's write a program to print out all the prime numbers less than 1000.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/060.png" />
+    <p class="media-body">The skeleton is simple: start with 2 (since 1 isn't a prime), and loop up to 1000.  If the number is prime, print it out.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/061.png" />
+    <p class="media-body">By definition, a number is prime if it cannot be evenly divided by anything except 1 and itself.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/062.png" />
+    <p class="media-body">The simplest way to check is to try dividing it by each number that's less than it, so we write another loop.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/063.png" />
+    <p class="media-body">Saying that it can be divided evenly is the same as saying that there's no remainder&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/064.png" />
+    <p class="media-body">&hellip;which tells us how to fill in the last bit of our program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/065.png" />
+    <p class="media-body">Putting the whole thing together gives us this, which is just the bits of code we wrote put in order.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/066.png" />
+    <p class="media-body">Now let's look at a more efficient version.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/067.png" />
+    <p class="media-body">This code is almost the same as what we just saw&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/068.png" />
+    <p class="media-body">&hellip;but it takes advantage of the fact that a number can't be evenly divided by anything greater than its own square root.  It's a neat idea, and can save a lot of work, but unfortunately this program contains a bug.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/069.png" />
+    <p class="media-body">As a lot of programmers will tell you, any code that hasn't been tested is almost certainly wrong.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/070.png" />
+    <p class="media-body">Let's change the bound on the outer loop so that we only print out the primes up to 10.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/071.png" />
+    <p class="media-body">Here's its output.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/072.png" />
+    <p class="media-body">Whoops: 4 and 9 aren't prime.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/073.png" />
+    <p class="media-body">Where's the bug?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/074.png" />
+    <p class="media-body">One clue is that 4 and 9 are both perfect squares.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/075.png" />
+    <p class="media-body">So let's have a look at the one thing we changed: the condition of the inner loop.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/076.png" />
+    <p class="media-body">Two squared is four&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/077.png" />
+    <p class="media-body">&hellip;but since the loop condition is less than, we never actually check to see whether 4 can be divided by 2&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/078.png" />
+    <p class="media-body">&hellip;or whether 9 can be divided by 3, and so on.  The condition should be "less than or equal"; if we make this change, the program produces the correct output once again.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="flow/079.png" />
+    <p class="media-body">This is a common pattern in programming: write a simple version that's easy to check, then gradually introduce complications, checking for bugs and fixing them at each step, to produce something that's faster or more powerful, but still correct.</p>
+  </div>
+</div>

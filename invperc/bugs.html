@@ -1,0 +1,197 @@
+---
+layout: v4_topic
+title: Bugs
+lesson_title: Program Design
+prev: v4/invperc/assembly.html
+next: v4/invperc/refactoring.html
+uplink: v4/invperc/index.html
+pdf: v4/invperc/bugs.pdf
+ppt: v4/invperc/bugs.ppt
+youtube: {"slug": "okyMc7Bm0BM", "time": "00:05:03.10"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/001.png" />
+    <p class="media-body">Hello, and welcome to episode 8 of the Software Carpentry lecture on program design using invasion percolation as an example.  In this episode, we'll fix a bug that we created earlier, and look at another part of the program that isn't actually a bug, but is often written incorrectly.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/002.png" />
+    <p class="media-body">Let's try running the program that we created in the previous episode.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/003.png" />
+    <p class="media-body">We say <code>python</code> of <code>invperc.py</code>, we ask for a 3&times;3 grid with random values in the range 1 to 10, and we give it 17983 as a random number seed because that's what my hands typed when they fell on the keyboard.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/004.png" />
+    <p class="media-body">The program comes back to say "2 cells have been filled," which is what we'd expect: in a 3&times;3 grid, we fill the center cell and one other, and then we hit the boundary.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/005.png" />
+    <p class="media-body">Let's try a larger grid.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/006.png" />
+    <p class="media-body">We run Python on <code>invperc.py</code> on a 5&times;5 grid with random values in the range 1 to 10 and a different random number seed.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/007.png" />
+    <p class="media-body">A minute goes by&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/008.png" />
+    <p class="media-body">&hellip;and finally we hit Control-C.  It's time to fire up the debugger&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/009.png" />
+    <p class="media-body">If we take a look at the grid that was created, it looks OK: all of the values are in the range 1 to 10, and it's a 5&times;5 grid implemented as a list of lists.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/010.png" />
+    <p class="media-body">Fill the middle cell with -1, and everything still looks good.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/011.png" />
+    <p class="media-body">Remember, we're using -1 to mark filled cells.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/012.png" />
+    <p class="media-body">The next cell gets chosen and filled correctly&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/013.png" />
+    <p class="media-body">&hellip;and then the program goes into an infinite loop&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/014.png" />
+    <p class="media-body">&hellip;in the <code>find_candidates</code> function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/015.png" />
+    <p class="media-body">Inside this loop, <code>min_set</code> contains the points (2,2) and (1,2)&mdash;the two cells shown in green above&mdash;and <code>min_val</code> is -1.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/016.png" />
+    <p class="media-body">Uh oh&mdash;that's the problem.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/017.png" />
+    <p class="media-body">Our marker value, -1, is less than any of the actual values in the grid.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/018.png" />
+    <p class="media-body">Once we have marked two cells&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/019.png" />
+    <p class="media-body">&hellip;each of those marked cells is adjacent to another marked cell.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/020.png" />
+    <p class="media-body">Well, at least this one's going to be easy to fix.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/021.png" />
+    <p class="media-body">This is the code that caused the problem. In <code>find_candidates</code>, we say, for <code>x</code> in <code>range(N)</code>, for <code>y</code> in <code>range(N)</code>, if the cell at (x,y) is a candidate, then go off and handle the cases where its value is equal to <code>min_val</code> or less than <code>min_val</code>.  We'll modify this to say&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/022.png" />
+    <p class="media-body">&hellip;if the cell is already filled, then continue around the loop, i.e., don't do anything with this cell, because it has already been marked as filled.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/023.png" />
+    <p class="media-body">Great: we found one bug.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/024.png" />
+    <p class="media-body">How many others <em>haven't</em> we found?  How many are still lurking in the code?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/025.png" />
+    <p class="media-body">How do we validate and verify a program like this? We'll discuss this topic in the next episode.  Before we go on, let's look at one line of the program that people often get wrong.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/026.png" />
+    <p class="media-body">The line of code is, "If <code>x in (0, N-1) or y in (0, N-1)</code>, then break."  This tests to see if <code>x</code> is either the value 0 or the value N-1, or <code>y</code> is the value 0 or N-1.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/027.png" />
+    <p class="media-body">I.e., is either coordinate on the grid's edge?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/028.png" />
+    <p class="media-body">This expression sounds similar, but fails. If <code>x</code> <em>is</em> (0, N-1), or <code>y</code> <em>is</em> (0, N-1).  Why does this fail?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/029.png" />
+    <p class="media-body">Well, this checks to see whether the value of <code>x</code> is the two-value tuple (0, N-1), or <code>y</code> is the two-value tuple (0, N-1).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/030.png" />
+    <p class="media-body">But since <code>x</code> and <code>y</code> are always integers, neither will ever be a two-value tuple, so both halves of the <code>or</code> will always fail&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/031.png" />
+    <p class="media-body">&hellip;and we will never exit the loop.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/032.png" />
+    <p class="media-body">This version sounds like what we'd say to another       person: if <code>x</code> or <code>y</code> is 0 or N-1.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/033.png" />
+    <p class="media-body">But how will the computer interpret this?  Let's take a look at the expression tree that the computer uses.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/034.png" />
+    <p class="media-body">One way the computer might interpret it is, "(x or y) is (0, N-1)".  Well, <code>x</code> is an integer, and and <code>y</code> is an integer.  Let's assume that they're both non-zero.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/035.png" />
+    <p class="media-body">The result of the expression <code>x or y</code> will be <code>True</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/036.png" />
+    <p class="media-body"><code>True</code> is never going to be a two-value tuple.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/037.png" />
+    <p class="media-body">So this will always fail, and we'll never exit the loop.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/038.png" />
+    <p class="media-body">This definitely isn't right.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/039.png" />
+    <p class="media-body">Interpretation number two is, "x or (y is (0, N-1))". The tree on the right shows this version.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/040.png" />
+    <p class="media-body">Well, <code>y</code> is never a two-integer tuple&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/041.png" />
+    <p class="media-body">&hellip;so this is just <code>x or False</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/042.png" />
+    <p class="media-body">&hellip;which is just "x is not 0"&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/043.png" />
+    <p class="media-body">&hellip;and this isn't what we want either.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/044.png" />
+    <p class="media-body">The expression on the right is what Python actually does.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/045.png" />
+    <p class="media-body">The <code>is</code> operator binds more tightly than <code>or</code>, just as <code>*</code> (times) binds more tightly than <code>+</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="bugs/046.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

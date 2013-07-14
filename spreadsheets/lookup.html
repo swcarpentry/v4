@@ -1,0 +1,24 @@
+---
+layout: v4_topic
+title: Lookup
+lesson_title: Spreadsheets
+prev: v4/spreadsheets/conditionals.html
+next: v4/spreadsheets/charting.html
+uplink: v4/spreadsheets/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "hIURynaEjIE", "time": "00:01:37.96"}
+---
+<div>
+  <p>Hello, and welcome to the sixth episode of the Software Carpentry lecture on spreadsheets.  This episode will show you how to look values up using functions, which is an easy way to classify and organize data.</p>
+  <p>Let's start by creating a small table of per capita CO2 emissions and regulatory ratings.  The lowest rating is "minimal"; at 0.005 megatons per capita, the rating changes to "low", then to "legal" at 0.01, and 0.02 or higher is "excessive".</p>
+  <p>Now let's go to column H, give it a heading, and write a formula to select one of those ratings based on the values in column G.</p>
+  <p>Our formula uses the <code>LOOKUP</code> function, which takes three arguments.</p>
+  <p>The first is the value we're looking up&mdash;in this case, the value in G2.</p>
+  <p>The second is the range we're looking in.  The values in this range must be sorted; Excel will check them one by one to find the largest one that is less than or equal to the search value, i.e., the last one that isn't greater than what we're looking for.</p>
+  <p>The third argument is the range of values we're selecting from: in this case, the rating names.</p>
+  <p>Sure enough, British Columbia's emissions per capita is legal, while Alberta's and Saskatchewan's are excessive.</p>
+  <p>In fact, if we paste this formula into the remaining cells, we see that only the Yukon's rating is "low".</p>
+  <p>The typical bureaucratic response in situations like this is to say, "To hell with the science, let's move the goalposts," so let's pretend we care more about today's PR than the world our children are going to inherit, and make it easier to get good ratings.</p>
+  <p>As we raise the thresholds, Excel re-selects ratings, until lo and behold, every single province and territory is in the legal range.</p>
+</div>

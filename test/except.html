@@ -1,0 +1,309 @@
+---
+layout: v4_topic
+title: Exceptions
+lesson_title: Testing
+prev: v4/test/intro.html
+next: v4/test/unit.html
+uplink: v4/test/index.html
+pdf: v4/test/except.pdf
+ppt: v4/test/except.ppt
+youtube: {"slug": "X2DHEI77KRI", "time": "00:08:41.03"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="except/001.png" />
+    <p class="media-body">Hello, and welcome to the second episode of the Software Carpentry lecture on testing.  In this episode, we're going to show you how to handle errors in program using exceptions.  Strictly speaking, this isn't part of testing, but we have to put it somewhere, and since you're going to want to test how your programs behave when things don't go as planned, this seems like as good place a place as any.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/002.png" />
+    <p class="media-body">It's a sad fact, but things sometimes go wrong in programs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/003.png" />
+    <p class="media-body">Some of these errors have external causes&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/004.png" />
+    <p class="media-body">&hellip;like missing or badly-formatted files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/005.png" />
+    <p class="media-body">Others are internal&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/006.png" />
+    <p class="media-body">&hellip;like bugs in code.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/007.png" />
+    <p class="media-body">Either way, there's no need for panic.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/008.png" />
+    <p class="media-body">It's actually pretty easy to handle errors in sensible ways.  First, though, let's have a look at how programmers used to do error handling.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/009.png" />
+    <p class="media-body">Back in the Dark Ages, programmers would have functions return some sort of status to indicate whether they had run correctly or not.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/010.png" />
+    <p class="media-body">This led to code like this.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/011.png" />
+    <p class="media-body">The stuff in green is what we really want.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/012.png" />
+    <p class="media-body">The stuff in red is there to check that files were opened and read properly, and to report errors and exit if not.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/013.png" />
+    <p class="media-body">A lot of C and Fortran code is still written this way, but this coding style makes it hard to see the forest for the trees.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/014.png" />
+    <p class="media-body">When we're reading a program, we want to understand what's supposed to happen when everything works&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/015.png" />
+    <p class="media-body">&hellip;and only then think about what might happen if something goes wrong.  When the two are interleaved, both are harder to understand.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/016.png" />
+    <p class="media-body">The net result is that most programmers don't bother to check the status codes their functions return.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/017.png" />
+    <p class="media-body">Which means that when errors <em>do</em> occur, they're even harder to track down.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/018.png" />
+    <p class="media-body">Luckily, there's a better way.  Modern languages like Python allow us to use <em>exceptions</em> to handle errors.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/019.png" />
+    <p class="media-body">More specifically, using exceptions allows us to separate the "normal" flow of control from the "exceptional" cases that arise when something goes wrong.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/020.png" />
+    <p class="media-body">This makes both easier to understand.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/021.png" />
+    <p class="media-body">Basically, what exceptions allow us to do is take the code we were just looking at&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/022.png" />
+    <p class="media-body">&hellip;and put the "normal" parts in one place&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/023.png" />
+    <p class="media-body">&hellip;and all the error-handling parts in another.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/024.png" />
+    <p class="media-body">As a fringe benefit, this often allows us to eliminate redundancy in our error handling.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/025.png" />
+    <p class="media-body">To join the two parts together, we use the keywords <code>try</code> and <code>except</code>.  These work together like <code>if</code> and <code>else</code>: the statements under the <code>try</code> are what should happen if everything works, while the statements under <code>except</code> are what the program should do if something goes wrong.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/026.png" />
+    <p class="media-body">You have actually seen exceptions before without knowing it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/027.png" />
+    <p class="media-body">For example, trying to open a nonexistent file triggers a type of exception called an <code>IOError</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/028.png" />
+    <p class="media-body">&hellip;while an out-of-bounds index to a list triggers an <code>IndexError</code>.  By default, when an exception occurs, Python prints it out and halts our program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/029.png" />
+    <p class="media-body">We can use <code>try</code> and <code>except</code> to deal with these errors ourselves if we don't want that to happen.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/030.png" />
+    <p class="media-body">Here, for example, we put our attempt to open a nonexistent file inside a <code>try</code>, and in the <code>except</code>, we print a not-very-helpful error message.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/031.png" />
+    <p class="media-body">Notice that the output is blue, signalling that it was printed normally, rather than red, which is shown for errors.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/032.png" />
+    <p class="media-body">When Python executes this code, it runs the statement inside the <code>try</code>.  If that works, it skips over the <code>except</code> block without running it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/033.png" />
+    <p class="media-body">If an exception occurs inside the <code>try</code> block, though, Python compares the type of the exception to the type specified by the <code>except</code>.  If they match, it executes the code in the <code>except</code> block.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/034.png" />
+    <p class="media-body">Note, by the way, that <code>IOError</code> is Python's way of reporting several kinds of problems related to input and output: not just files that don't exist, but also things like not having permission to read files, and so on, so we can handle several types of error in one place.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/035.png" />
+    <p class="media-body">We can put as many lines of code in a <code>try</code> block as we want, just as we can put many statements under an <code>if</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/036.png" />
+    <p class="media-body">We can also handle several different kinds of errors afteward.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/037.png" />
+    <p class="media-body">For example, here's some code to calculate the entropy at each point in a grid.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/038.png" />
+    <p class="media-body">Python tries to run the four statements inside the <code>try</code> as normal.  If an error occurs in any of them, Python immediately bails out and tries to find an <code>except</code> whose type matches the type of the error that occurred.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/039.png" />
+    <p class="media-body">If it's an <code>IOError</code>, Python jumps into the first error handler.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/040.png" />
+    <p class="media-body">If it's an <code>ArithmeticError</code>, Python jumps into the second handler instead.  It will only execute one of these, just as it will only execute one branch of a series of <code>if</code>/<code>elif</code>/<code>else</code> statements.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/041.png" />
+    <p class="media-body">This layout has made the code easier to read, but we've lost something important: the message printed out by the <code>IOError</code> branch doesn't tell us which file caused the problem.  We can do better if we capture and hang on to the object that Python creates to record information about the error.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/042.png" />
+    <p class="media-body">In Python version 2.6 and earlier, we do this by putting a variable name after the name of the exception type, separating the two with a comma.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/043.png" />
+    <p class="media-body">If something goes wrong in the <code>try</code>, Python will create an exception object, fill it with information, and assign it to the variable <code>error</code>.  (There's nothing special about this variable name&mdash;we can use anything we want.)</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/044.png" />
+    <p class="media-body">Exactly what information is recorded depends on what kind of error occurred.  Python's documentation describes the properties of each type of error in detail, but we can always just print the exception object.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/045.png" />
+    <p class="media-body">Python 2.7 and higher allow us to make this a bit more readable using the keyword <code>as</code>.  The old style still works, but most new code is written using the new syntax.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/046.png" />
+    <p class="media-body">Now let's go back and create better error messges.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/047.png" />
+    <p class="media-body">Here's the modified code.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/048.png" />
+    <p class="media-body">And here are the changes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/049.png" />
+    <p class="media-body">In the case of an I/O error, we print out the name of the file that caused the problem.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/050.png" />
+    <p class="media-body">And in the case of an arithmetic error, printing out the message embedded in the exception object is what Python would have done anyway.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/051.png" />
+    <p class="media-body">So much for how exceptions work: how should they be used?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/052.png" />
+    <p class="media-body">Some programmers use <code>try</code> and <code>except</code> to give their programs default behaviors.  For example, if this code can't read the grid file that the user has asked for, it creates a default grid instead.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/053.png" />
+    <p class="media-body">Other programmers would explicitly test for the grid file, and use <code>if</code> and <code>else</code> for control flow.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/054.png" />
+    <p class="media-body">It's mostly a matter of taste, but we prefer the code on the right.  As a rule, exceptions should only be used to handle exceptional cases; if the program knows how to fall back to a default grid, that's not an unexpected event.  Using <code>if</code> and <code>else</code> instead of <code>try</code> and <code>except</code> sends different signals to anyone reading our code, even if they do the same thing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/055.png" />
+    <p class="media-body">Novices often ask another question about exception handling style as well&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/056.png" />
+    <p class="media-body">&hellip;but before we address it, there's something in our example that you might not have noticed.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/057.png" />
+    <p class="media-body">Exceptions can actually be thrown a long way: they don't have to be handled immediately.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/058.png" />
+    <p class="media-body">Take another look at this code.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/059.png" />
+    <p class="media-body">The four lines in the <code>try</code> block are all function calls.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/060.png" />
+    <p class="media-body">They might catch and handle exceptions themselves, but if an exception occurs in one of them that <em>isn't</em> handled internally&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/061.png" />
+    <p class="media-body">&hellip;Python looks in the calling code for a matching <code>except</code>.  If it doesn't find one there, it looks in that function's caller, and so on.  If we get all the way back to the main program without finding an exception handler, Python's default behavior is to print an error message like the ones you've been seeing all along.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/062.png" />
+    <p class="media-body">This rule is the origin of the saying, "Throw low, catch high."</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/063.png" />
+    <p class="media-body">There are many places in your program where an error might occur.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/064.png" />
+    <p class="media-body">There are only a few, though, where errors can sensibly be handled.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/065.png" />
+    <p class="media-body">For example, a linear algebra library doesn't know whether it's being called directly from the Python interpreter, or whether it's being used as a component in a larger program.  In the latter case, the library doesn't know if the program that's calling it is being run from the command line or from a GUI.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/066.png" />
+    <p class="media-body">The library therefore shouldn't try to handle or report errors itself, because it has no way of knowing what the right way to do this is.  Instead, it should just raise an exception, and let its caller figure out how best to handle it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/067.png" />
+    <p class="media-body">Finally, you can raise exceptions yourself if you want to.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/068.png" />
+    <p class="media-body">In fact, you <em>should</em> do this, since it's the standard way in Python to signal that something has gone wrong.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/069.png" />
+    <p class="media-body">Here, for example, is a function that reads a grid and checks its consistency.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/070.png" />
+    <p class="media-body">The <code>raise</code> statement creates a new exception with a meaningful error message.  Since <code>read_grid</code> itself doesn't contain a <code>try</code>/<code>except</code> block, this exception will always be thrown up and out of the function, to be caught and handled by whoever is calling <code>read_grid</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/071.png" />
+    <p class="media-body">You can define new types of exceptions if you want to.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/072.png" />
+    <p class="media-body">And in fact you should, so that errors in your code can be distinguished from errors in other people's code.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/073.png" />
+    <p class="media-body">However, this involves classes and objects, so we'll cover it in the lecture on object-oriented programming.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="except/074.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

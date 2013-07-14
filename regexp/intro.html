@@ -1,0 +1,354 @@
+---
+layout: v4_topic
+title: Introduction
+lesson_title: Regular Expressions
+prev: null
+next: v4/regexp/operators.html
+uplink: v4/regexp/index.html
+pdf: v4/regexp/intro.pdf
+ppt: v4/regexp/intro.ppt
+youtube: {"slug": "c-Ov1JUMDv4", "time": "00:10:54.52"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="intro/001.png" />
+    <p class="media-body">Hello, and welcome to the first episode of the Software Carpentry lecture on regular expressions.  In order to understand what regular expressions are for, let's have a look at the sort of cleanup job that comes up frequently when dealing with real field data.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/002.png" />
+    <p class="media-body">A couple of years after the Death Star exploded&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/003.png" />
+    <p class="media-body">&hellip;a hot-shot reporter at the <cite>Daily Planet</cite> heard that&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/004.png" />
+    <p class="media-body">&hellip;children in the Shire&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/005.png" />
+    <p class="media-body">&hellip;were starting to act a little bit strangely.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/006.png" />
+    <p class="media-body">Your supervisor&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/007.png" />
+    <p class="media-body">&hellip;sent some of his grad students off to collect some data.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/008.png" />
+    <p class="media-body">Things didn't go so well for them&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/009.png" />
+    <p class="media-body">&hellip;but their notebooks were recovered and later transcribed.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/010.png" />
+    <p class="media-body">Your job is to read in 20 or 30 files, each of which contains several hundred measurements of background evil levels, and convert them into a uniform format so that they can be processed further.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/011.png" />
+    <p class="media-body">Each of the readings has the name of the site where the reading was taken, the date the reading was taken on, and of course the background evil level in millivaders.  The problem is, these files aren't formatted in the same way.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/012.png" />
+    <p class="media-body">Some of them use tabs to separate fields, others use commas.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/013.png" />
+    <p class="media-body">And the dates are written in several different styles.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/014.png" />
+    <p class="media-body">Let's take a look at one of those files.  As you can see&hellip;</p>
+  </div>
+  <p class="media-body" id="single-tab">&hellip;it uses a single tab between each column as a separator.</p>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/015.png" />
+    <p class="media-body">(While the spaces in site names are visually similar, they're different characters.)</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/016.png" />
+    <p class="media-body">The good news is, the dates are written in the international standard format: four digits for the year, two for the month, and two for the day.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/017.png" />
+    <p class="media-body">Let's have a look at the second notebook.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/018.png" />
+    <p class="media-body">Here, they're using slashes as separators.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/019.png" />
+    <p class="media-body">There don't appear to be spaces in the site names&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/020.png" />
+    <p class="media-body">&hellip;but the month names and day numbers are of varying length.  The months are text, and the order is month-day-year rather than year-month-day.  Parsing these files using string search would be difficult and error-prone.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/021.png" />
+    <p class="media-body">The right solution is to use regular expressions.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/022.png" />
+    <p class="media-body">A regular expression is just a pattern that a string can match.  You've probably used these already.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/023.png" />
+    <p class="media-body">When you say <code>"*.txt"</code> to a computer, you're matching all of the filenames that end in <code>".txt"</code>.  The <code>"*"</code> matches any number of characters: it's a pattern.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/024.png" />
+    <p class="media-body">A warning before we go any further: the notation for regular expressions is ugly, even by the standards of programming.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/025.png" />
+    <p class="media-body">The problem is that we're writing patterns to match strings, but we're writing those patterns <em>as</em> strings&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/026.png" />
+    <p class="media-body">&hellip;using only the symbols that are on the keyboard, instead of inventing new symbols the way mathematicians often do.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/027.png" />
+    <p class="media-body">Let's start by reading in data from two files, and grabbing the first few lines of each.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/028.png" />
+    <p class="media-body">When we print out the results in the list <code>readings</code>, we can see that we've got six lines from the first data file, and six from the second.  We'll test our regular expressions against this data to see how well or how poorly we're matching different formats of records as we go along.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/029.png" />
+    <p class="media-body">Without regular expressions, we can select records that have the month "06" just by saying, <code>if "06" is in the record</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/030.png" />
+    <p class="media-body">If we want to select data for two months, we have to say, <code>if '06' in the record</code> or <code>if '07' in the record<code>.</code></code></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/031.png" />
+    <p class="media-body">We should realize that there's a problem here.  If we say, <code>'05' in record</code>, it isn't matching against the month: it's matching against the day.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/032.png" />
+    <p class="media-body">Right now, we have no easy way to distinguish those two cases.  This is a problem we'll come back to later.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/033.png" />
+    <p class="media-body">Let's try using a regular expression to do our matches instead of the simple string-in operator.  We import the regular expressions library, and then say, for each record, if regular expression search can find a match for the string <code>'06'</code> in the record, then we'll print it out.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/034.png" />
+    <p class="media-body">So far, this is matching exactly what <code>"06" in r</code> would match&mdash;it's not much of an improvement.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/035.png" />
+    <p class="media-body">But look what happens if we want to match a month of "06" or a month of "07".  We can combine the two in a single pattern.  Let's take a closer look at this code.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/036.png" />
+    <p class="media-body">The first argument to <code>re.search</code> is the pattern we are searching for.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/037.png" />
+    <p class="media-body">That pattern is written down as a string.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/038.png" />
+    <p class="media-body">The second argument is the data we are searching in.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/039.png" />
+    <p class="media-body">It's quite common to get these reversed: a very common mistake is to put the data first and the pattern second.  This can be quite hard to track down, so please be careful.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/040.png" />
+    <p class="media-body">The vertical bar in the pattern means "or".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/041.png" />
+    <p class="media-body">We're telling the regular expression engine that we want to match either the text on the left of the vertical bar, or the text on the right, but we're going to do the match in a single search.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/042.png" />
+    <p class="media-body">We're going to be trying to match a lot of patterns against our data, so let's write a function that will tell us which records match a particular pattern.  Our function <code>show_matches</code> takes a pattern and a list of strings, and then for each of those strings, if the pattern matches, we print out two stars as a marker, otherwise we just print out some blanks.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/043.png" />
+    <p class="media-body">Let's test our function right away.  If we try to match <code>'06|07'</code> against the data that we read in earlier, it seems to be doing the right thing: we've got stars beside the two records that have month <code>'06'</code> or month <code>'07'</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/044.png" />
+    <p class="media-body">But why doesn't this work?  If we match <code>'06|7'</code>, it seems to be matching a lot of things that don't have the month <code>'06'</code> or <code>'07'</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/045.png" />
+    <p class="media-body">Think back to mathematics.  The expression <em>ab+c</em> means ,"<em>a</em> times <em>b</em> plus <em>c</em>."</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/046.png" />
+    <p class="media-body">Multiplication is implied simply by putting <em>a</em> and <em>b</em> next to each other, and it has higher precedence than addition: we always do multiplication before we do addition.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/047.png" />
+    <p class="media-body">If we want to force the other meaning, we write, "<em>a</em> times (<em>b</em> plus <em>c</em>)."</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/048.png" />
+    <p class="media-body">The same thing happens with regular expressions.  If we say <code>'06|7'</code>, it means exactly that: either <code>'06'</code> or the digit <code>'7'</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/049.png" />
+    <p class="media-body">And if you look back at our data, there are a lot of 7's in our file.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/050.png" />
+    <p class="media-body">If we want to match <code>'06'</code> or <code>'07'</code>, we can parenthesizes as shown here: <code>'0(6|7)'</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/051.png" />
+    <p class="media-body">Having said that, the expression <code>'06|07'</code> is probably more readable to most people anyway.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/052.png" />
+    <p class="media-body">Let's go back to our function and our data.  If we do matches for <code>'05'</code>, then as we said earlier, we're pulling up records that have <code>'05'</code> as the day, rather than as the month.  We can force our match to do the right thing by taking advantage of context.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/053.png" />
+    <p class="media-body">If we want to match a month&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/054.png" />
+    <p class="media-body">&hellip;there should be a dash <code>'-'</code> before and after the numbers.  So if we try to match <code>'-05-'</code>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/055.png" />
+    <p class="media-body">&hellip;we show no matches, which is the correct answer: we don't have any readings in this sample of our data set for May.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/056.png" />
+    <p class="media-body">Matching is all well and good, but what we really want to do is extract data: we want to pull the year, the month, and the day out of our data set so that we can reformat them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/057.png" />
+    <p class="media-body">When a regular expression matches a piece of text, the regular expression library remembers what matched against every parenthesized sub-expression.  Parentheses aren't just used for grouping: they're also used to remember things.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/058.png" />
+    <p class="media-body">Here's an example.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/059.png" />
+    <p class="media-body">The pattern to match years, <code>'(2009|2010|2011)'</code>, has been put in parentheses.  This will match 2009, or 2010, or 2011, but it will remember which of those it matched.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/060.png" />
+    <p class="media-body">The second string is just the first record from our data.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/061.png" />
+    <p class="media-body">(If you recall, <code>'\t'</code> represents a tab.)</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/062.png" />
+    <p class="media-body">When <code>re.search</code> is called, it returns a <em>match object</em> if a match is found.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/063.png" />
+    <p class="media-body">If no match is found it returns <code>None</code>, meaning, "There's no useful information."</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/064.png" />
+    <p class="media-body">The expression <code>match.group</code> returns the text that matched a particular parenthesized sub-expression.  For example, <code>match.group(1)</code> returns whatever matched against the pattern inside the first pair of parentheses counting from the left.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/065.png" />
+    <p class="media-body">It's important to note that the first sub-expression is extracted with <code>match.group(1)</code>, the second with 2, and so forth.  When we're looking at groups, we count from 1 to N, rather than from 0 to N-1, as is normal in the rest of Python.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/066.png" />
+    <p class="media-body">The reason for this is that <code>match.group(0)</code> returns all of the text that the entire pattern matched.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/067.png" />
+    <p class="media-body">What if we want to match the month as well as the year?  A regular expression to match legal months would be <code>'01'</code> or <code>'02'</code> or <code>'03'</code> and so forth all the way up to <code>'12'</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/068.png" />
+    <p class="media-body">The expression to match the day would be three times longer.  This is pretty cumbersome: it's hard to type, and more importantly, hard to read.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/069.png" />
+    <p class="media-body">In a regular expression, you can use a dot&mdash;the period character <code>'.'</code>&mdash;to match any single character.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/070.png" />
+    <p class="media-body">So the expression <code>'....-..-..'</code> matches any four characters&mdash;exactly four characters&mdash;followed by a dash, followed by two more characters, followed by another dash, followed by two more characters.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/071.png" />
+    <p class="media-body">If we put each set of dots in parentheses, we should get out three groups recording the year, month, and day every time there's a successful match.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/072.png" />
+    <p class="media-body">Let's test that out.  Here, we're calling <code>re.search</code> with the pattern we just described and the first record from out data.  When we print out <code>match.group(1)</code>, 2, and 3, sure enough, we get <code>'2009'</code>, <code>'11'</code>, and <code>'17'</code>, just as we wanted.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/073.png" />
+    <p class="media-body">Try doing <em>that</em> with substring searches.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/074.png" />
+    <p class="media-body">To recapitulate, letters and digits in a pattern match against themselves: the character <code>'A'</code> in a pattern matches the character <code>'A'</code> in the data, and so forth.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/075.png" />
+    <p class="media-body">Vertical bar <code>'|'</code> means OR&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/076.png" />
+    <p class="media-body">&hellip;dot <code>'.'</code> matches any single character&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/077.png" />
+    <p class="media-body">&hellip;we use parentheses <code>'()'</code> to enforce grouping&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/078.png" />
+    <p class="media-body">&hellip;<code>re.search</code> returns a match object if the pattern matches, and <code>None</code> if there isn't a match&hellip;.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/079.png" />
+    <p class="media-body">&hellip;and if a match was found, <code>match.group(k)</code> is the text that matched group <code>k</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/080.png" />
+    <p class="media-body">More generally, stepping back from the details of regular expressions&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/081.png" />
+    <p class="media-body">&hellip;the right way to build up patterns is to start with something simple that matches part of the data you're working with.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/082.png" />
+    <p class="media-body">Test it against your data, but also test that it <em>doesn't</em> match things that it shouldn't, because it can be very hard to track down false positives.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/083.png" />
+    <p class="media-body">Once you've done that, extend it piece by piece to handle other cases.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/084.png" />
+    <p class="media-body">We'll take a look at how to do more of this in the next episode.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="intro/085.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

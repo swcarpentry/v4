@@ -1,0 +1,35 @@
+---
+layout: v4_lesson
+title: Matrix Programming
+children : [
+    {"path" : "intro.html", "title" : "Introduction"},
+    {"path" : "basics.html", "title" : "Basic Operations"},
+    {"path" : "indexing.html", "title" : "Indexing"},
+    {"path" : "linalg.html", "title" : "Linear Algebra"},
+    {"path" : "recommend.html", "title" : "Recommendations"}
+]
+prev : v4/spreadsheets/index.html
+next : v4/matlab/index.html
+uplink : v4/index.html
+---
+<div class="overview">
+  <p>
+    Linear algebra lies at the heart of most scientific computations,
+    so developers have been building and tuning libraries to do vector and matrix operations for sixty years.
+    These libraries are frequently also used to work on other block data,
+    such as images and grids;
+    as a result,
+    they have a bewildering variety of features,
+    but repay close study with concise, high-performance code.
+  </p>
+</div>
+
+<div class="well well-small">
+  <ul class="keypoints">
+    <li>Array libraries like NumPy store data in rectangular blocks of uniform data type.</li>
+    <li>These libraries use a data-parallel programming model to apply one operation to many data elements.</li>
+    <li>You should (almost) never loop over the elements of a vector or matrix: let the library do it instead.</li>
+    <li>Use slicing to select and combine subsets of data.</li>
+    <li>And use library functions to do higher-level linear algebra operations rather than writing them yourself.</li>
+  </ul>
+</div>

@@ -1,0 +1,137 @@
+---
+layout: v4_topic
+title: Interfaces
+lesson_title: Object-Oriented Programming
+prev: v4/oop/basics.html
+next: v4/oop/inherit.html
+uplink: v4/oop/index.html
+pdf: interface.pdf
+ppt: interface.ppt
+youtube: {"slug": "aRAUMbuy9GY", "time": "00:05:09.80"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="interface/001.png" />
+    <p class="media-body">Hello, and welcome to the third episode of the Software Carpentry lecture on object-oriented programming. In this episode, we'll look at the most important concept that underlies classes and objects.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/002.png" />
+    <p class="media-body">Classes and object exist to help you separate interface from implementation.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/003.png" />
+    <p class="media-body">Something's interface is what it knows how to do&mdash;the questions it can answer, or the operations it can carry out.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/004.png" />
+    <p class="media-body">Its implementation is how it does those things: what data it stores, what algorithms it uses, and so on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/005.png" />
+    <p class="media-body">Relying on interfaces when programming, rather than on implementations, makes it much easier to test, change, and replace parts of programs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/006.png" />
+    <p class="media-body">As usual, the easiest way to explain what this actually means is by example.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/007.png" />
+    <p class="media-body">Our starting point is a common problem in all of science and engineering: we have a signal that has been sampled at irregular intervals&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/008.png" />
+    <p class="media-body">We'd like to hide the irregular sampling by allowing people to "sample" the signal at arbitrary times.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/009.png" />
+    <p class="media-body">One way is to use a step function: the value at time t is just the most recently seen value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/010.png" />
+    <p class="media-body">Another is linear interpolation, and there are many others.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/011.png" />
+    <p class="media-body">To implement this using objects, we start by defining the interface that we want.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/012.png" />
+    <p class="media-body">We're going to create a class&mdash;we'll figure out its name in a moment&mdash;whose constructor takes a list of (x,y) pairs and stores them somehow.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/013.png" />
+    <p class="media-body">Objects of this class will have a method called 'get' that will take an x-axis coordinate, check that it's in range, and if it is, return the corresponding value according to some interpolation rule.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/014.png" />
+    <p class="media-body">Let's implement a step function first. We'll call the class 'StepSignal', and its constructor will store a copy of the (x, y) samples in a member called self.values.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/015.png" />
+    <p class="media-body">Here's its 'get' method. If the point we're supposed to sample is less than the lowest x coordinate we have, we raise an exception&mdash;we don't know enough to guess what the signal was at that point. Otherwise, we loop over the (x, y) pairs we saved in self.values until we find an x coordinate that's just less than (or equal to) our sample point, and return the corresponding y value. If we reach the end of our data without finding one&mdash;i.e., if our sample point is past the right end of our data&mdash;we also raise an exception.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/016.png" />
+    <p class="media-body">OK, what's it like to use this in a program? Let's construct an interpolator with three sample values, then look at what it gives us at various points. This is hardly exhaustive testing, but it seems to do the right thing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/017.png" />
+    <p class="media-body">And let's test the error handling too&mdash;that's just as much a part of the class's interface as the values it returns when it works normally. Notice that our tests include a value that's just less than the minimum we should accept (-0.0001), and exactly equal to the maximum we should reject (2.0). In each case, the object raises the expected exception. This gives us some confidence that our program will fail early if we do something silly, which will make debugging easier.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/018.png" />
+    <p class="media-body">All right, what about linear interpolation? Its constructor can save a copy of the sample values too, so we won't show that. All that's actually different is its 'get' method, which finds the sample point immediately below the given x coordinate, just like StepSignal's, and then does the interpolation.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/019.png" />
+    <p class="media-body">In fact, the only thing that's different is this line.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/020.png" />
+    <p class="media-body">Let's test it for the same points we used before.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/021.png" />
+    <p class="media-body">These two values have changed: instead of carrying forward the values from 0 and 1, we're doing weighted averaging, just as we're supposed to.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/022.png" />
+    <p class="media-body">And yes, when we test error handling, it still works too.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/023.png" />
+    <p class="media-body">And now for the payoff&mdash;the whole reason we implemented sampling using classes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/024.png" />
+    <p class="media-body">This function, 'average', calculates the average value of a signal between two points. It works in the obvious way: it calculates N equally-spaced locations (including the endpoints), finds the signal's value at each, adds them up, and divides by the number of samples.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/025.png" />
+    <p class="media-body">What makes it special is this call right here.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/026.png" />
+    <p class="media-body">We can pass in an object of any class that provides a 'get' method&mdash;either StepSignal or LinearSignal&mdash;and 'average' will work correctly.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/027.png" />
+    <p class="media-body">In fact, we can now write other classes with 'get' methods that return samples, and 'average' will still do the right thing&mdash;we don't have to come back and modify 'average', or re-test it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/028.png" />
+    <p class="media-body">For example, here's a class called 'Sinusoid' that doesn't do interpolation at all. Instead, it stores the amplitude and frequency of a sine wave. When it's asked for the signal's value at a point, it calculates it, rather than looking it up. Once we've created an object of this class, we can pass it into 'average'&mdash;or into 'max', 'min', or any other generic function we write later&mdash;and it will all just work.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/029.png" />
+    <p class="media-body">The key idea here&mdash;the most important one in object-oriented programming&mdash;is that building programs out of components with clearly-defined interfaces makes programming easier.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/030.png" />
+    <p class="media-body">You can tell that you're doing this right if the only time you need to know an actual class name is when you're constructing an object. Everywhere else in your program, you shouldn't care what the class is, just what methods it has (i.e., what it knows how to do). If you follow this rule, then you can replace parts of your program one by one with other parts that have the same interface, but do different things. It's just like an electrician replacing one resistor with another that has the same resistance, but a different price, power dissipation, and so on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="interface/031.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

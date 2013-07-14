@@ -1,0 +1,223 @@
+---
+layout: v4_topic
+title: Variables
+lesson_title: The Unix Shell
+prev: v4/shell/job.html
+next: v4/shell/ssh.html
+uplink: v4/shell/index.html
+pdf: v4/shell/var.pdf
+ppt: v4/shell/var.ppt
+youtube: {"slug": "faAvqcWD11c", "time": "00:06:49.30"}
+---
+<ul class="keypoints">
+  <li>Like any program, the shell uses a set of variables to control its operation.</li>
+  <li>Two important variables are PATH and HOME.</li>
+  <li>Variables can be created and made available to programs the shell calls using the commands set and export.</li>
+</ul>
+
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="var/001.png" />
+    <p class="media-body">Hello, and welcome to episode number eight of the Software Carpentry lecture on the Unix shell.  In this episode, we'll have a look at shell variables.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/002.png" />
+    <p class="media-body">As you've heard several times by now, we're looking at how to interact with a computer using a command-line shell.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/003.png" />
+    <p class="media-body">The shell is just a program&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/004.png" />
+    <p class="media-body">&hellip;and like other programs, it has variables.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/005.png" />
+    <p class="media-body">Those variables control its execution, and by changing their values, you can change how the shell and other programs behave.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/006.png" />
+    <p class="media-body">Let's start by running the command <code>set</code> and looking at some of the variables in a typical shell session.  As you can see, there are quite a few&mdash;in fact, four or five times more than what's shown on this media.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/007.png" />
+    <p class="media-body">Using <code>set</code> to <em>show</em> things might seem a little strange, even for Unix, but if you don't give it any arguments, it might as well show you things you <em>could</em> set.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/008.png" />
+    <p class="media-body">Every variable has a name.  By convention, variables that are always present are given upper-case names.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/009.png" />
+    <p class="media-body">All shell variables' values are strings.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/010.png" />
+    <p class="media-body">It's up to programs to convert these strings to other types when necessary.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/011.png" />
+    <p class="media-body">For example, if a program wanted to find out how many processors the computer had, it would convert the <code>NUMBER_OF_PROCESSORS</code> variable from a string to an integer.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/012.png" />
+    <p class="media-body">Some variables store lists of values.  Here, the convention is to use a colon ':' as a separator.  If a program wants the individual elements of such a list, it's the program's responsibility to split the variable's string value into pieces.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/013.png" />
+    <p class="media-body">Let's have a closer look at one of the most important of those list-valued variables, <code>PATH</code>.  Its value defines the shell's <em>search path</em>, i.e., the directories that the shell looks in for runnable programs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/014.png" />
+    <p class="media-body">If you recall from a couple of episodes ago, if we type a command like <code>./analyze</code>, with a specific directory in the path, the shell runs the program that path specifies.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/015.png" />
+    <p class="media-body">Similarly, if we type <code>/bin/analyze</code>, the shell runs that specific program: we've provided a specific path, so it knows what to do.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/016.png" />
+    <p class="media-body">But what should the shell do if we just type <code>analyze</code>?  There are at least two things it could run: how should it choose?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/017.png" />
+    <p class="media-body">Its rule is simple.  The shell checks each directory in the <code>PATH</code> variable in turn, looking for a program with the rqeuested name in that directory.  As soon as it finds a match, it stops searching and runs the program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/018.png" />
+    <p class="media-body">To show how this works, here are the components of <code>PATH</code> broken out one per line.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/019.png" />
+    <p class="media-body">On our computer, there are actually three programs called <code>analyze</code> in three different directories.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/020.png" />
+    <p class="media-body">Since the shell searches the directories in order, it finds the one in <code>/bin</code>, not either of the others.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/021.png" />
+    <p class="media-body">Notice that it will <em>never</em> find the program <code>/users/vlad/analyze</code>, since the directory <code>/users/vlad</code> isn't in our path.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/022.png" />
+    <p class="media-body">Before we explore variables any further, let's introduce one more command: <code>echo</code>.  All it does is print out its argument.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/023.png" />
+    <p class="media-body">This doesn't sound very exciting, but we can use it to show variables' values.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/024.png" />
+    <p class="media-body">First, let's make sure it works.  Yup: <code>echo hello transylvania!</code> prints <code>hello transylvania!</code> as promised.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/025.png" />
+    <p class="media-body">Now let's try to show the value of the variable <code>HOME</code> with <code>echo HOME</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/026.png" />
+    <p class="media-body">Whoops: that just prints "HOME".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/027.png" />
+    <p class="media-body">Let's try this instead: <code>echo $HOME</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/028.png" />
+    <p class="media-body">The dollar sign tells the shell to replace the variable's name with its value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/029.png" />
+    <p class="media-body">This works just like wildcards: the shell does the expansion <em>before</em> running the program we've asked for.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/030.png" />
+    <p class="media-body">Thanks to this expansion, what we actually run is <code>echo /home/vlad</code>, which shows us the variable's value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/031.png" />
+    <p class="media-body">Creating a variable is easy: just assign a value to a name using "=".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/032.png" />
+    <p class="media-body">Changing a value is equally easy: just assign the new value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/033.png" />
+    <p class="media-body">Here, we set our secret identity to be <code>Dracula</code>, check it, change it to <code>Camilla</code>, and check again.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/034.png" />
+    <p class="media-body">It's important to note, though, that assignment only changes a variable's value in the current shell, not in any other shells that are currently running, or in any shells that are started later.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/035.png" />
+    <p class="media-body">Let's go back and set our secret identity once again.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/036.png" />
+    <p class="media-body">Once it's set, let's run a fresh copy of the shell by typing the command <code>bash</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/037.png" />
+    <p class="media-body">We now have two copies of the shell running: the original, shown in green, and its child, shown in orange.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/038.png" />
+    <p class="media-body">If we <code>echo $SECRET_IDENTITY</code> in the child shell, nothing is printed, because the variable doesn't have a value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/039.png" />
+    <p class="media-body">If we exit the child shell and return to the original&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/040.png" />
+    <p class="media-body">&hellip;we can see that yes, the variable does exist.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/041.png" />
+    <p class="media-body">If we really want the shell to pass a variable to the processes it creates, we must use the <code>export</code> command.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/042.png" />
+    <p class="media-body">Let's try the secret identity example again.  After giving <code>SECRET_IDENTITY</code> a value, we give the shell the command <code>export SECRET_IDENTITY</code>.  (Note, by the way, that it's <em>not</em> <code>export $SECRET_IDENTITY</code> with a dollar sign: if we typed that, the shell would expand <code>SECRET_IDENTITY</code>, and our <code>export</code> command would actually be <code>export Dracula</code>, which would do nothing, because there's no variable called <code>Dracula</code>.)</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/043.png" />
+    <p class="media-body">Now let's run a new shell&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/044.png" />
+    <p class="media-body">&hellip;and type <code>echo $SECRET_IDENTITY</code>.  Yup: there's our variable.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/045.png" />
+    <p class="media-body">And of course, exiting brings us back to our original shell.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/046.png" />
+    <p class="media-body">If we want to set some variables' values automatically every time we run a shell, we can put the command to do this in a file called <code>.bashrc</code> in our home directory.  The '.' character at the front prevents <code>ls</code> from listing this file unless we specifically ask it to using <code>-a</code>&mdash;we normally don't want to worry about it&mdash;and the "rc" at the end is an abbreviation for "run control", which meant something really important decades ago, and is now just a convention everyone follows without understanding why.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/047.png" />
+    <p class="media-body">For example, here are two lines in Vlad's <code>.bashrc</code> file.  These two lines create the variables <code>SECRET_IDENTITY</code> and <code>BACKUP_DIR</code>, give them values, and export them so that any programs the shell runs can see them as well.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/048.png" />
+    <p class="media-body">And while we're here, it's also common to use the <code>alias</code> command to create shortcuts for things we frequently type.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/049.png" />
+    <p class="media-body">For example, we can define the alias <code>backup</code> to run <code>/bin/zarble</code> with these arguments.  Notice that these arguments include references to some variables, so that if we want to change where we put our backups, we only have to change one variable's value in one place.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/050.png" />
+    <p class="media-body">As you can see, aliases can save us a lot of typing, and a lot of typing mistakes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="var/051.png" />
+    <p class="media-body">In our next episode, we'll have a look at how to connect to other machines securely.</p>
+  </div>
+</div>

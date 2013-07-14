@@ -1,0 +1,51 @@
+---
+layout: v4_topic
+title: Basic Operation
+lesson_title: Version Control
+prev: v4/vc/intro.html
+next: v4/vc/conflict.html
+uplink: v4/vc/index.html
+pdf: v4/vc/basic.pdf
+ppt: v4/vc/basic.ppt
+youtube: {"slug": "6CL9zV26TH0", "time": "00:08:01.53"}
+---
+<div>
+  <p>It's Monday night.  Dracula sits down at his computer and runs <a href="http://www.syntevo.com/smartsvn/index.html">SmartSVN</a>.  This is a Subversion <em>client</em>, i.e., a program that runs on your machine, and knows how to move files back and forth to a repository located on a server.  There are lots of other graphical clients out there, and many power users run Subversion commands from the shell, but we'll use SmartSVN in this lecture.</p>
+  <p>After filling them both in, he clicks; SmartSVN opens a connection to the server, checks that Dracula is allowed access to the repository, then creates a new directory on his computer and copies files into it.</p>
+  <p>A couple of cubicles away, Wolfman also runs SmartSVN to check out a working copy of the repository.  He also gets Version 6, so the files on his machine are the same as the files on Dracula's.  Unfortunately, he then has a bad hair episode, and has to take a short break.</p>
+  <p>While Wolfman is calming down, Dracula decides to add some information to the repository about Jupiter's moons.  Using his favorite editor, he creates a file in the <code>jupiter</code> directory called <code>moons.txt</code>, and fills it with information about Io, Europa, Ganymede, and Callisto:</p>
+<pre>Name            Orbital Radius  Orbital Period  Mass            Radius
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Calisto         1882.7          16.689018       1075.9          2410.3</pre>
+  <p>After double-checking his data, he wants to commit the file to the repository so that everyone else on the project can see it.</p>
+  <p>The first step is to add the file to his working copy.  This isn't the same as creating it&mdash;Dracula has already done that.  Instead, adding the file tells Subversion to start keeping track of changes to that file.  It's quite common, particularly in programming projects, to have backup files or artefacts of compilation in a directory that aren't worth storing in the repository.  This is why version control requires you to explicitly tell it which files are to be managed.</p>
+  <p>Once he has told Subversion to add the file, Dracula can go ahead and commit his changes to the repository.  He clicks "Commit", adds a meaningful comment, and then clicks "Continue".  SmartSVN establishes a connection and copies his changes over to the master.</p>
+  <p>The version number has now changed from 6 to 7.  Notice that this version number applies to the <em>whole</em> repository, not just to files that have changed.  Version numbers always refer to snapshots of the entire repository, so if you say "Version 119" of a file, that is always going to be the same as Version 119 of any other file or directory in the repository.</p>
+  <p>The next morning, when he's back in human form, Wolfman starts work once again.  He runs SmartSVN and does an update.</p>
+  <p>SmartSVN tells him that a new file has been added to the repository, and Wolfman's working copy is now up to date with Version 7, which is the current <em>head</em>, or most recent, revision.</p>
+  <p>Looking in the new file, <code>jupiter/moons.txt</code>, Wolfman notices that Dracula has misspelled "Callisto"&mdash;it's supposed to have two L's.  Wolfman goes ahead and edits that line of the file:</p>
+<pre>Name            Orbital Radius  Orbital Period  Mass            Radius
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Callisto        1882.7          16.689018       1075.9          2410.3</pre>
+  <p>He also adds a line about Amalthea, which he thinks might be a good site for a secret lair despite its small size:</p>
+<pre>Name            Orbital Radius  Orbital Period  Mass            Radius
+Amalthea        181.4           0.498179        0.075           125.0
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Callisto        1882.7          16.689018       1075.9          2410.3</pre>
+  <p>He then commits his changes to create Version 8 of the repository [spooky howl].</p>
+  <p>Later that night, when Dracula wakes up and starts working again, the first thing he wants to do is get Wolfman's changes.  Before clicking "Update", though, he clicks on the "Log" button to see who has done what.  He's curious what Wolfman changed, so he selects <code>moons.txt</code> and asks SmartSVN to show him the changes.</p>
+  <p>SmartSVN brings up a double-panelled display that uses color to show insertions, changes, and deletions on a line-by-line basis.</p>
+  <p>After checking them over, Dracula is satisfied, so he dismisses this view, and does the update.</p>
+  <p>This is a very common workflow: check to see what has changed in the repository, check to see if it's going to get in your way, and if it's not, pull those changes down to your machine.  It's worth noticing here how important Wolfman's comments about his changes were.  It's hard to see the difference between 'Calisto' with one L and 'Callisto' with two, even if the line containing the difference has been highlighted.  Without Wolfman's comments, Dracula might have wasted time wondering if there actually was a difference or not.</p>
+  <p>In fact, Wolfman should probably have made&hellip;</p>
+  <p>&hellip;two separate commits, since there's no logical connection between&hellip;</p>
+  <p>&hellip;fixing a typo in Callisto's name&hellip;</p>
+  <p>&hellip;and adding information about Amalthea to the same file.  Just as a function or program should do one job, and one job only, a single commit to version control should have a single logical purpose so that it's easier to find, understand, and if necessary undo later on.</p>
+  <p>In our next episode, we'll take a look at the workflow when changes conflict [mad laughter].</p>
+</div>

@@ -1,0 +1,181 @@
+---
+layout: v4_topic
+title: Image Operations
+lesson_title: Multimedia Programming
+prev: v4/media/stars.html
+next: v4/media/steg.html
+uplink: v4/media/index.html
+pdf: imageops.pdf
+ppt: imageops.ppt
+youtube: {"slug": "WtHVh_ztpNs", "time": "00:07:29.80"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/001.png" />
+    <p class="media-body">Hello, and welcome to the third episode of the Software Carpentry lecture on multimedia programming. In this episode, we'll have a look at some common image operations.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/002.png" />
+    <p class="media-body">The previous two episodes worked on images by looping over them pixel by pixel. You can always fall back on this when you need to, but most image libraries provide built-in support for common operations. Using these will save you time in two ways: they will usually be a lot faster than anything you could easily write, and someone else will have already debugged them.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/003.png" />
+    <p class="media-body">Here's a quick example that shows what kinds of operations are available. Along with the core 'Image' module, we import 'ImageFilter' from the Python Imaging Library. We then load an image from a file and apply three filters to it. Each of these filters is identified by a symbolic name, such as ImageFilter.CONTOUR for a contouring filter. We save the results in files with names derived from the original file's name, and then for good measure use the 'transpose' method with Image.FLIP_LEFT_RIGHT as an argument to flip the image left-to-right.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/004.png" />
+    <p class="media-body">Here are the results: a blurred image, one that has high-contrast contour lines enhanced, one that appears embossed, and the left-to-right inverse of the original. No matter which way you look at her, she's a cute kid.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/005.png" />
+    <p class="media-body">Of course, much of the time we want to rescale an image, or work with a subsection of it. The hardest part of doing this is often figuring out the coordinates of the regions we're operating on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/006.png" />
+    <p class="media-body">This program opens an image and extracts its size&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/007.png" />
+    <p class="media-body">&hellip;then does some very simple arithmetic to figure out how large an image half that size would be.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/008.png" />
+    <p class="media-body">It then uses the image's 'resize' method to create a new image that is half as tall and half as wide as the original.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/009.png" />
+    <p class="media-body">Going the other way, it calculates the dimensions for an image twice as large as the original, and uses 'Image.new' to create a blank image of this size. The first argument to 'Image.new', 'RGB', tells the library to store red/green/blue color values for each pixel; other options would allow us to create monochrome images or other more exotic formats.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/010.png" />
+    <p class="media-body">Next, the program goes into a 4&times;4 loop: 4&times;4, because twice something divided by half of that same something is 4.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/011.png" />
+    <p class="media-body">Inside the inner loop, it calculates the coordinates of the upper left and lower right corners of a box big enough to hold one copy of the half-sized image. Remember, PIL's coordinate system puts (0, 0) in the upper left corner, not the lower left.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/012.png" />
+    <p class="media-body">The inner loop then pastes a copy of the half-sized image into the double sized image, using the box's coordinates to place it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/013.png" />
+    <p class="media-body">The result is the tiled contact sheet shown here. If we had a series of images of the same size, we could almost as easily have pasted them together to create one picture made up of sixteen copies of others.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/014.png" />
+    <p class="media-body">Here's another simple image processing program that draws directly on top of pictures. It starts by defining the width of the border we're going to draw and the shade of gray we're going to use, and then opens up an image and gets its size.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/015.png" />
+    <p class="media-body">The program then creates a helper object around the picture by calling ImageDraw.Draw. This helper is the thing that knows how to draw boxes, circles, and other shapes; the Python Imaging Library keeps that logic in a separate object so that programs that don't need it don't have to load it. Other libraries may make the drawing methods part of the picture object, or keep them in an entirely separate library altogether. No matter where they are, the basic functionality is likely to be the same.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/016.png" />
+    <p class="media-body">Now that it has a drawing tool, the program can create four rectangles, each ten pixels wide along one border of the image, and then save the modified picture.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/017.png" />
+    <p class="media-body">As you can see, the result is a framed version of our original picture. As an exercise, try combining the ideas from the previous examples to put a frame around an entire picture, so that the output is 20 pixels wider and taller than the input.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/018.png" />
+    <p class="media-body">Instead of thinking about an image as a bunch of pixels, each of which has red/green/blue values, it's often more useful to think of it in terms of three parallel planes of color, each of which contains a single intensity value for either red, green, or blue. This program loads an image&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/019.png" />
+    <p class="media-body">&hellip;then uses the 'split' method to separate its color components into separate monochrome images, which it saves in three separate files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/020.png" />
+    <p class="media-body">Note that the call to 'load' shouldn't be necessary, since this program doesn't ever operate on individual pixels, but is needed to work around a bug in version 1.1.7 of PIL.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/021.png" />
+    <p class="media-body">The result is light where each color signal is strongest, and dark where it is weakest. For example, the purple in the baby's shirt shows up bright in blue, but darker in red and green.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/022.png" />
+    <p class="media-body">One reason to split a picture by color is to operate on those colors independently. This program decreases the amount of red in an image using a point function, which is simply any Python function that takes a single color component value as input, and returns a new one as output. The library knows how to apply such functions to every pixel in an image very efficiently, so it's worth trying to cast algorithms in terms of such functions.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/023.png" />
+    <p class="media-body">Our example function simply multiplies its argument by half.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/024.png" />
+    <p class="media-body">If we pass this function to the image's 'point' method, the library cuts every value in that image by 50%.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/025.png" />
+    <p class="media-body">We can then call 'merge' to recombine the three color planes to create a new image. Just as when we create an entirely new image, we have to specify that the color model is 'RGB'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/026.png" />
+    <p class="media-body">As you'd expect, reducing the amount of red makes the image look more blue-green.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/027.png" />
+    <p class="media-body">As an exercise, try leaving the red alone and increasing the blue and green&mdash;does the result look different, and if so, why?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/028.png" />
+    <p class="media-body">For our last example, let's highlight a region in an image as shown here. There are two ways to do this.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/029.png" />
+    <p class="media-body">The first is to color the pixels, which we will leave as an exercise.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/030.png" />
+    <p class="media-body">The second is to blend a square of the desired size into the original. If we do this, the new value for each affected pixel is the average of the original values of the two images.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/031.png" />
+    <p class="media-body">As always, the first step is to figure out the coordinates of the region we are highlighting. If the overall picture's size is major_x by major_y, and the highlight's size is highlight_x by highlight_y, a little math gives us the coordinates shown here.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/032.png" />
+    <p class="media-body">With that calculation done, the code is simple.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/033.png" />
+    <p class="media-body">First, we get the images and their sizes. (We'll leave writing the 'get' function as an exercise: it's only three lines of Python.)</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/034.png" />
+    <p class="media-body">We then use the image sizes to calculate the coordinates of the region we're highlighting.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/035.png" />
+    <p class="media-body">Using that box, we can crop a region out of the main image.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/036.png" />
+    <p class="media-body">We then call Image.blend to combine the cropped sub-image with the smaller image we're using as a highlighter. (In this case, that will be a simple white square, since blending anything with white lightens it up.) Note that when we blend two images together, they must have the same size: the imaging library won't make guesses about what to do if the two images don't align exactly.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/037.png" />
+    <p class="media-body">Finally, we can paste the blended region back into the original image as shown here to get our final picture.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/038.png" />
+    <p class="media-body">As we've seen in this episode, the Python Imaging Library provides all the functions needed for basic image processing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/039.png" />
+    <p class="media-body">If you need to do more sophisticated image processing, there is also OpenCV, which is implemented in C++, but also has a Python interface.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/040.png" />
+    <p class="media-body">Because the two were implemented separately, you may need to convert PIL images to OpenCV images and vice versa&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/041.png" />
+    <p class="media-body">&hellip;but that's a lot less painful than writing your contour convexity detectors.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="imageops/042.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

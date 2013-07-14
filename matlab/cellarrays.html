@@ -1,0 +1,141 @@
+---
+layout: v4_topic
+title: Structures and Cell Arrays
+lesson_title: MATLAB
+prev: v4/matlab/plots.html
+next: null
+uplink: v4/matlab/index.html
+pdf: v4/matlab/cellarrays.pdf
+ppt: null
+youtube: {"slug": "oV-W9glnbAM", "time": "00:07:04.10"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/001.png" />
+    <p class="media-body">Hello, and welcome to another episode of the Software Carpentry lecture on Matlab programming. In this episode, we will introduce structures and cell arrays, which are two data structures in Matlab that can be used to store more complex data than the traditional floating point array.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/002.png" />
+    <p class="media-body">In the lectures on arrays, indexing, and linear algebra, we saw that Matlab's basic data type is an array of double, floating point values.  A lot of scientific data is reported as numbers, but some data comes in text or other formats.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/003.png" />
+    <p class="media-body">For instance, Matlab supports strings&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/004.png" />
+    <p class="media-body">&hellip;which are surrounded by single quotes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/005.png" />
+    <p class="media-body">It is tempting to try to create an array of strings from the command line, but creating an array of strings just concatenates the strings.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/006.png" />
+    <p class="media-body">Moreover, the second element in the string is the letter t instead of the string 'string2'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/007.png" />
+    <p class="media-body">In most languages, including Matlab, strings are actually a special type of array that contains characters.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/008.png" />
+    <p class="media-body">Using single quotes to define a String is just a shorthand way of defining the array of characters.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/009.png" />
+    <p class="media-body">Since a string is an array, creating an array from two strings is really just a block matrix operation like we saw in the lecture on Matlab basics.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/010.png" />
+    <p class="media-body">Of course, this isn't really what we wanted&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/011.png" />
+    <p class="media-body">&hellip;and it all comes back to the fact that arrays can only contain simple types like numbers or characters.  In order to have a true array of strings, we need an array of arrays.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/012.png" />
+    <p class="media-body">Matlab has a special kind of array called a cell array that can hold complex types. This means that an array can hold other arrays rather than copying the contents of each array into a larger structure.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/013.png" />
+    <p class="media-body">Cell arrays are one of two related data structures.  The other is a structure. Both can store mixed data types.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/014.png" />
+    <p class="media-body">The difference is in how we index the data.  As we will see, cell arrays are indexed by integers just like regular Matlab arrays.  Structures store data in key-value pairs and can be used as an equivalent to Pythons dictionary or Java's HashMap.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/015.png" />
+    <p class="media-body">Structures store data in a hierarchy.  In this example, we store an array that gives the intensity values of the three primary colors red, green, and blue, that are required to make one of several different colors.  We can see that the array for orange is accessed by the key colors.orange.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/016.png" />
+    <p class="media-body">If you are familiar with dictionaries in another language, this should look familiar.  For instance, in Python, we can recreate colors as a dictionary.  Each key is a string and each value is an array with three elements.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/017.png" />
+    <p class="media-body">As this example shows, care must be taken when creating key-value pairs dynamically.  Here, we assign the key 'file' to the variable a and we assign s.a to the file name data2_27_11.txt.  Instead of creating a field in the structure named file, the file name is assigned to the field a.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/018.png" />
+    <p class="media-body">In order to use the contents of a variable as a key in a structure, we have to surround it with parentheses, which tells Matlab to use the value of the variable rather than the literal string that we typed in.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/019.png" />
+    <p class="media-body">Using the methods isfield, fieldnames, orderfields, and rmfields, and using the parenthetic access method, a structure can be used just like a dictionary in Matlab.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/020.png" />
+    <p class="media-body">However, in a structure, the only legal type of field name is a string.  Numbers are not allowed. If you need to use numbers as your storage parameters, Matlab provides cell arrays, which is our next topic.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/021.png" />
+    <p class="media-body">A cell array is an array that can have 1 or more dimensions, but unlike normal arrays, each cell can hold a different type of data.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/022.png" />
+    <p class="media-body">The first major change we note is that the cell array is denoted by brackets rather than the square braces that are used for regular arrays.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/023.png" />
+    <p class="media-body">Also, pay attention to the types of the objects that we put in the cell array.  We have a double, a string, and a boolean.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/024.png" />
+    <p class="media-body">Cell arrays follow the same indexing rules as arrays, but they can be indexed using either parentheses or curly braces.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/025.png" />
+    <p class="media-body">The difference is that using parenthesis returns a cell array with a single element while the curly braces returns the element in the first slot of the cell array.This might seem confusing, and it is.  The truth is, cell arrays were a late addition to Matlab.  The core language was designed with only arrays in mind, so both cell arrays and structures had to be given a few slightly strange syntax patterns in order to maintain full backwards compatibility.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/026.png" />
+    <p class="media-body">If you get an error when you are working with cell arrays or structures, be sure to check the output of the function iscell or isstruct. If the answer is 1, then the data type was a cell array with one element. If the answer is 0, then the data type is the type of whatever was stored in that location.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/027.png" />
+    <p class="media-body">This analogy might help you tell the difference. If a cell array is a series of mailboxes, then accessing a cell array using parentheses is equivalent to identifying a single mailbox. Indexing the cell array using braces is like getting the contents of the mailbox.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/028.png" />
+    <p class="media-body">There are several functions that will help you navigate between cell arrays, structs, and strings. Iscell and isstruct are pretty obvious. The function char will flatten a cell array of strings into a regular array of characters. Earlier, we noted that an array of characters is just a string.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/029.png" />
+    <p class="media-body">Cell arrays can have more than one dimension, just like regular arrays. Indexing shortcuts appear to work as expected, but note the slight difference in the output.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/030.png" />
+    <p class="media-body">Also, if we assign a set of cell array contents to a variable, we only get the first variable in the index. This is Matlab's best guess as to what we want, because we are asking Matlab to assign the value in each cell to the variable col. In reality, this request doesn't even make sense. If we really meant to get a column of cells, then we need to use cell indexing instead of content indexing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/031.png" />
+    <p class="media-body">To review, we'll compare structs and cell arrays to python, another common programming language. Python and many other languages have dictionary data types that hold data in key-value pairs. A struct acts like a limited dictionary, but the limitation is that it only accepts strings as keys. A cell array is not a dictionary at all. It is more like a list in Python, because it can hold mixed data types but it is accessed using numerical indices.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="cellarrays/032.png" />
+    <p class="media-body">The important thing to remember is that cell arrays and structures are both designed for holding data with heterogenous types. Thanks for listening.</p>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+---
+layout: v4_topic
+title: Selecting
+lesson_title: Using Access
+prev: null
+next: v4/access/filter.html
+uplink: v4/access/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "22222222", "time": "00:00:00.00"}
+---
+<div>
+  <p>Welcome to the Software Carpentry screencast on databases. This screencast is on retrieving data from tables in the database.</p>
+  <p>Databases come in many flavors. In these screencasts, we'll be using Microsoft Access to interact with our database.</p>
+  <p>As we've seen, a database is a way to store information that is arranged as tables. We will be using a database that has a single table named "Experiment". This table is a log of all of the work done on experiments in a research lab, broken down by project and scientist.</p>
+  <p>The table has a column for the login ID of the scientist, the name of their project, a numeric ID for their experiment, how many hours they spent on it, and when it took place. Each row or record in this table describes one scientist's work on a certain experiment on a given date.</p>
+  <p>We start a new query in Access by selecting the "Create" tab, clicking on "Query Design", and adding the tables we want to the query. Now let's write a query that retrieves the login ID and project ID from the experiment table. We do this by either double-clicking on the names of the columns that we want to include, or by dragging the column names from the table onto the query.</p>
+  <p>When we run the query by clicking the "Run" button, it shows us all of the data for the "Experiment" table for the two columns that we asked for: the login ID and the name of the project.</p>
+  <p>We can switch back to our query by either clicking on the "View" button, or by selecting "Design View" from the dropdown menu.</p>
+  <p>In the Design View, we can add more fields, rearrange fields so that they display in a different order, and we can even repeat field names if we like. If we run the query again, we will see all the changes we've made in the output.</p>
+  <p>If we want to get data from all of the columns in the table, we can use the asterisk or '*' instead of selecting them one at a time. The asterisk means "all of the column names": it's just a short cut. So if we run this query, we see all of the columns from the experiment table.</p>
+  <p>If there are duplicate rows returned by the query, it is possible to remove the duplicates. For example, we can fetch only the "Project" column from the "Experiment" table, and if we just want to know which different projects the scientists were working on, we click in the "Table" area of the window, open the property sheet, and set "Unique Values" to "yes". This lists all of the projects, but only once.</p>
+  <p>If we select more than one column name&mdash;say, project and login ID&mdash;then only the distinct pairs of projects and login IDs are returned.</p>
+  <p>So suppose that 10% of the time spent on each experiment was prep work, which needs to be accounted for separately. In our query design window, we can add expressions that do computations on each row. So to calculate 10% of the time spent on each experiment, we can add an expression to the list of columns. In this case, we'll leave the asterisk there to select all of the columns, but we'll add the expression "Hours * 0.1" and give it an appropriate name.</p>
+  <p>When we run the query, the expression "Hours * 0.1" is evaluated for each row, and appended to the output as "PrepTime".</p>
+  <p>Expressions can use any of the fields, all of the arithmetic operators, as well as certain built-in functions. For instance, we could round these values to the first decimal place by using the "round" function.</p>
+  <p>In this screencast we've introduced the very basics of interacting with and retrieving data from databases. We've seen that you can select the columns from the table that you want to retrieve, use the "Unique Values" option to only return unique rows, and include calculated columns in the output.</p>
+</div>

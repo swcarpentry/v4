@@ -1,0 +1,437 @@
+---
+layout: v4_topic
+title: Tuning
+lesson_title: Program Design
+prev: v4/invperc/test.html
+next: null
+uplink: v4/invperc/index.html
+pdf: v4/invperc/tuning.pdf
+ppt: v4/invperc/tuning.ppt
+youtube: {"slug": "Ru00eIfDkkY", "time": "00:11:39.73"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/001.png" />
+    <p class="media-body">Hello, and welcome to the next episode of the Software Carpentry lecture on program design using invasion percolation as an example.  In this episode, which will be a rather long one, we'll take a look at how to speed up the program we've developed.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/002.png" />
+    <p class="media-body">Our program now works correctly.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/003.png" />
+    <p class="media-body">At least, it passes all of our tests.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/004.png" />
+    <p class="media-body">The next step is to figure out if we need to make it faster.  If it's already fast enough to generate the results we need&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/005.png" />
+    <p class="media-body">&hellip;we should spend our time doing other things.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/006.png" />
+    <p class="media-body">How do we measure a program's speed anyway?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/007.png" />
+    <p class="media-body">One possibility is to take the average of running it over and over again on grids of various sizes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/008.png" />
+    <p class="media-body">But that won't necessarily help us predict the running time on larger grids.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/009.png" />
+    <p class="media-body">Instead, we're going to use a technique called <em>asymptotic analysis</em>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/010.png" />
+    <p class="media-body">&hellip;which is one of the most powerful theoretical tools in all of computer science.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/011.png" />
+    <p class="media-body">Our N&times;N grid has N<sup>2</sup> cells.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/012.png" />
+    <p class="media-body">We have to fill at least N of those cells to reach the boundary.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/013.png" />
+    <p class="media-body">In the worst case, we will have to fill as many as (N-2)<sup>2</sup>+1, or N<sup>2</sup>-4N+5, cells to hit the boundary.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/014.png" />
+    <p class="media-body">For large N, this is approximately N<sup>2</sup>: the ratio between N<sup>2</sup> and the polynomial shown above goes to 1 as N gets very large.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/015.png" />
+    <p class="media-body">Our program has to look at N<sup>2</sup> cells each time it wants to find the next cell to fill, because right now, we sweep over X in 0 to range(N) and Y in 0 to range(N), and the product of those is N<sup>2</sup>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/016.png" />
+    <p class="media-body">So the best-case filling time is N&times;N<sup>2</sup> or N<sup>3</sup> steps in total.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/017.png" />
+    <p class="media-body">The worst-case filling time is N<sup>2</sup>&times;N<sup>2</sup> or N<sup>4</sup> steps in total.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/018.png" />
+    <p class="media-body">That's bad news.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/019.png" />
+    <p class="media-body">Averaging the exponents of N<sup>3</sup> and N<sup>4</sup> to get N<sup>3.5</sup> doesn't make a lot of sense&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/020.png" />
+    <p class="media-body">&hellip;but it will illustrate our problem.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/021.png" />
+    <p class="media-body">Here are some grid sizes, and the time it would take to fill a grid of that size if on average filling take N<sup>3.5</sup> steps.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/022.png" />
+    <p class="media-body">To make these numbers a little bit more realistic, let's add another column and a few more rows.  If filling a grid of size N takes one second, then filling a grid that's 100 times as large on each axis will take 115 days.  That's a pretty steep cost, because we may need to run our simulation hundreds or even thousands of times to generate good statistics about the fractals it creates.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/023.png" />
+    <p class="media-body">So here's an idea: why are we always looking at all of the cells in the grid?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/024.png" />
+    <p class="media-body">Why don't we just look at the cells that might be adjacent to the filled region?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/025.png" />
+    <p class="media-body">We can keep track of the minimum and maximum X and Y coordinates of the area filled so far, and just loop over the cells that are one less or one greater on each axis.  But this is actually going to help us very much.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/026.png" />
+    <p class="media-body">On average, the filled region is about half the size of the grid.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/027.png" />
+    <p class="media-body">(N/2)&times;(N/2) is N<sup>2</sup>/4.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/028.png" />
+    <p class="media-body">This means that our 115-day run has been brought down to 29 days.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/029.png" />
+    <p class="media-body">The bad news is, if we go to a grid that 148N&times;148N, we're back to our 115 days again because of that exponent.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/030.png" />
+    <p class="media-body">We need to find a way to attack that exponent.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/031.png" />
+    <p class="media-body">Well, here's another thought.  If we've just added the cell shown in dark green&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/032.png" />
+    <p class="media-body">&hellip;why are we bothering to check all of the cells shown in yellow?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/033.png" />
+    <p class="media-body">We already know that the cells shown in red are candidates because they're adjacent to cells that we've already checked.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/034.png" />
+    <p class="media-body">We've only got one new candidate cell to add to that set. This leads us to one of the big ideas in programming.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/035.png" />
+    <p class="media-body">You can trade memory for time (and vice versa).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/036.png" />
+    <p class="media-body">I.e., you can record redundant information in order to save recalculation as a way of making algorithms faster.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/037.png" />
+    <p class="media-body">In this case, we're going to keep a list of the cells that are on the boundary of the region that we've filled so far.  That's redundant information because everything we're recording is also already in the grid.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/038.png" />
+    <p class="media-body">Each time a cell is filled, we will check its neighbors.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/039.png" />
+    <p class="media-body">If those neighbors are already in the list, we won't do anything&mdash;we wont' re-add them to our list of neighboring cells.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/040.png" />
+    <p class="media-body">But if any of the cells <em>aren't</em> already in the list, we will put them in.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/041.png" />
+    <p class="media-body">In fact, we will insert them, in order to ensure that the cells with lowest value are always at the front of the list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/042.png" />
+    <p class="media-body">This makes it easy to choose the next cell to fill.  We just look at all of the cells at the front of the list with equal lowest value and pick one of them at random.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/043.png" />
+    <p class="media-body">An example will make this clearer.  The list of cells on the edge is initially empty because we haven't filled anything in the grid.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/044.png" />
+    <p class="media-body">When we fill the center cell, we add its neighbors to the list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/045.png" />
+    <p class="media-body">And when we add a neighbor, we add the value as well as the coordinates.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/046.png" />
+    <p class="media-body">We then take the first cell from the front of the list and fill it&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/047.png" />
+    <p class="media-body">&hellip;and add its neighbors again.  Notice that we're always keeping the list sorted by increasing value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/048.png" />
+    <p class="media-body"> That way, the candidates for filling are always at the front of the list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/049.png" />
+    <p class="media-body">And of course, if a cell is already in the list, we never add it a second time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/050.png" />
+    <p class="media-body">In case of ties, we find all of the cells at the front of the list with the lowest value&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/051.png" />
+    <p class="media-body">&hellip; and pick one of those at random to fill.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/052.png" />
+    <p class="media-body">How quickly can we insert a value into a sorted list?  Here's a simple algorithm.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/053.png" />
+    <p class="media-body">  We set <code>i</code> equal to 0, and then look upwards through the list.  As soon as we see a value in the list that is greater than or equal to the value that we've got, we break out of the loop and insert our cell there.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/054.png" />
+    <p class="media-body">  If you check the documentation for the <code>list.insert</code> method&hellip;&hellip;you'll see that this function does the right thing even when the list is empty&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/055.png" />
+    <p class="media-body">&hellip;or when the new value is greater than all of the existing values in the list, i.e., when we're appending the new record to the end of the list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/056.png" />
+    <p class="media-body">  If a list has K values, then on average, if we're inserting things in the middle&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/057.png" />
+    <p class="media-body">&hellip;it'll take about K/2 steps.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/058.png" />
+    <p class="media-body">Our fractals fill somewhere between N and N<sup>2</sup> cells, so again we're going to cheat and average those exponents to say that we fill about N<sup>1.5</sup> cells.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/059.png" />
+    <p class="media-body">There are about as many cells on the boundary as there are in the fractal itself, so using this list, we're going to fill N<sup>1.5</sup> cells, and each time we do that, it's going to take about N<sup>1.5</sup> steps to insert neighbors into the list.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/060.png" />
+    <p class="media-body">The product is N<sup>3</sup> steps.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/061.png" />
+    <p class="media-body">That's not much of an improvement over N<sup>3.5</sup>&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/062.png" />
+    <p class="media-body">&hellip;but it turns out there's a much faster way to do this.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/063.png" />
+    <p class="media-body">Imagine you want to look up a name in a phone book.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/064.png" />
+    <p class="media-body">You open the book in the middle&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/065.png" />
+    <p class="media-body">&hellip;and if the name there comes after the one you want, you go to the middle of the first half.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/066.png" />
+    <p class="media-body">If the name in the middle comes <em>before</em> the one you want, you go to the second half.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/067.png" />
+    <p class="media-body">You then repeat this procedure in that half of the phone book, subdividing and subdividing until you find the name that you're after.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/068.png" />
+    <p class="media-body">This diagram shows the steps that you go through.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/069.png" />
+    <p class="media-body">How fast is this procedure?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/070.png" />
+    <p class="media-body">Well, one probe can find one value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/071.png" />
+    <p class="media-body">Two probes can find one value among two.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/072.png" />
+    <p class="media-body">Three probes can find one value among four.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/073.png" />
+    <p class="media-body">Four probes can find one among eight.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/074.png" />
+    <p class="media-body">And in general, K probes can find one value among 2<sup>K</sup>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/075.png" />
+    <p class="media-body">Turning that around, log<sub>2</sub>(N) probes is enough to find a place in a list of N values.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/076.png" />
+    <p class="media-body">That means that the running time for our algorithm will be about N<sup>1.5</sup>log<sub>2</sub>(N<sup>1.5</sup>).  The first N<sup>1.5</sup> is the number of times we fill a cell, and log<sub>2</sub>(N<sup>1.5</sup>) is the number of steps it takes each time we fill a cell to find the right place to insert.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/077.png" />
+    <p class="media-body">If we take out the constant, we wind up with N<sup>1.5</sup>log<sub>2</sub>(N), because of course log<sub>2</sub>(N<sup>1.5</sup>) is just 1.5log<sub>2</sub>(N).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/078.png" />
+    <p class="media-body">This changes things quite a bit.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/079.png" />
+    <p class="media-body">Let's highlight the greatest values in each column. What was a running time of 115 days has become a running time of 2 hours.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/080.png" />
+    <p class="media-body">What's more, as N gets bigger, the ratio gets bigger as well.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/081.png" />
+    <p class="media-body">The "divide and conquer" technique we use to insert values into a list is called <em>binary search</em>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/082.png" />
+    <p class="media-body">It only works if the list values are sorted&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/083.png" />
+    <p class="media-body">&hellip;but it keeps the list values sorted.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/084.png" />
+    <p class="media-body">There's a Python implementation of this in the <code>bisect</code> library.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/085.png" />
+    <p class="media-body">Are we done? No: we can do even better.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/086.png" />
+    <p class="media-body">Generating a grid of N<sup>2</sup> values take N<sup>2</sup> steps.  After all, we have to create N<sup>2</sup> random numbers.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/087.png" />
+    <p class="media-body">But if we fill the cells shown in green&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/088.png" />
+    <p class="media-body">&hellip;we only ever look at the cells shown in green plus the cells shown in yellow&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/089.png" />
+    <p class="media-body">&hellip;so why are we bothering to generate values for the cells shown in red?  Why do we ever create those cells at all?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/090.png" />
+    <p class="media-body">Instead of storing the grid as a list of lists, we can store it as a dictionary.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/091.png" />
+    <p class="media-body">The keys in the dictionary are the (x,y) coordinates of cels.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/092.png" />
+    <p class="media-body">The values are the current values of those cells.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/093.png" />
+    <p class="media-body">Instead of looking things up directly as <code>grid[x][y]</code>, we use a function <code>get_value</code> that takes the grid, X, Y, and the random range as arguments.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/094.png" />
+    <p class="media-body">To understand why we need the random range, take a look at the implementation of that function.  If the coordinate (x,y) is <em>not</em> in the grid&mdash;i.e., if it's not already a key in the dictionary called <code>grid</code>&mdash;then we create a random value in 1..Z and store that with the key (x,y).  We then return the value that we just created.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/095.png" />
+    <p class="media-body">Of course, if the coordinates (x,y) are already a key in <code>grid</code>, then we'll skip the <code>if</code> and just return the value that's there.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/096.png" />
+    <p class="media-body">This is an example of another commonly-used way to optimize programs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/097.png" />
+    <p class="media-body">It's called <em>lazy evaluation</em>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/098.png" />
+    <p class="media-body">We're not computing values until they're actually needed: we only ever generate the random numbers that we're going to use.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/099.png" />
+    <p class="media-body">This does make the program more complicated&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/100.png" />
+    <p class="media-body">&hellip;but it also makes it a lot faster.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/101.png" />
+    <p class="media-body">What we're doing is trading human time&mdash;i.e., programming effort&mdash;for higher machine performance.  This again is a very common theme in computing.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/108.png" />
+    <p class="media-body">The moral of the story?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/109.png" />
+    <p class="media-body">The biggest performance gains always come from changing algorithms and data structures, not from tweaking loops or rearranging conditionals.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/110.png" />
+    <p class="media-body">The other moral to this story?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/111.png" />
+    <p class="media-body">If you want to write a program that's fast, you start by writing a program that's simple.  You then test it and improve it piece by piece, re-using the tests to check your work at each stage.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="tuning/112.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

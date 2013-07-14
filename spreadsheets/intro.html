@@ -1,0 +1,39 @@
+---
+layout: v4_topic
+title: Introduction
+lesson_title: Spreadsheets
+prev: null
+next: v4/spreadsheets/aggregation.html
+uplink: v4/spreadsheets/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "M6UHinLvvyI", "time": "00:03:52.40"}
+---
+<div>
+  <p>Hello, and welcome to the first episode of the Software Carpentry lecture on spreadsheets.  In this episode, we'll have a look at a few simple things they can do.</p>
+  <p>A spreadsheet is a tool for performing computations on tables of data.  They're most useful when your data is numeric, and organized into rows and columns.</p>
+  <p>We'll use Microsoft Excel, since it's cross-platform and widely available.  There are alternatives, such as OpenOffice Calc and Gnumeric, that have similar features.</p>
+  <p>Each rectangle in a spreadsheet is called a cell.</p>
+  <p>Cells can contains numbers, dates, times, or plain text.</p>
+  <p>In this spreadsheet, the cells contain information about Canada's provinces and territories.</p>
+  <p>Information for each province and territory is in a single row; the columns hold their areas, populations, and CO2 emissions for 1990 and 2008.</p>
+  <p>Those CO2 emissions are measured in megatons.  If we want the 2008 values in kilotons, we can put formulas in cells to do the conversions.</p>
+  <p>First, let's add a heading for our new emissions column.  We want each cell in this column to contain the corresponding cell value in column E, times 1000.</p>
+  <p>Let's start by putting our cursor in cell F2.  We want F2 to contain the value in E2 times a thousand, so we type "=E2*1000".</p>
+  <p>Every formula starts with an equals sign.  As usual, "*" is the multiplication operator, and E2 is a <em>cell reference</em>.  It works just like a variable: using it means, "The value located in that cell."</p>
+  <p>We could emissions in kilotons for the other regions by typing a new formula for each, but that would be tedious, and we'd probably make mistakes.  There's a better way.</p>
+  <p>Let's copy the formula in cell F2 and paste it into cell F3.  If you look at the formula bar, you'll see that Excel automatically changed the formula to a thousand times E3, which is what we want.</p>
+  <p>Let's copy it again, then select the rest of the cells in the column, and paste it into all of them at once.</p>
+  <p>Looking at the cells one by one, we can see that Excel has adjusted the cell reference in each.</p>
+  <p>If this was a program, we wouldn't repeat the number 1000 over and over again.  Instead, we would put it in a variable of its own and reference that.</p>
+  <p>We can do that with spreadsheets as well.  Let's go down to row 16 and create a new heading "megatons to kilotons".  Excel doesn't require this, but it's a good habit to get into, since a spreadsheet with thousands of cells and no labels is pretty hard to figure out.</p>
+  <p>We'll put the value 1000 in cell B16, then delete all of the formulas in column F, and type in a new formula: F2 equals E2 times B16.</p>
+  <p>That does what we want, but when we copy the formula and paste it into cell F3, we get zero instead of 244,300.  What's gone wrong?</p>
+  <p>Looking at the formula bar, we can see that Excel has adjusted the cell references so that the formula is E3 times B17.  The first change is right, but the second makes the formula refer to an empty cell.</p>
+  <p>We can prevent the spreadsheet from automatically adjusting the reference to B16 by using an <em>absolute reference</em>.  An absolute reference has a dollar sign before the column name, row number, or both.</p>
+  <p>In our case, since we don't want B16 to be translated in any direction, we'll reference it using $B$16.</p>
+  <p>When we copy the formula into other cells, Excel only updates one of the references, not the other, which is what we want.</p>
+  <p>And now, if we want emissions in tons instead of kilotons, all we have to do is change the value in B16 from a thousand to a million, and all of the cells that depend on it are automatically updated.</p>
+  <p>If we change the value back, the cells are updated again.</p>
+  <p>This is why people use spreadsheets: they automatically keep track of what depends on what, and update things as needed whenever any values change.</p>
+</div>

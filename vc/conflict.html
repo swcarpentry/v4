@@ -1,0 +1,103 @@
+---
+layout: v4_topic
+title: Conflict
+lesson_title: Version Control
+prev: v4/vc/basic.html
+next: v4/vc/rollback.html
+uplink: v4/vc/index.html
+pdf: v4/vc/conflict.pdf
+ppt: v4/vc/conflict.ppt
+youtube: {"slug": "964xMsrSYHw", "time": "00:07:39.36"}
+---
+<div>
+  <p>Hello, and welcome to the third episode of the Software Carpentry lecture on version control.  In this episode, we will show you what to do when your changes overlap with someone else's.  This is probably the most important episode of this lecture, which is in turn one of the most important in this course, so we'll give you a quick preview of what we're going to do, then go through those steps using SmartSVN.</p>
+  <p>At the end of our previous episode, Dracula and Wolfman had both synchronized their working copies of the <code>monsters</code> repository with the master, so that all three are at Revision 8.</p>
+  <p>Dracula edits his copy to change Amalthea's radius from a single number to a triple to reflect its irregular shape:</p>
+<pre>Name            Orbital Radius  Orbital Period  Mass            Radius
+Amalthea        181.4           0.498179        0.075           <em><strong>131 x 73 x 67</strong></em>
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Callisto        1882.7          16.689018       1075.9          2410.3</pre>
+  <p>Dracula commits first, creating Revision 9 of <code>moons.txt</code> in the repository.</p>
+  <p>As he's doing this, Wolfman is editing <em>his</em> copy to add information about two other minor moons, Himalia and Elara.</p>
+<pre>Name            Orbital Radius  Orbital Period  Mass            Radius
+Amalthea        181.4           0.498179        0.075           131
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Callisto        1882.7          16.689018       1075.9          2410.3
+<em><strong>Himalia         11460           250.5662        0.095           85.0
+Elara           11740           259.6528        0.008           40.0</strong></em></pre>
+  <p>A few minutes after Dracula's commit, Wolfman tries to commit his changes to the repository.</p>
+  <p>But Subversion won't let him.  Wolfman's changes were based on revision 8 of the file, but the repository is now at revision 9.</p>
+  <p>Wolfman has to update his working copy to get Dracula's changes before he can commit.</p>
+  <p>Luckily, Dracula edited a line that Wolfman didn't change, so Subversion can merge the differences automatically.</p>
+  <p>This does <em>not</em> mean that Wolfman's changes have been committed to the repository&mdash;Subversion only does that when it's ordered to.  Wolfman's changes are still in his working copy, and <em>only</em> in his working copy.</p>
+  <p>But since those changes now reflect the most recent revision in the repository, he can go ahead and commit them.</p>
+  <p>Let's see that again in slow motion. Dracula opens <code>moons.txt</code>&hellip;</p>
+  <p>&hellip;changes Amalthea's radius&hellip;</p>
+  <p>&hellip;and then tells SmartSVN to commit his change.</p>
+  <p>After entering a comment to describe his work&hellip;</p>
+  <p>&hellip;he clicks "Commit" and voila&mdash;the repository is at Revision 9.</p>
+  <p>Now it's Wolfman's turn.  His edits are based on Revision 8, because he hasn't done an update to get Revision 9 yet.</p>
+  <p>He adds two lines to the bottom of the file&hellip;</p>
+  <p>&hellip;saves his changes&hellip;</p>
+  <p>&hellip;and then tries to commit them.</p>
+  <p>Everything is OK until he clicks the "Commit button", when Subversion tells him that his commit failed because his starting point is out of date.</p>
+  <p>After doing an update, he asks SmartSVN to display the differences between his copy and the master.  Since it merged Dracula's changes automatically, all Wolfman sees is the lines he added.</p>
+  <p>He can now go ahead and commit his changes to create Revision 10.</p>
+  <p>Wolfman's working copy is now in sync with the master at Revision 10, but Dracula's is one behind at Revision 9.  At this point, they both decide to add measurement units to the columns in <code>moons.txt</code>.  For once, Wolfman is quicker off the mark; he adds a line to the file&hellip;</p>
+<pre>Name            Orbital Radius  Orbital Period  Mass            Radius
+<em><strong>                (10**3 km)      (days)          (10**20 kg)     (km)</strong></em>
+Amalthea        181.4           0.498179        0.075           131 x 73 x 67
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Callisto        1882.7          16.689018       1075.9          2410.3
+Himalia         11460           250.5662        0.095           85.0
+Elara           11740           259.6528        0.008           40.0</pre>
+  <p>&hellip;and commits it to create Revision 11.</p>
+  <p>While he is doing this, though, Dracula starts editing his copy.  He also inserts a line at the top of the file, but not the same one as Wolfman:</p>
+<pre>Name            Orbital Radius  Orbital Period  Mass            Radius
+<em><strong>                * 10^3 km       * days          * 10^20 kg      * km</strong></em>
+Amalthea        181.4           0.498179        0.075           131 x 73 x 67
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Callisto        1882.7          16.689018       1075.9          2410.3
+<em><strong>Himalia         11460           250.5662        0.095           85.0
+Elara           11740           259.6528        0.008           40.0</strong></em></pre>
+  <p>Once again, when Dracula tries to do a commit&hellip;</p>
+  <p>&hellip;Subversion tells him he can't.</p>
+  <p>This time, though, when Dracula does an update, he doesn't just get the two lines Wolfman added to create Revision 10.  There is an actual <em>conflict</em> in the file.</p>
+  <p>Dracula has to edit his copy of the file to <em>resolve</em> the conflict:</p>
+<pre>Name            Orbital Radius  Orbital Period  Mass            Radius
+<em><strong>                * 10^3 km       * days          * 10^20 kg      * km</strong></em>
+Amalthea        181.4           0.498179        0.075           131 x 73 x 67
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Callisto        1882.7          16.689018       1075.9          2410.3
+Himalia         11460           250.5662        0.095           85.0
+Elara           11740           259.6528        0.008           40.0</pre>
+  <p>Once he is done, Subversion will let him commit to create Revision 12.</p>
+  <p>Let's watch it in real life.  Wolfman opens <code>moons.txt</code>&hellip;</p>
+  <p>&hellip;inserts a line&hellip;</p>
+  <p>&hellip;and then commits his change.</p>
+  <p>At the same time, Dracula opens the file (which is already out of date compared to the master copy)&hellip;</p>
+  <p>&hellip;inserts a different line&hellip;</p>
+  <p>&hellip;and tries to commit.</p>
+  <p>Subversion tells him he's not allowed&hellip;</p>
+  <p>&hellip;so he does an update.</p>
+  <p>When it detects the conflict, Subversion creates three temporary files to help Dracula resolve it.</p>
+  <p>The first is called <code>moons.txt.r9</code>.  It is the file as it was in Dracula's local copy before he started making changes, i.e., the starting point for his work.</p>
+  <p>The second file is <code>moons.txt.r11</code>.  This is the most up-to-date revision from the repository that includes Wolfman's changes.</p>
+  <p>The third temporary file is called <code>moons.txt.mine</code>.  This is the file as it was in Dracula's working copy before he did the Subversion update.</p>
+  <p>Finally, Subversion modifies the file in question, <code>moons.txt</code>, to show Dracula's changes and the changes from the repository side by side.  Wherever there is a conflict, Subversion inserts the line <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; .mine</code> followed by the lines from the local copy of the file.  It then inserts the separator <code>=======</code>, followed by the lines from the repository's file that are in conflict with that section, and puts <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; .r11</code> at the end.</p>
+  <p>Some power users prefer to work with these interpolated changes directly, but for the rest of us, there are several tools for displaying <em>diffs</em> and helping to merge them.  If Dracula launches the one that's built in to SmartSVN, it displays his file, the common base that he and Wolfman were working from, and Wolfman's file in a three-pane view.</p>
+  <p>He can use the buttons to pull changes from either of the edited versions into the common ancestor to merge changes, or edit the merge file directly.</p>
+  <p>When he exits, Subversion marked the conflict as being resolved, and deletes the temporary files it created.</p>
+  <p>Dracula is now free to do his commit and create Revision 12 of the repository.</p>
+  <p>In this case, the conflict was small and easy to fix.  However, if two or more people on a team are repeatedly creating conflicts for one another, it's usually a signal of deeper communication problems: either they aren't talking as often as they should, or their responsibilities overlap.  If used properly, the version control system can help the team find and fix these issues so that it will be more productive in future.</p>
+</div>

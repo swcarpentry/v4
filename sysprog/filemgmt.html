@@ -1,0 +1,213 @@
+---
+layout: v4_topic
+title: Manipulating Files and Directories
+lesson_title: Systems Programming
+prev: v4/sysprog/filepaths.html
+next: null
+uplink: v4/sysprog/index.html
+pdf: v4/sysprog/filemgmt.pdf
+ppt: v4/sysprog/filemgmt.ppt
+youtube: {"slug": "Yx7_e2_XkBY", "time": "00:05:15.80"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/001.png" alt="media 001" />
+    <p class="media-body">Hello and welcome to the fifth episode of the Software Carpentry lectures on handling files and directories in Python. We'll now look at creating and deleting directories, and moving directories and files around.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/002.png" alt="media 002" />
+    <p class="media-body">Let us assume we are in an empty directory called user. And we want to create one called data.  For this we use the mkdir function from the os module.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/003.png" alt="media 003" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/004.png" alt="media 004" />
+    <p class="media-body">We can use listdir to see that we indeed have a new directory called data.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/005.png" alt="media 005" />
+    <p class="media-body">And, that this new directory is empty.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/006.png" alt="media 006" />
+    <p class="media-body">Now, if we try to use mkdir again...</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/007.png" alt="media 007" />
+    <p class="media-body">...we get an error since it already exists.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/008.png" alt="media 008" />
+    <p class="media-body">Suppose we want to make a nested set of directories for a more complex organisation of files. Let's give that a try.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/009.png" alt="media 009" />
+    <p class="media-body">It fails.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/010.png" alt="media 010" />
+    <p class="media-body">But, no matter, as we can use the makedirs function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/011.png" alt="media 011" />
+    <p class="media-body">This will create all the directories in the path if they don't already exist.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/012.png" alt="media 012" />
+    <p class="media-body">Rmdir allows us to remove directories. So let's remove towns.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/014.png" alt="media 014" />
+    <p class="media-body">Now let's try and remove country and its children.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/015.png" alt="media 015" />
+    <p class="media-body">This fails. Rmdir only removes empty directories and is not recursive.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/016.png" alt="media 016" />
+    <p class="media-body">But there is a removedirs function that operates recursively. This removes each directory in the path up to and including the first one mentioned.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/017.png" alt="media 017" />
+    <p class="media-body">So it removes regions.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/018.png" alt="media 018" />
+    <p class="media-body">Then country.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/019.png" alt="media 019" />
+    <p class="media-body">But removedirs only works if the directories are empty. Suppose we had some data files in regions. Then if we call removedirs...</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/020.png" alt="media 020" />
+    <p class="media-body">...we'd get an error. Removedirs cannot remove directories that have files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/021.png" alt="media 021" />
+    <p class="media-body">But rmtree in the shutil module can.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/023.png" alt="media 023" />
+    <p class="media-body">Now that we've mentioned it, what about deleting files? Well we could use rmtree on individual files too. But there is the simpler, remove function. So, if we had two files in data and wanted to remove one.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/024.png" alt="media 024" />
+    <p class="media-body">We just use remove.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/025.png" alt="media 025" />
+    <p class="media-body">We can rename and move directories and files too using the rename function. We can rename a directory...</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/027.png" alt="media 027" />
+    <p class="media-body">Note that the destination directory must not exist. If it does exist we get an error.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/028.png" alt="media 028" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/029.png" alt="media 029" />
+    <p class="media-body">To keep the same directory name after the rename, we must provide it explicitly.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/030.png" alt="media 030" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/031.png" alt="media 031" />
+    <p class="media-body">Rename also renames files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/032.png" alt="media 032" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/033.png" alt="media 033" />
+    <p class="media-body">Unlike for directories, a destination file name does not need to be given.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/034.png" alt="media 034" />
+    <p class="media-body">As, in that case, the source file name will be used.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/035.png" alt="media 035" />
+    <p class="media-body">Alternatively, we can rename files and directories using the shutil module's move function. This is more powerful. Asides from moving the file or directory, it also...</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/036.png" alt="media 036" />
+    <p class="media-body">Preserves permission bits, the group and owner.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/037.png" alt="media 037" />
+    <p class="media-body">The last access and modification times.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/038.png" alt="media 038" />
+    <p class="media-body">And other flags.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/039.png" alt="media 039" />
+    <p class="media-body">Renames behaves like both rename and makedirs.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/040.png" alt="media 040" />
+    <p class="media-body">In that it creates any intermediate directories, that do not already exist, like D.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/041.png" alt="media 041" />
+    <p class="media-body">We can copy directories via copytree from shutil.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/042.png" alt="media 042" />
+    <p class="media-body">This copies the entire contents of the directory recursively. Like move, it preserves permission bits, groups and owners, last access and modification times and other flags.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/043.png" alt="media 043" />
+    <p class="media-body">We can copy files via copyfile from shutil.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/044.png" alt="media 044" />
+    <p class="media-body"></p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/045.png" alt="media 045" />
+    <p class="media-body">Like move and rename for directories...</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/046.png" alt="media 046" />
+    <p class="media-body">...a destination file name must always be given</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/047.png" alt="media 047" />
+    <p class="media-body">Shutil's copy function also copies files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/048.png" alt="media 048" />
+    <p class="media-body">It is like copyfile but we don't have to provide a destination file name.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/049.png" alt="media 049" />
+    <p class="media-body">It also copies the existing file permissions.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/050.png" alt="media 050" />
+    <p class="media-body">Shutil also has a copy2 function.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/051.png" alt="media 051" />
+    <p class="media-body">This preserves permission bits, groups and owners, last access and modification times and other flags. Copytree, which we saw earlier, uses copy2.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/052.png" alt="media 052" />
+    <p class="media-body">In this episode we have seen how to create, move, copy and delete directories and files using a variety of functions from the os and shutil modules.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="filemgmt/053.png" alt="media 053" />
+    <p class="media-body">Thank you for listening.</p>
+  </div>
+</div>

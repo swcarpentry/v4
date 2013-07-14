@@ -1,0 +1,169 @@
+---
+layout: v4_topic
+title: Visualization
+lesson_title: MATLAB
+prev: v4/matlab/iomore.html
+next: v4/matlab/cellarrays.html
+uplink: v4/matlab/index.html
+pdf: v4/matlab/plots.pdf
+ppt: v4/matlab/plots.ppt
+youtube: {"slug": "KAPd9Bq_1jI", "time": "00:08:11.24"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="plots/001.png" />
+    <p class="media-body">Hello, and welcome to another episode of the Software Carpentry lecture on MATLAB programming. In this episode, we will examine visualization techniques using the functions plot and imshow.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/002.png" />
+    <p class="media-body">Visualization has always played a big role in understanding our data and ideas.  This image, from Isaac Newton, demonstrates the ideas that led to the integral.  In order to clearly express our findings, scientists need to be able to create interesting and relevant images.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/003.png" />
+    <p class="media-body">An advantage that plotting with MATLAB provides is that the plots are created directly from the program used to perform calculations.  As we will see in this lecture, producing informative plots might require that we transform our data, which is easily done from within MATLAB.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/004.png" />
+    <p class="media-body">MATLAB contains several plotting functions that are highly customizable. The simplest plot function is the function plot, which will create a line graph with one data set for each column of M.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/005.png" />
+    <p class="media-body">In this example, we will use two data sets that contain historical financial data for the Dow Jones Industrial Average and the Standard and Poors 500.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/006.png" />
+    <p class="media-body">Both files contain four columns.  The first three form a date and the fourth value is the closing value of one of the two indices on that day.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/007.png" />
+    <p class="media-body">First, we load our data into two variables dow and sp using the importdata function that we introduced in the lecture on file IO.  Then, it is easy to plot the column of closing values for the Dow Jones.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/008.png" />
+    <p class="media-body">The plot looks familiar to anyone familiar with finance, but the axes may not make sense.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/009.png" />
+    <p class="media-body">If you are an economist, you know that there was a crash in 1987.  The crash might be that small bump before the graph starts growing, but it is hard to say.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/010.png" />
+    <p class="media-body">Since we only told MATLAB to plot a vector, the X axis is the index of the vector.  If we pass two vectors to the plot function, it will reassign the X axis.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/011.png" />
+    <p class="media-body">The first three columns in the matrix dow are the year, month, and day of the associated closing value.  We need to transform these into a decimal year.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/012.png" />
+    <p class="media-body">As a rough approximation, we divide the month value by twelve and the day value by thirty times twelve.  This translates all of the dates into the years unit.  This time when we call plot, we pass the value for the X axis first, and the value for Y second.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/013.png" />
+    <p class="media-body">MATLAB chose the correct values for the x-axis.  Generally, MATLAB is very smart about choosing good tic marks for axes in plots.  If you want to change them, you can do so in the tool dropdown menu.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/014.png" />
+    <p class="media-body">If you want to make further edits to the format of the plot, you can access either Insert and Tools dropdown menus.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/015.png" />
+    <p class="media-body">Most options are available under the tools menu.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/016.png" />
+    <p class="media-body">The first option, edit plot, provides access to all aspects to the plot's format.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/017.png" />
+    <p class="media-body">An easier way to make quick changes is to right click on the aspect of the plot you want to edit.  In this case, we right clicked on the line plot, which brings up a context menu that has controls for the line style, width, and markers.  If you want to make more customized edits, you can do so with the property editor.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/018.png" />
+    <p class="media-body">If you pass two inputs to the plot function, we already saw that the first one is treated as an X value and the second is treated as Y.  In this example, we compare the two stock indices by placing them both in a matrix and plotting the matrix against time.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/019.png" />
+    <p class="media-body">Each column of the matrix stocks is plotted as its own curve.  The blue line is familiar, and the green line is the S and P 500.  Unfortunately, this plot is not too informative because the two variables are on different scales.  For instance, it is hard to tell which index gained more as a percentage of its starting value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/020.png" />
+    <p class="media-body">It is best to rescale the sets of indices in relation to their starting value.  This will produce a plot of the rate of return of each index.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/021.png" />
+    <p class="media-body">When the variables are rescaled, we see that the S and P 500 actually outperforms the Dow Jones, but that it is significantly more volatile.  The important point to note is that proper data visualization might take several iterations before the full sense of the message can be found.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/022.png" />
+    <p class="media-body">MATLAB offers several other plotting utilities including functions to make the standard pie and bar graphs.  The hist function can be used to make a histogram.  If your data requires it, MATLAB can make many kinds of 3 dimensional charts as well. Again, all of these plots are fully customizable.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/023.png" />
+    <p class="media-body">Another way to visualize data is to treat a matrix as an image.  In this example, we will examine a data set of public, geolocated Twitter messages near Toronto.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/024.png" />
+    <p class="media-body">We start with the question of from where in Toronto people are most likely to send a geolocated tweet. To answer this question, I recorded all geo-located tweets for 2 months in downtown Toronto.  Then I divided the city into a grid and counted the relative number of tweets in each cell of the grid.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/025.png" />
+    <p class="media-body">The result is a data matrix, where each point in the matrix is the relative number of tweets near a grid center on the map.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/026.png" />
+    <p class="media-body">Of course, like many other data sets, this one is best thought of as a matrix.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/027.png" />
+    <p class="media-body">The simplest way to create an image in MATLAB is to call image and pass it a matrix.  Unfortunately, this matrix isn't very amenable to imaging.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/028.png" />
+    <p class="media-body">We see a few pixels that are not dark blue, and the rest is just the same color.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/029.png" />
+    <p class="media-body">To understand what happened, we need to take a closer look at the image function.  Image takes either an N by M matrix or an N by M by 3 array.  If the input is 2 dimensional, then each element is treated as an intensity value.  If it has 3 dimensions, then each pixel is described by three intensity values corresponding to three color channels. Image uses a colormap, which is an N by 3 matrix, to map intensities to colors.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/030.png" />
+    <p class="media-body">For this simple colormap, values are taken from the range 0 to 64, split into four equal sets, and mapped to the corresponding location in the image.  Since the data is not 3 dimensional, we only need to use the first column of colormap.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/031.png" />
+    <p class="media-body">The intensity values between 0 and 64 are mapped evenly to the rows of the colormap, which produces the colored output.  There are many colormaps in MATLAB which can be accessed by typing help colormap.  In a moment, we will explore a few more of the standard colormaps.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/032.png" />
+    <p class="media-body">An important point about image is that it expects all of the values to be between 0 and 64.  If the data has a different range, then it is truncated to the range 0 to 64.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/033.png" />
+    <p class="media-body">It is usually better to use imagesc, which rescales the values of the matrix to fit in the range 0 to 64, which ensures that the entire colormap is used.  Unfortunately, we still do not see an image in this data.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/034.png" />
+    <p class="media-body">The reason is that imagesc scales data linearly between the highest and lowest points.  Our data follows an exponential distribution, which means that the largest values are a great deal larger than the average value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/035.png" />
+    <p class="media-body">Imaging the logarithm of our data, we see a much more interesting pattern.  We can pick out major streets and public areas in this plot.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/036.png" />
+    <p class="media-body">Depending on the data, it might be worth trying other colormaps.  This colormap is grayscale, and lighter values correspond to higher intensities.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/037.png" />
+    <p class="media-body">Colormap hot uses a black to yellow heatmap.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/038.png" />
+    <p class="media-body">In conclusion, plots and images are powerful tools to expore data, but be sure to take full advantage of the pattern that is in the data.  Sometimes, you may need to rescale or otherwise edit data to fully capture its meaning.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="plots/039.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>

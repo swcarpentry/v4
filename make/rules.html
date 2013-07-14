@@ -1,0 +1,149 @@
+---
+layout: v4_topic
+title: Rules
+lesson_title: Make
+prev: v4/make/patterns.html
+next: v4/make/macros.html
+uplink: v4/make/index.html
+pdf: v4/make/rules.pdf
+ppt: v4/make/rules.ppt
+youtube: {"slug": "fyTh3r4edZs", "time": "00:05:15.00"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="rules/001.png" />
+    <p class="media-body">Hello, and welcome to the fourth episode of the Software Carpentry lecture on Make. In this episode, we'll see how to write rules that capture general patterns in dependencies and rules.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/002.png" />
+    <p class="media-body">As in previous episodes, we're looking at how to manage tasks and dependencies automatically using Make.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/003.png" />
+    <p class="media-body">For the paper the robot is working on, <code>paper.pdf</code> depends on <code>paper.wdp</code>, <code>figure-1.svg</code>, and <code>figure-2.svg</code>, while <code>figure-1.svg</code> depends on <code>summary-1.dat</code>, which in turn depends on all the files with names like <code>data-1-1.dat</code>, <code>data-1-2.dat</code>, and so on.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/004.png" />
+    <p class="media-body">In the previous episode, we saw how to use automatic variables and wildcards to write rules to handle any number of files with names matching certain patterns.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/005.png" />
+    <p class="media-body">We still have a lot of redundancy in our Makefile, though.  The rules for <code>figure-1.svg</code> and <code>figure-2.svg</code> are identical except for the '1' and '2' in their names, as are the rules for <code>summary-1.dat</code> and <code>summary-2.dat</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/006.png" />
+    <p class="media-body">Here's the Makefile so far.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/007.png" />
+    <p class="media-body">We'd like to "fold" the rules for the figures together for two reasons.  First, if we add a third figure, we don't want to have to duplicate rules a third time.  Second, if we ever want to change the way we generate figures, we'd like to make that change once, in one place: if we have to make it in several places, the odds are good we'll forget one, and then waste time trying to figure out why some of our commands aren't running.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/008.png" />
+    <p class="media-body">The way to do this in Make is to use a <em>pattern rule</em> to capture the common idea.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/009.png" />
+    <p class="media-body">Here's our Makefile rewritten to use such a rule.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/010.png" />
+    <p class="media-body">In this rule, <code>%</code> is a wildcard.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/011.png" />
+    <p class="media-body">When it is expanded, it has the same value on both sides of the rule, i.e., if it matches '1' on the left, it must match '1' on the right as well.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/012.png" />
+    <p class="media-body"><code>%</code> only means something to Make, though: it doesn't have a value in the rule's action, which is handed off to the shell for execution.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/013.png" />
+    <p class="media-body">So in the action, we have to use the automatic variables <code>$@</code> and <code>$^</code> as before.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/014.png" />
+    <p class="media-body">Let's try running our modified Makefile.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/015.png" />
+    <p class="media-body">Hm: <code>summary-1.dat</code> is updated, but not <code>summary-2.dat</code> or either of the figure files.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/016.png" />
+    <p class="media-body">Why didn't our other commands run?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/017.png" />
+    <p class="media-body">The reason is that pattern rules don't create dependencies: they just tell Make what to do <em>if</em> there's a dependency.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/018.png" />
+    <p class="media-body">In other words, <em>if</em> Make decides it wants to create <code>figure-1.svg</code>, it can use our pattern rule&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/019.png" />
+    <p class="media-body">&hellip;but we still have to tell Make to care about <code>figure-1.svg</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/020.png" />
+    <p class="media-body">Let's do this by putting the rule for <code>paper.pdf</code> back in our Makefile.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/021.png" />
+    <p class="media-body">Here's the full Makefile.  In it, <code>paper.pdf</code> depends on <code>figure-1.svg</code> and <code>figure-2.svg</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/022.png" />
+    <p class="media-body">Make now knows that it needs these figures.  Since there aren't specific rules for them, it uses the pattern rule instead.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/023.png" />
+    <p class="media-body">It's tempting to go one step further, and make <code>paper.pdf</code> depend on <code>figure-*.svg</code>, but this doesn't work.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/024.png" />
+    <p class="media-body">The reason is that the figure files may not exist when Make starts to run&mdash;after all, Make creates them.  In that case, <code>figure-*.svg</code> will expand to nothing, so Make would mistakenly believe that <code>paper.pdf</code> depended only on <code>paper.wdp</code>.  This kind of bug can be very hard to figure out, and unfortunately, Make doesn't come with a debugger to help you track these problems down.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/025.png" />
+    <p class="media-body">Our raw data files <em>do</em> always exist, though, so we can get rid of some more redundancy by taking these two rules&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/026.png" />
+    <p class="media-body">&hellip;and folding them into one using the <code>*</code> wildcard.  It's safe to do this because Make isn't responsible for creating <code>data-1-whatever.dat</code> and <code>data-2-whatever.dat</code>: there's no possibility of the <code>*</code> missing things because it's evaluated when Make starts running.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/027.png" />
+    <p class="media-body">Just as a reminder, the <code>%</code> is a Make wildcard: it matches the same thing on the left and right side of a pattern rule.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/028.png" />
+    <p class="media-body"><code>*</code> is a shell wildcard: it matches zero or more characters in a filename when it's evaluated.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/029.png" />
+    <p class="media-body">Can we get rid of the last bit of redundancy by making <code>summary-%.dat</code> depend on <code>stats.py</code>?  No&mdash;this doesn't work.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/030.png" />
+    <p class="media-body">Even with this pattern rule, the summary files only depend on the corresponding raw data files, not on <code>stats.py</code>.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/031.png" />
+    <p class="media-body">Why?  Because when Make sees two or more pattern rules that could match a filename, it uses the first and ignores the other.  It's another wart, and another source of hard-to-find headaches in Makefiles.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/032.png" />
+    <p class="media-body">If we really want to avoid making <code>summary-1.dat</code> and <code>summary-2.dat</code> depend on <code>stats.py</code> separately, the only way is to go back to the false dependencies we introduced in the previous episode.  This Makefile tells Make to update the timestamps on the raw data files using <code>touch</code> whenever <code>stats.py</code> changes.  This indirectly triggers the re-creation of the summary files&mdash;it does what we want, just in a roundabout way.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/033.png" />
+    <p class="media-body">As useful as it is, Make is less than perfect&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="rules/034.png" />
+    <p class="media-body">In our next episode, we'll see how to define collections of files in Make, and how to get information in from the outside world.</p>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+---
+layout: v4_topic
+title: Sorting
+lesson_title: Spreadsheets
+prev: v4/spreadsheets/display.html
+next: v4/spreadsheets/conditionals.html
+uplink: v4/spreadsheets/index.html
+pdf: null
+ppt: null
+youtube: {"slug": "hUWvC-Zx0Bs", "time": "00:02:37.00"}
+---
+<div>
+  <p>Hello, and welcome to the fourth episode of the Software Carpentry lecture on spreadsheets.  In this episode, we will look at sorting, ranking, and debugging.</p>
+  <p>Our CO2 spreadsheet is currently organized geographically from west to east, with the northern territories tacked on at the end.  We can make things easier to find by sorting data alphabetically.</p>
+<p>To do this, we select the range of rows we want to sort by clicking on row numbers 1 to 14, then go to the "Data" tab and choose "Sort".  Under "Sort by", we choose "Name".  Since the first row of the data is column titles, we leave "My data has headers" ticked, so that it will be left alone.</p>
+  <p>Now, suppose we want to know which provinces emitted the most CO2 per capita in 2008.  We'll start by hiding column D, which holds the 1990 emissions, so that the extra columns we're about to add will fit on the screen.</p>
+  <p>Next, we calculate emissions per capita using a formula in column F.</p>
+  <p>And then, in column G, we use the Rank function to find each cell's rank in its column.</p>
+  <p>This function takes three parameters.  The first is the value whose rank we want: in this case, the region's emissions per capita.</p>
+  <p>The second is the range of values we're finding that rank in: in our case, it's cells F2 to F14.</p>
+  <p>Finally, we can specify whether the rankings are descending or ascending.  Since we want the region with the highest emissions to be ranked first, we specify descending order, which is zero.</p>
+  <p>But look: when we fill down to rank all of the regions, there are several ties.  What's happened?</p>
+  <p>We can find out using Excel's built-in debuggin tools.  Let's select the first value in column G, then go to "Formulas&hellip;Trace Precedents".  This will show all the cells referenced by the formula in the chosen cell.  Clicking again shows the values that those cells depend on.</p>
+  <p>That looks right, so let's clear the display and look at the last cell.  The value is being ranked in the wrong range: the formula used relative references rather than absolute references, so Excel adjusted it when we copied it.</p>
+  <p>No matter which cell we're in, we always want to rank it in the range F2 to F14.</p>
+  <p>If we make that change and re-rank, our values look reasonable.</p>
+  <p>So now, we can go back to the sorting menu and sort our regions by emissions per capita.</p>
+</div>

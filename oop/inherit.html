@@ -1,0 +1,217 @@
+---
+layout: v4_topic
+title: Inheritance
+lesson_title: Object-Oriented Programming
+prev: v4/oop/interface.html
+next: null
+uplink: v4/oop/index.html
+pdf: inherit.pdf
+ppt: inherit.ppt
+youtube: {"slug": "dAtHeAMfkz8", "time": "00:08:46.00"}
+---
+<div class="transcript">
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/001.png" />
+    <p class="media-body">Hello, and welcome to the fourth episode of the Software Carpentry lecture on object-oriented programming. In this episode, we'll show you how to create new classes from old ones.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/002.png" />
+    <p class="media-body">Let's take another look at the example from our previous episode. We were given a signal that has been sampled at irregular intervals&hellip;</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/003.png" />
+    <p class="media-body">&hellip;and we built classes to do stepwise and linear interpolation in a way that let us use one or the other&mdash;or yet another class that we haven't been written yet&mdash;in the rest of our program.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/004.png" />
+    <p class="media-body">A lot of how we implemented those two classes was the same.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/005.png" />
+    <p class="media-body">How can we eliminate the redundancy, so that there's no duplicated code in our program?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/006.png" />
+    <p class="media-body">Here's the implementation of StepSignal's 'get' method again. It searches through the (x, y) pairs saved in self.values to find the sample immediately preceding 'where', and returns the corresponding y value. If 'where' lies outside the sampling range, 'get' raises an IndexError exception instead of returning a value.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/007.png" />
+    <p class="media-body">The implementation in LinearSignal is almost identical.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/008.png" />
+    <p class="media-body">In fact, only the line that actually does the interpolation is different; everything else is identical. And as we've said before, code that's duplicated will eventually be wrong.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/009.png" />
+    <p class="media-body">What we want to do is refactor this code so that our methods look like this. The new method, 'find', will either return the index of the sample immediately preceding 'where', or raise an exception if 'where' is out of range. Once we have that index, we can either return the corresponding 'y' value (if we're doing stepwise interpolation) or find a weighted average (if we're doing linear interpolation).</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/010.png" />
+    <p class="media-body">But where should the 'find' method go?</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/011.png" />
+    <p class="media-body">We don't want to duplicate it in the two classes&mdash;that wouldn't really count as solving our problem.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/012.png" />
+    <p class="media-body">Instead, we're going to use inheritance: we're going to create a new class that inherits all the properties of an existing one, then specialize it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/013.png" />
+    <p class="media-body">To see how this works, let's create a class called Parent that has one method, hello. As before, we put the name of Python's built-in class 'object' in parentheses after the name of the new class&mdash;we'll show you why in just a moment.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/014.png" />
+    <p class="media-body">Then let's create a second class, Child, that defines another method 'goodbye'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/015.png" />
+    <p class="media-body">This time, though, we put the name of the class Parent in parentheses when we're defining Child, rather than the name 'object'. This tells Python that we want Child to have everything that we defined for Parent, as well as anything new we define specifically for Child.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/016.png" />
+    <p class="media-body">To see what this means, let's create an object of class Child. As expected, we can then call its 'goodbye' method.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/017.png" />
+    <p class="media-body">But look: we can also call its 'hello' method, even though we didn't define 'hello' for the class Child. This works because Child inherited the definition of 'hello' from Parent: it automatically has everything that Parent defined.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/018.png" />
+    <p class="media-body">Inheritance only works in one direction, though. If we create an object of class Parent, we can call its 'hello' method, as shown here.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/019.png" />
+    <p class="media-body">But if we try to call its 'goodbye' method, the call fails, because we didn't define 'goodbye' for Parent, and Parent didn't inherit it from anywhere.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/020.png" />
+    <p class="media-body">This picture shows you what's going on inside Python in this example.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/021.png" />
+    <p class="media-body">At the top is the class 'object', which is built into Python.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/022.png" />
+    <p class="media-body">Below that is our class Parent. It inherits stuff from 'object' &mdash; that's why we've been putting object's name in parentheses every time we've defined a class so far &mdash; and adds a method of its own called 'hello'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/023.png" />
+    <p class="media-body">Below that is the class 'Child'. It inherits from Parent, and adds another method 'goodbye'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/024.png" />
+    <p class="media-body">When we create the object 'c' of class 'Child', Python puts a reference in the object to its class. When we call 'c.goodbye', Python follows that reference from 'c' to 'Child', finds the method, and executes it. When we call 'c.hello', Python follows the reference to Child, fails to find 'hello', but then sees that 'Child' has a reference to another class 'Parent'. When Python follows that link, it finds that Parent does have the method 'hello', so everything's OK.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/025.png" />
+    <p class="media-body">Similarly, when Python creates the object 'p', and then calls 'p.hello', it follows p's link to Parent and finds the method. When we try to call 'p.goodbye', though, the interpreter looks in Parent, fails to find anything called 'goodbye', then follows the link up to 'object', fails again, and raises an exception. There is no reference from Parent to Child, only one from Child to Parent, so there's no way to get to 'goodbye' from the object 'p'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/026.png" />
+    <p class="media-body">All right, let's try to apply this idea to our signal interpolators. Here's a class called 'InterpolatedSignal' that has just one method called 'find'. Given an 'x' value 'where', this method searches through 'self.values' to find the location of the immediately preceding sample and returns the corresponding index. If 'where' is out of bounds, 'find' raises an exception.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/027.png" />
+    <p class="media-body">This method isn't particularly useful on its own, but it is exactly what StepSignal and LinearSignal need.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/028.png" />
+    <p class="media-body">Before we show how they use it, though, there's a design flaw in this class. 'find' depends on 'self.values', but InterpolatedSignal doesn't create this anywhere&mdash;it seems to just appear by magic. We'll come back and fix this in a few medias.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/029.png" />
+    <p class="media-body">Now that we have a way to find where we're supposed to interpolate, let's rewrite our actual interpolating classes.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/030.png" />
+    <p class="media-body">Here's the new version of StepSignal.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/031.png" />
+    <p class="media-body">It's derived from InterpolatedSignal&mdash;again, that's what it means to put InterpolatedSignal's name in parentheses in the class definition.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/032.png" />
+    <p class="media-body">which means it can use the 'find' method without re-defining it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/033.png" />
+    <p class="media-body">In order for that to work, though, StepSignal's constructor has to create self.values, so that it will be there when self.find needs it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/034.png" />
+    <p class="media-body">This is fragile: there's nothing in 'StepSignal' to tell the next person reading this code why we're doing this, just as there was nothing in 'InterpolatedSignal' to tell someone reading it where 'self.values' came from.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/035.png" />
+    <p class="media-body">Dependencies between classes should be more explicit&mdash;let's see how to make them so.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/036.png" />
+    <p class="media-body">In this case, the right solution is to have the parent class store the values we're using for interpolation.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/037.png" />
+    <p class="media-body">This version of 'InterpolatedSignal' does exactly that: its constructor makes a copy of 'values' and assigns it to 'self.values'.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/038.png" />
+    <p class="media-body">It also defines a method called 'get' that raised a NotImplementedError exception, so that if anyone ever tries to create an object of this class and use it for interpolation, they'll get a meaningful error message instead of Python's default "attribute not found".</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/039.png" />
+    <p class="media-body">We can now rewrite StepSignal's constructor as shown here.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/040.png" />
+    <p class="media-body">Instead of storing 'values' itself, this constructor calls InterpolatedSignal's constructor, passing in the object being built (that's 'self') and the input parameter 'values'. The syntax 'InterpolatedSignal.__init__' is a bit clumsy, but the effect is pretty simple: StepSignal is asking InterpolatedSignal to do whatever it thinks it has to when it's creating a new object.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/041.png" />
+    <p class="media-body">And here's the new LinearSignal. Its constructor is the same&mdash;it just asked the parent class to do whatever it needs to do. The beauty of this is that there's now exactly one place to make a change when we need to. For example, if we want to change the kind of exception that's raised when someone tries to get a value for a point that's out of bounds, we change InterpolatedSignal.find and we're done.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/042.png" />
+    <p class="media-body">Similarly, if we want to check that the samples are actually pairs, and in order (which we should have been doing all along), we can add that code to the parent class, and both of the child classes will automatically get it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/043.png" />
+    <p class="media-body">One other thing we've done here deserves mention. As this diagram shows, we have defined a method called 'get' in two places: once in the parent class 'InterpolatedSignal, and once in the child class 'StepSignal'. The one in the parent raises an exception every time it's called, but that's OK: if we start with an object 'signal' of class 'StepSignal', and follow the references upward, we find StepSignal's 'get' first and call that, just as we want to. When this happens, we say that the child class is overriding the method in the parent class: it's defining a method with the same name which takes precedence over the parent's.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/044.png" />
+    <p class="media-body">Let's have a closer look at how overriding works.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/045.png" />
+    <p class="media-body">Here's a class called Parent that defines two methods, hello and goodbye.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/046.png" />
+    <p class="media-body">And here's a class Child that inherits from Parent and defines its own 'goodbye' method.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/047.png" />
+    <p class="media-body">That method overrides the one defined in Parent because it has the same name.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/048.png" />
+    <p class="media-body">Now let's create an object of class Parent and call its methods. Good&mdash;that works as expected.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/049.png" />
+    <p class="media-body">When we create an object of class Child, and call 'hello', that also does what we expect&mdash;Child didn't define 'hello', so Python looks upward to its parent, finds one there, and uses it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/050.png" />
+    <p class="media-body">But when we call the Child object's 'goodbye', we get the one defined in Child. The one in the Parent class is still there, but Python finds the one in Child first and uses it.</p>
+  </div>
+  <div class="media">
+    <img class="media-object pull-left" src="inherit/051.png" />
+    <p class="media-body">Thank you.</p>
+  </div>
+</div>
