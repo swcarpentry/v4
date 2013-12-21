@@ -2,34 +2,48 @@
 layout: base
 root: ..
 title: Lessons (Version 4.0)
-children : [
-    {"path" : "vc/index.html", "title" : "Version Control"},
-    {"path" : "shell/index.html", "title" : "The Unix Shell"},
-    {"path" : "python/index.html", "title" : "Python"},
-    {"path" : "test/index.html", "title" : "Testing"},
-    {"path" : "setdict/index.html", "title" : "Sets and Dictionaries"},
-    {"path" : "regexp/index.html", "title" : "Regular Expressions"},
-    {"path" : "databases/index.html", "title" : "Databases"},
-    {"path" : "access/index.html", "title" : "Using Access"},
-    {"path" : "data/index.html", "title" : "Data Management"},
-    {"path" : "oop/index.html", "title" : "Object-Oriented Programming"},
-    {"path" : "invperc/index.html", "title" : "Program Design"},
-    {"path" : "make/index.html", "title" : "Make"},
-    {"path" : "sysprog/index.html", "title" : "Systems Programming"},
-    {"path" : "spreadsheets/index.html", "title" : "Spreadsheets"},
-    {"path" : "matrix/index.html", "title" : "Matrix Programming"},
-    {"path" : "matlab/index.html", "title" : "MATLAB"},
-    {"path" : "media/index.html", "title" : "Multimedia Programming"},
-    {"path" : "softeng/index.html", "title" : "Software Engineering"},
-    {"path" : "essays/index.html", "title" : "Essays"}
-]
 ---
-<div align="center">
-  <img src="{{page.root}}/img/bootcamps/2012-11-scripps.png" alt="Boot Camp at the Scripps Institute, 2012" />
+<p>
+  All of our materials are made available under the
+  <a href="{{page.root}}/license.html#cc-by">Creative Commons - Attribution License</a>.
+  You are free to use and remix them,
+  provided that you cite Software Carpentry as the original source.
+</p>
+<div class="row-fluid">
+  <div class="span4" style="padding-bottom:15px">
+    <ul>
+      <li><a href="vc/index.html">Version Control</a></li>
+      <li><a href="shell/index.html">The Unix Shell</a></li>
+      <li><a href="python/index.html">Python</a></li>
+      <li><a href="test/index.html">Testing</a></li>
+      <li><a href="setdict/index.html">Sets and Dictionaries</a></li>
+      <li><a href="regexp/index.html">Regular Expressions</a></li>
+    </ul>
+  </div>
+  <div class="span4" style="padding-bottom:15px">
+    <ul>
+      <li><a href="databases/index.html">Databases</a></li>
+      <li><a href="access/index.html">Using Access</a></li>
+      <li><a href="data/index.html">Data Management</a></li>
+      <li><a href="oop/index.html">Object-Oriented Programming</a></li>
+      <li><a href="invperc/index.html">Program Design</a></li>
+      <li><a href="make/index.html">Make</a></li>
+    </ul>
+  </div>
+  <div class="span4" style="padding-bottom:15px">
+    <ul>
+      <li><a href="sysprog/index.html">Systems Programming</a></li>
+      <li><a href="spreadsheets/index.html">Spreadsheets</a></li>
+      <li><a href="matrix/index.html">Matrix Programming</a></li>
+      <li><a href="matlab/index.html">MATLAB</a></li>
+      <li><a href="media/index.html">Multimedia Programming</a></li>
+      <li><a href="softeng/index.html">Software Engineering</a></li>
+    </ul>
+  </div>
 </div>
 
-<ul>
-{% for lesson in page.children %}
-  <li><a href="{{lesson.path}}">{{lesson.title}}</a></li>
-{% endfor %}
-</ul>
+<p>
+  Several <a href="essays/index.html">essays</a>
+  and material from <a href="{{page.root}}/v3/index.html">Version 3</a>
+  are also available.
+</p>
