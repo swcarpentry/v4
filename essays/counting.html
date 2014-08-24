@@ -164,7 +164,7 @@ def count_in_file(filename, condition):
           if c(value):
               results[i] += 1
   return results</pre>
-<p>Here, <code>conditions</code> is a list of functions, each of which tests for one thing.  <code>len(conditions) is the number of conditions we're given, so <code>results</code> is initialized to a list of that many zeroes.  Each time we read a new value from the stream, we pass it to each checking function in turn, and increment the corresponding count if the checking function says "yes".  Here's an example of how we'd use it:</code></p>
+<p>Here, <code>conditions</code> is a list of functions, each of which tests for one thing.  <code>len(conditions)</code> is the number of conditions we're given, so <code>results</code> is initialized to a list of that many zeroes.  Each time we read a new value from the stream, we pass it to each checking function in turn, and increment the corresponding count if the checking function says "yes".  Here's an example of how we'd use it:</code></p>
 <pre>def is_odd(v): return (v % 2) == 1
 
 def is_greater_than_100(v): return v &gt; 100
