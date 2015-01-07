@@ -1,3 +1,9 @@
+# Build directory locally.
+SITE=_site
+
+# Installation directory on server.
+INSTALL = $(HOME)/sites/software-carpentry.org/v4
+
 all : commands
 
 ## commands   : show all commands
@@ -6,10 +12,14 @@ commands :
 
 ## site       : build locally into _site directory for checking
 site :
-	jekyll build -t -d _site
+	jekyll build -t -d $(SITE)
 
-$(DST) : $(SRC)
+## install    : install on server
+install :
+	rm -rf $(INSTALL)
+	mkdir -p $(INSTALL)
+	cp -r $(SITE)/* $(INSTALL)
 
 ## clean      : clean up
 clean :
-	rm -rf _site $$(find . -name '*~' -print)
+	rm -rf $(SITE) $$(find . -name '*~' -print)
