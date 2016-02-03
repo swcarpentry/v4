@@ -29,10 +29,8 @@ uplink : v4/index.html
   </p>
 </div>
 
-{% include toc.html %}
-
-<div class="well well-small">
-  <ul class="keypoints">
+<div class="keypoints">
+  <ul>
     <li>Array libraries like those in MATLAB store data in rectangular blocks of uniform data type.</li>
     <li>These libraries use a data-parallel programming model to apply one operation to many data elements.</li>
     <li>You should (almost) never loop over the elements of a vector or matrix: let the library do it instead.</li>
@@ -40,3 +38,5 @@ uplink : v4/index.html
     <li>And use library functions to do higher-level linear algebra operations rather than writing them yourself.</li>
   </ul>
 </div>
+
+{% include toc.html %}
