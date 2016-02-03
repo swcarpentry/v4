@@ -1,24 +1,32 @@
-# Installation directory on server.
-INSTALL = $(HOME)/sites/software-carpentry.org/v4
+# Settings
+MAKEFILES=Makefile $(wildcard *.mk)
+JEKYLL=jekyll # or 'bundle exec jekyll'
 
-.phony : site
+all : commands
 
-## all        : make everything
-all : _site/index.html
-
-## commands   : show all commands
+## commands   : show all commands.
 commands :
-	@grep -E '^##' Makefile | sed -e 's/## //g'
+	@grep -h -E '^##' ${MAKEFILES} | sed -e 's/## //g'
 
-_site/index.html : index.html
-	jekyll build -t -d _site
+## serve      : run a local server.
+serve :
+	${JEKYLL} serve --config _config.yml,_config_dev.yml
 
-## install    : install on server
+## site       : build files but do not run a server.
+site :
+	${JEKYLL} build --config _config.yml
+
+## install    : install missing Ruby gems using bundle.
 install :
-	rm -rf $(INSTALL)
-	mkdir -p $(INSTALL)
-	cp -r _site/* $(INSTALL)
+	bundle install
 
-## clean      : clean up
+## clean      : clean up junk files.
 clean :
-	rm -rf _site $$(find . -name '*~' -print)
+	rm -rf _site
+	rm -rf .sass-cache
+	find . -name .DS_Store -exec rm {} \;
+	find . -name '*~' -exec rm {} \;
+	find . -name '*.pyc' -exec rm {} \;
+
+# Include extra commands if available.
+-include commands.mk
