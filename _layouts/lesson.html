@@ -13,6 +13,30 @@
       <h1>
         <a href="index.html">{{ page.title }}</a>{% if page.subtitle %}: {{ page.subtitle }}{% endif %}
       </h1>
+
+      {% if page.youtube %}
+      <div class="youtube">
+        <iframe title="{{page.title}}/{{page.subtitle}}"
+                src="http://www.youtube.com/embed/{{page.youtube.slug}}?html5=True"
+                time="{{page.youtube.time}}"
+                width="640" height="506"
+                frameborder="0"
+                allowfullscreen="allowfullscreen"></iframe>
+      </div>
+      <div>
+        <a href="http://www.youtube.com/watch?v={{page.youtube.slug}}&html5=True">{{page.title}}/{{page.subtitle}} at YouTube</a>
+      </div>
+      {% endif %}
+
+      <div class="files">
+        {% if page.ppt %}
+        <a href="{{page.root}}/{{page.ppt}}">slides</a>
+        {% endif %}
+        {% if page.pdf %}
+        <a href="{{page.root}}/{{page.pdf}}">PDF</a>
+        {% endif %}
+      </div>
+
       {{ content }}
     </div>
   </div>
