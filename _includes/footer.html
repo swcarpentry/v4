@@ -1,15 +1,31 @@
-<footer class="content">
-  <div class="container">
-    <div class="links">
-      <a href="{{page.root}}/conduct.html">Code of Conduct</a>
-      <a href="{{page.root}}/license.html">License</a>
-      <a href="{{site.paypal_url}}">Donate!</a>
-      <a href="http://datacarpentry.org">Data Carpentry</a>
-      <a href="mailto:{{site.contact}}">Email</a>
-      <a href="{{site.twitter_url}}">Twitter</a>
-      <a href="{{site.rss_url}}">RSS</a>
-      <a href="{{site.github_url}}">GitHub</a>
-      <a class="bugreport" href="mailto:{{site.contact}}?subject=bug%20in%20{{page.path}}">Bug Report</a>
-    </div>
+<div id="up-to-top" class="row">
+  <div class="small-12 columns" style="text-align: right;">
+    <a class="iconfont" href="#top-of-page">&#xf108;</a>
   </div>
+</div>
+<footer class="main-footer shadow-black">
+    <div class="row">
+      <div class="medium-5 columns">
+        <p>
+          {{ site.footer_description }}
+          <a href="{{ site.parent_domain }}/about">More</a>
+        </p>
+      </div>
+      <div class="medium-4 columns">
+          <ul class="inline-list social-icons">
+          {% for social_item in site.socialmedia %}
+            <li><a href="{{ social_item.url }}" target="_blank" class="{{ social_item.class }}" title="{{ social_item.title }}"></a></li>
+          {% endfor %}
+          </ul>
+      </div>
+      <div class="medium-3 columns">
+        <ul class="no-bullet shadow-black">
+          {% for service_item in site.services %}
+              <li>
+                <a href="{{ site.parent_domain }}{{ service_item.url }}"  title="{{ service_item.title }}">{{ service_item.name }}</a>
+              </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
 </footer>

@@ -31,7 +31,7 @@ extern const float Q_EXCITE;</pre>
 
 const float T_QUENCH = 300.0;
 const float Q_EXCITE = 450.0;</pre>
-<p>Each time you want to change the values, you edit <code>params.cpp</code>, run <a href="{{page.root}}/v4/make/index.html">Make</a> to recompile, and then run your program.  If you're really clever, you'll put the command to re-run the program in the Makefile, and arrange your dependencies so that it recompiles the program if necessary.</p>
+<p>Each time you want to change the values, you edit <code>params.cpp</code>, run <a href="{{site.baseurl}}/v4/make/index.html">Make</a> to recompile, and then run your program.  If you're really clever, you'll put the command to re-run the program in the Makefile, and arrange your dependencies so that it recompiles the program if necessary.</p>
 <p>Software engineering purists will recoil in horror at this, but if you only need to change the programs parameters a few times, it may actually be the simplest choice, since you dont have to write (or test, or debug) any kind of configuration code.  The main drawback is that anyone else who wants to use your program has to set up a complete build environment.</p>
 <p>Method #2: <em>pass parameters as command-line arguments.</em> If you only have a handful of scalar parameters (i.e., parameters that consist of a single value, like the two in the example above, as opposed to parameters comprised of lists of values, like wave forms), then command-line parameters may be the easiest way to go.  In C++, these are passed as strings to your <code>main</code> function via <code>argc</code> and <code>argv</code>.  If your program is run like this:</p>
 <pre>$ ./anneal 300.0 450.0</pre>
