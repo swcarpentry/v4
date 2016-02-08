@@ -14,11 +14,11 @@
 
 # Website domain (no trailing slash).
 # E.g., http://yourname.github.io
-domain: "http://swcarpentry.github.io"
+domain: "http://v4.swcarpentry-carpentry.org"
 
 # Base URL below the domain (no trailing slash).
 # This will usually be the lesson slug with a leading slash.
-baseurl: "/v4"
+baseurl: ""
 
 # Lessons's GitHub repository.
 github_repo   : "http://github.com/swcarpentry/v4"
